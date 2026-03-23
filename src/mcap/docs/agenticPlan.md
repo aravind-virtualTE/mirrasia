@@ -59,7 +59,8 @@ This keeps totals consistent across sections.
 - If a selected currency differs from the fee source currency and `computeFees` did not return matching FX metadata, widget performs source-to-target conversion and writes converted `items`, totals, and FX metadata.
 - If step `computeFees` does not exist, widget computes from service metadata and persists `formData.computedFees`.
 - `ServiceSelectionWidget` also owns the global additional-executive KYC toggle (`useAdditionalExecutiveKycService`) and live preview panel.
-- For HK, `corr_addr` is the only party-managed service. Selection still comes from Party KYC / party details per party, while the services table is a read-only mirror of the computed counts and pricing.
+- For HK, `corr_addr` is the only party-managed service. Selection comes from Party KYC / party details per party, and every selected HK party adds one `USD 65` unit regardless of role or party type. The services table is a read-only mirror of the computed counts and pricing.
+- The shared correspondence helper is hard-guarded to `HK`, so non-HK flows resolve zero correspondence pricing even if the helper is imported accidentally.
 2. `invoice` and `payment` steps:
 - `UnifiedFormEngine` resolves step fees from `computeFees`.
 - For `InvoiceWidget`/`PaymentWidget`, engine recomputes fresh fees and falls back to cached converted `formData.computedFees` only if step output is missing requested converted FX metadata.

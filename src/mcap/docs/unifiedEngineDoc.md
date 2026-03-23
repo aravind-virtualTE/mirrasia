@@ -192,7 +192,8 @@ Legacy compatibility:
 - if step `computeFees` lacks requested non-USD FX metadata, engine can fall back to cached converted `formData.computedFees`
 - HK correspondence-address pricing uses shared party-driven metadata from `src/mcap/correspondenceService.ts` and is computed inside the HK config fee flow
 - `CORRESPONDENCE_SERVICE_FIELD` is currently wired only for HK PartyWidget / Party KYC flows; other country configs do not expose or auto-inject `corr_addr`
-- `corr_addr` is the only current HK party-managed service. The old HK `dcp_headcount` and `extra_kyc` pricing paths are no longer part of the active MCAP pricing model.
+- `corr_addr` is the only current HK party-managed service. Every selected HK party contributes one `USD 65` correspondence unit regardless of role or party type. The old HK `dcp_headcount` and `extra_kyc` pricing paths are no longer part of the active MCAP pricing model.
+- The shared correspondence helper now hard-guards non-HK countries to zero price / zero count so the charge cannot leak into other country fee flows by reuse.
 - `exchangeRate.ts` remains pair-based only:
   - official Frankfurter / ECB rates are preferred for pricing
   - Gemini is fallback only

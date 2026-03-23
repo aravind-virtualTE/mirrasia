@@ -3,12 +3,11 @@
 export const CORRESPONDENCE_SERVICE_FIELD = "useCorrespondenceAddressService";
 export const CORRESPONDENCE_SERVICE_ID = "corr_addr";
 // This field is currently wired only for HK flows.
-export const DEFAULT_CORRESPONDENCE_SERVICE_PRICE = 65;
+export const DEFAULT_CORRESPONDENCE_SERVICE_PRICE = 0;
 export const CORRESPONDENCE_SERVICE_PRICE_BY_COUNTRY: Record<string, number> = {
   HK: 65,
 };
 
-const ELIGIBLE_CORRESPONDENCE_ROLES = new Set(["director", "shareholder", "member", "dcp"]);
 const DEFAULT_UNIT_LABEL = "newHk.fees.units.person";
 const DEFAULT_LABEL = "newHk.fees.items.corr_addr.label";
 const DEFAULT_INFO =
@@ -17,15 +16,8 @@ const DEFAULT_INFO =
 export const normalizeMcapCountryCode = (countryCode?: string) =>
   String(countryCode || "").split("_")[0].trim().toUpperCase();
 
-export const normalizePartyRoles = (roles: unknown) =>
-  Array.isArray(roles)
-    ? roles
-        .map((role) => String(role || "").trim().toLowerCase())
-        .filter(Boolean)
-    : [];
-
-export const isCorrespondenceServiceEligibleRoles = (roles: unknown) =>
-  normalizePartyRoles(roles).some((role) => ELIGIBLE_CORRESPONDENCE_ROLES.has(role));
+export const isCorrespondenceServiceEnabledForCountry = (countryCode?: string) =>
+  normalizeMcapCountryCode(countryCode) === "HK";
 
 const isEnabledFlag = (value: any) => {
   if (typeof value === "boolean") return value;
@@ -38,26 +30,24 @@ export const isCorrespondenceServiceSelected = (source: any) =>
 
 export const getCorrespondenceServicePrice = (countryCode?: string) => {
   const normalizedCountryCode = normalizeMcapCountryCode(countryCode);
+  if (!isCorrespondenceServiceEnabledForCountry(normalizedCountryCode)) {
+    return DEFAULT_CORRESPONDENCE_SERVICE_PRICE;
+  }
   return CORRESPONDENCE_SERVICE_PRICE_BY_COUNTRY[normalizedCountryCode] ?? DEFAULT_CORRESPONDENCE_SERVICE_PRICE;
 };
 
-export const getCorrespondenceServicePartyRoleSet = (party: any) => {
-  const rootRoles = Array.isArray(party?.roles) ? party.roles : [];
-  const detailRoles = Array.isArray(party?.details?.roles) ? party.details.roles : [];
-  return new Set(normalizePartyRoles([...rootRoles, ...detailRoles]));
-};
-
 export const getCorrespondenceServiceCounts = (
-  parties: any[]
+  parties: any[],
+  countryCode?: string
 ) => {
+  if (!isCorrespondenceServiceEnabledForCountry(countryCode)) {
+    return { correspondenceCount: 0 };
+  }
   const list = Array.isArray(parties) ? parties : [];
   let correspondenceCount = 0;
 
   list.forEach((party) => {
     if (!isCorrespondenceServiceSelected(party)) return;
-
-    const roles = getCorrespondenceServicePartyRoleSet(party);
-    if (!isCorrespondenceServiceEligibleRoles(Array.from(roles))) return;
 
     correspondenceCount += 1;
   });
@@ -66,6 +56,20 @@ export const getCorrespondenceServiceCounts = (
 };
 
 export const buildCorrespondenceServiceFeeItem = (countryCode?: string) => {
+  if (!isCorrespondenceServiceEnabledForCountry(countryCode)) {
+    return {
+      id: CORRESPONDENCE_SERVICE_ID,
+      label: DEFAULT_LABEL,
+      amount: 0,
+      original: 0,
+      mandatory: false,
+      info: DEFAULT_INFO,
+      managedByPartyKyc: true,
+      unitLabel: DEFAULT_UNIT_LABEL,
+      currency: "USD",
+      kind: "service" as const,
+    };
+  }
   const amount = getCorrespondenceServicePrice(countryCode);
   return {
     id: CORRESPONDENCE_SERVICE_ID,

@@ -2656,7 +2656,7 @@
         },
         "corr_addr": {
           "label": "Correspondence Address Annual Service (optional)",
-          "info": "Mail handling for directors/shareholders."
+          "info": "Mail handling for a selected party."
         },
         "dcp_headcount": {
           "label": "Additional DCP headcount (optional)",
@@ -2742,7 +2742,7 @@
         "reg_office": "Registered office address for statutory records and official correspondence.",
         "bank_arr": "Introduction and scheduling support with the selected bank/EMI.",
         "kit": "Company chop, share certificates, and related items.",
-        "corr_addr": "Mail handling for directors/shareholders.",
+        "corr_addr": "Mail handling for a selected party.",
         "dcp_headcount": "Additional annual DCP service fee charged per designated contact person."
       },
       "common": {

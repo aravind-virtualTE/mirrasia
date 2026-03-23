@@ -16,7 +16,6 @@ import { isEntityPartyTypeEnabledForCountry } from "../party-kyc/partyKycRegistr
 import {
     CORRESPONDENCE_SERVICE_FIELD,
     getCorrespondenceServicePrice,
-    isCorrespondenceServiceEligibleRoles,
     isCorrespondenceServiceSelected,
     normalizeMcapCountryCode,
 } from "../correspondenceService";
@@ -198,11 +197,7 @@ export const PartyWidget = ({
         const nextRoles = currentRoles.includes(role)
             ? currentRoles.filter((r: string) => r !== role)
             : [...currentRoles, role];
-        const details = { ...(next[idx].details || {}) };
-        if (isHkCorrespondenceFlow && !isCorrespondenceServiceEligibleRoles(nextRoles)) {
-            details[CORRESPONDENCE_SERVICE_FIELD] = false;
-        }
-        next[idx] = { ...next[idx], roles: nextRoles, details };
+        next[idx] = { ...next[idx], roles: nextRoles };
         onChange(next);
     };
 
@@ -357,8 +352,7 @@ export const PartyWidget = ({
                 {parties.map((party, idx) => {
                     const partyType = normalizePartyType(party?.type);
                     const partyRoles = normalizeRoles(party?.roles);
-                    const showCorrespondenceService = isHkCorrespondenceFlow && partyType === "person";
-                    const correspondenceEligible = isCorrespondenceServiceEligibleRoles(partyRoles);
+                    const showCorrespondenceService = isHkCorrespondenceFlow;
                     const correspondenceSelected = isCorrespondenceServiceSelected(party);
                     const correspondencePrice = getCorrespondenceServicePrice(normalizedCountryCode);
                     const correspondenceHint = t(
@@ -479,14 +473,6 @@ export const PartyWidget = ({
                                             <p className="text-xs text-muted-foreground">
                                                 {correspondenceHint}
                                             </p>
-                                            {!correspondenceEligible && (
-                                                <p className="text-xs text-muted-foreground">
-                                                    {t(
-                                                        "newHk.parties.fields.useCorrespondenceAddressService.availableWhenEligible",
-                                                        "Available when this party is marked as Director, Shareholder, Member, or DCP."
-                                                    )}
-                                                </p>
-                                            )}
                                         </div>
                                         <div className="flex flex-wrap gap-4">
                                             <label className="flex items-center gap-2 text-sm">
@@ -494,7 +480,6 @@ export const PartyWidget = ({
                                                     type="radio"
                                                     name={`${party.id || idx}-useCorrespondenceAddressService`}
                                                     checked={!correspondenceSelected}
-                                                    disabled={!correspondenceEligible}
                                                     onChange={() => updateCorrespondenceServiceSelection(idx, false)}
                                                 />
                                                 <span>{t("common.no", "No")}</span>
@@ -504,7 +489,6 @@ export const PartyWidget = ({
                                                     type="radio"
                                                     name={`${party.id || idx}-useCorrespondenceAddressService`}
                                                     checked={correspondenceSelected}
-                                                    disabled={!correspondenceEligible}
                                                     onChange={() => updateCorrespondenceServiceSelection(idx, true)}
                                                 />
                                                 <span>{t("common.yes", "Yes")}</span>
