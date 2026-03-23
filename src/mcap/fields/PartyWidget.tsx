@@ -28,6 +28,12 @@ const DEFAULT_PARTY_ROLE_OPTIONS: McapFieldOption[] = [
     { value: "shareholder", label: "newHk.parties.roles.shareholder" },
     { value: "dcp", label: "newHk.parties.roles.dcp" },
 ];
+const ENGLISH_NAME_PATTERN = "^[A-Za-z][A-Za-z .'-]*[A-Za-z]$";
+const sanitizeEnglishName = (value: string) =>
+    String(value || "")
+        .replace(/[^A-Za-z .'-]/g, "")
+        .replace(/\s+/g, " ")
+        .replace(/^\s+/, "");
 
 export const PartyWidget = ({
     parties = [],
@@ -399,9 +405,16 @@ export const PartyWidget = ({
                                         <Label>{t("newHk.parties.fields.name.label", "Full Name / Company Name")}</Label>
                                         <Input
                                             value={party.name}
-                                            onChange={(e) => updateParty(idx, "name", e.target.value)}
+                                            onChange={(e) => updateParty(idx, "name", sanitizeEnglishName(e.target.value))}
                                             placeholder={t("newHk.parties.fields.name.example", "Legal Name")}
+                                            inputMode="text"
+                                            autoComplete="name"
+                                            pattern={ENGLISH_NAME_PATTERN}
+                                            title={t("newHk.parties.fields.name.note", "Name must be entered in English only.")}
                                         />
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("newHk.parties.fields.name.note", "Name must be entered in English only.")}
+                                        </p>
                                     </div>
                                     <div className="space-y-2">
                                         <Label>{t("newHk.parties.fields.email.label", "Email Address")}</Label>

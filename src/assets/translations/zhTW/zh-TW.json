@@ -2821,7 +2821,8 @@
       "fields": {
         "name": {
           "label": "完整姓名 / 實體名稱",
-          "example": "範例：Jane Doe（個人）或 ABC Holdings Limited（公司股東）。"
+          "example": "範例：Jane Doe（個人）或 ABC Holdings Limited（公司股東）。",
+          "note": "姓名必須僅以英文輸入。"
         },
         "email": {
           "label": "電子郵件"

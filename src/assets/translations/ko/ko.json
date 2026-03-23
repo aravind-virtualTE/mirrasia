@@ -2820,7 +2820,8 @@
       "fields": {
         "name": {
           "label": "전체 이름 / 법인명",
-          "example": "예:Jane Doe(개인) 또는 ABC Holdings Limited(법인 주주)."
+          "example": "예:Jane Doe(개인) 또는 ABC Holdings Limited(법인 주주).",
+          "note": "이름은 영문으로만 입력해야 합니다."
         },
         "email": {
           "label": "이메일"

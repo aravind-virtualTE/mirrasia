@@ -2920,7 +2920,8 @@
       "fields": {
         "name": {
           "label": "Full name / Entity name",
-          "example": "Examples: Jane Doe (individual) or ABC Holdings Limited (corporate shareholder)."
+          "example": "Examples: Jane Doe (individual) or ABC Holdings Limited (corporate shareholder).",
+          "note": "Name must be entered in English only."
         },
         "email": {
           "label": "Email"
