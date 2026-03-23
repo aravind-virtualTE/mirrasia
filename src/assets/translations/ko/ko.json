@@ -290,14 +290,130 @@
     "pafn": "파나마 재단"
   },
   "landingPage": {
-    "leftHeading": "빠르고 간편하게 회사 등록 및 비즈니스 계좌 개설!",
+    "leftHeading": "스마트하게 비즈니스를 시작하세요",
+    "leftHDesc": "회사 설립과 비즈니스 계좌 개설을 빠르고 간편하게 온라인으로 진행하세요!",
     "rightHeading": "이미 회사가 있으신가요?",
-    "leftText": "스트레스 없는 서비스와 전문가 지원을 받아 회사를 빠르고 디지털하게 등록 및 관리하세요!",
-    "rightSubHeading": "귀하는 비즈니스에 집중하세요, 저희는 회계와 규정 준수를 관리합니다.",
-    "rightP": "장부 관리부터 급여, 법무까지, 전문가와 함께 백오피스에 마음의 평화를 가져오세요!",
+    "leftText": "복잡한 서류, 긴 대기 시간, 혼란을 줄이세요. 올인원 회사 설립 서비스로 몇 번의 클릭만으로 회사를 등록하고, 각 단계마다 전문가의 안내를 받을 수 있습니다.",
+    "rightSubHeading": "지금 시작하세요",
+    "rightP": "몇 분 안에 회사를 등록하고, 규정 준수와 안정적인 운영에 필요한 지원을 모두 갖추세요!",
     "registerNow": "지금 등록하기",
     "contactUs": "문의하기",
     "TransferBtn": "Mirr Asia로 이전",
+    "nav": {
+      "incorporation": "회사 설립",
+      "accountingTaxation": "회계 및 세무",
+      "pricing": "가격",
+      "services": "서비스",
+      "quotationRequest": "견적 요청",
+      "taxFeeEstimator": "세금 수수료 계산기",
+      "login": "로그인",
+      "getStarted": "시작하기",
+      "toggleMenu": "메뉴 열기"
+    },
+    "hero": {
+      "badge": "회사 설립 지원",
+      "imageAlt": "노트북을 들고 있는 비즈니스 전문가",
+      "founderReadyLabel": "창업자 맞춤",
+      "founderReadyText": "설립, 세무 조율, 지속적인 회사 운영 지원을 한 팀에서 제공합니다.",
+      "decisionTitle": "더 빠른 의사결정을 위해",
+      "decisionText": "명확한 서비스 흐름, 실용적인 가격 안내, 이해하기 쉬운 지원 구조를 제공합니다.",
+      "existingCompaniesEyebrow": "기존 법인을 위한 지원",
+      "exploreSupport": "지원 살펴보기",
+      "pillars": {
+        "incorporation": {
+          "title": "회사 설립",
+          "description": "설립 준비, 서류 정리, 제출 지원을 하나의 흐름으로 제공합니다."
+        },
+        "accounting": {
+          "title": "회계",
+          "description": "장부 관리, 세무 조율, 보고 지원을 실무적으로 제공합니다."
+        },
+        "compliance": {
+          "title": "컴플라이언스",
+          "description": "설립 이후 반복되는 의무를 체계적으로 지원합니다."
+        }
+      }
+    },
+    "whyChooseUs": {
+      "eyebrow": "왜 Mirr Asia를 선택할까요",
+      "title": "회사 설립부터 일상 운영까지 더 깔끔한 흐름",
+      "description": "설립, 재무, 컴플라이언스를 하나로 연결해 고객이 서비스를 빠르게 이해하고 자신 있게 다음 단계로 이동할 수 있도록 돕습니다.",
+      "cards": {
+        "clearProcess": {
+          "title": "처음부터 명확한 프로세스",
+          "description": "창업자는 설립, 접수, 설립 후 다음 단계까지 더 단순한 흐름으로 안내받습니다.",
+          "point1": "원격 중심 온보딩",
+          "point2": "체계적인 서류 수집",
+          "point3": "여러 공급업체와의 반복 소통 감소"
+        },
+        "financeTax": {
+          "title": "쉽게 이해되는 재무 및 세무",
+          "description": "사업 운영자가 검토하고 판단해야 할 내용을 중심으로 지원을 구성했습니다.",
+          "point1": "회계 및 세무 지원",
+          "point2": "보고 가시성 향상",
+          "point3": "사업 단계에 맞춘 패키지"
+        },
+        "ongoingSupport": {
+          "title": "설립 이후까지 이어지는 지원",
+          "description": "반복되는 회사 의무가 부담이 되지 않도록 설립 이후에도 지원이 이어집니다.",
+          "point1": "비서 및 컴플라이언스 지원",
+          "point2": "정기 마감 안내",
+          "point3": "성장에 따라 함께 가는 파트너"
+        }
+      }
+    },
+    "coreServices": {
+      "eyebrow": "핵심 서비스",
+      "title": "회사 설립 전후 모두에 도움이 되는 지원",
+      "description": "각 서비스 소개는 핵심 가치, 제공 범위, 다음 액션을 빠르게 이해할 수 있도록 구성했습니다.",
+      "incorporation": {
+        "badge": "회사 설립",
+        "title": "첫날부터 올바른 구조로 시작하세요",
+        "description": "법인 구조 설정, 제출, 문서 준비, 설립 후 연계까지 안내하여 회사가 깔끔하게 출발하고 더 빠르게 운영 단계로 넘어가도록 돕습니다.",
+        "point1": "회사 구조와 주요 설립 결정, 필요 서류에 대한 안내.",
+        "point2": "불필요한 지연과 혼선을 줄이는 엔드투엔드 제출 지원.",
+        "point3": "은행, 회계, 지속적인 컴플라이언스 업무로 자연스럽게 연결되는 흐름.",
+        "primaryCta": "설립 시작하기",
+        "secondaryCta": "상담 요청하기",
+        "imageAlt": "정장을 입은 비즈니스 전문가"
+      },
+      "accounting": {
+        "badge": "회계 및 세무",
+        "title": "보고 체계를 깔끔하게 유지하고 마감 기한을 관리하세요",
+        "description": "정확한 장부와 제때의 세무 처리는 부담이 아니라 운영의 일부처럼 느껴져야 합니다. 저희는 가시성, 컴플라이언스, 실용적인 보고에 맞춰 서비스를 구성합니다.",
+        "point1": "사업 단계에 맞춘 회계, 급여, 세무 조율 지원.",
+        "point2": "운영자가 필요한 사항을 빠르게 파악할 수 있는 관리 보고.",
+        "point3": "거래량이 늘어나도 재무 업무 부담을 줄일 수 있는 지원 구조.",
+        "primaryCta": "견적 요청하기",
+        "secondaryCta": "팀에 문의하기",
+        "imageAlt": "계산기와 회계 도구"
+      },
+      "pricing": {
+        "badge": "가격",
+        "title": "비즈니스에 맞춰 확장되는 투명한 패키지",
+        "description": "방문자가 서비스 범위를 빠르게 이해할 수 있을 때 가격도 더 잘 전달됩니다. 저희는 명확한 패키지, 실용적인 상담, 예측 가능한 지속 지원을 중점에 둡니다.",
+        "point1": "포함 서비스와 상담 기반 추가 옵션에 대한 더 명확한 안내.",
+        "point2": "초기 창업자부터 운영 중인 회사까지 맞출 수 있는 범위.",
+        "point3": "초기 문의부터 맞춤형 가격 안내까지 더 단순한 흐름.",
+        "primaryCta": "맞춤 견적 받기",
+        "secondaryCta": "가격 문의하기",
+        "imageAlt": "가격 및 재무 계획"
+      }
+    },
+    "footer": {
+      "hkOfficeTitle": "홍콩 사무소",
+      "hkLine1": "WORKSHOP UNIT B50 & B58, KWAI SHING IND. BLDG (PHASE 1),",
+      "hkLine2": "36-40 TAI LIN PAI RD, KWAI CHUNG, HK",
+      "hkPhone": "전화: 852-2187-2428",
+      "koreaOfficeTitle": "한국 사무소",
+      "koreaLine1": "UNIT 937, 9/F, GOLDEN IT TOWER,",
+      "koreaLine2": "229 YANGJI-RO, BUCHEON-SI, GYEONGGI-DO,",
+      "koreaLine3": "대한민국",
+      "koreaPhone": "전화: 02-543-6187 / 팩스: 02-6455-6187",
+      "copyright": "© Copyright 2024 Mirr Asia™ All rights reserved.",
+      "rightsText": "이 웹사이트의 모든 권리는 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED에 있으며, 허가 없이 사용할 수 없습니다.",
+      "privacyPolicy": "개인정보 처리방침"
+    },
     "title": "무료 상담 요청",
     "subtitle": "필수 입력란은 •로 표시되어 있습니다. 담당자가 곧 연락드리겠습니다.",
     "honeypot": {
