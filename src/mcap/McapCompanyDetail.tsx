@@ -539,213 +539,212 @@ const McapCompanyDetail: React.FC = () => {
   const invoiceItemCount = Array.isArray((invoiceFees as any)?.items) ? (invoiceFees as any).items.length : 0;
   const invoiceSummaryAmount = invoiceFees
     ? formatMoney(
-        Number((invoiceFees as any)?.grandTotal ?? (invoiceFees as any)?.total),
-        String((invoiceFees as any)?.currency || company?.stripeCurrency || "USD").toUpperCase()
-      )
+      Number((invoiceFees as any)?.grandTotal ?? (invoiceFees as any)?.total),
+      String((invoiceFees as any)?.currency || company?.stripeCurrency || "USD").toUpperCase()
+    )
     : (
-        company?.stripeAmountCents
-          ? formatMoney(company.stripeAmountCents / 100, String(company.stripeCurrency || "USD").toUpperCase())
-          : null
-      );
+      company?.stripeAmountCents
+        ? formatMoney(company.stripeAmountCents / 100, String(company.stripeCurrency || "USD").toUpperCase())
+        : null
+    );
 
   return (
     <>
-    <Tabs value={activeSection} onValueChange={setActiveSection} className="flex flex-col w-full mx-auto">
-      <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
-        <TabsTrigger value="details" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-          Company Details
-        </TabsTrigger>
-        <TabsTrigger value="documents" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-          Record of Documents
-        </TabsTrigger>
-        {canEdit && (
-          <TabsTrigger value="memos" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-            Memo
+      <Tabs value={activeSection} onValueChange={setActiveSection} className="flex flex-col w-full mx-auto">
+        <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
+          <TabsTrigger value="details" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            Company Details
           </TabsTrigger>
-        )}
-        {canEdit && (
-          <TabsTrigger value="projects" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-            Project
+          <TabsTrigger value="documents" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            Record of Documents
           </TabsTrigger>
-        )}
-        <TabsTrigger value="checklist" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-          Checklist
-        </TabsTrigger>
-        <TabsTrigger value="raw" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-          Raw Data
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="details" className="p-4 md:p-6">
-        {!isDashboardDetailView && companyName && <TodoApp id={company._id} name={companyName} />}
-
-        <div className="flex flex-wrap gap-3 mt-4">
           {canEdit && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium">Assign Admin:</span>
-              <Select value={adminAssigned} onValueChange={setAdminAssigned}>
-                <SelectTrigger className="w-60 h-8 text-xs">
-                  <SelectValue placeholder="Assign Admin to..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {adminUsers.map((u) => (
-                    <SelectItem key={u._id} value={u.fullName || ""}>
-                      {u.fullName || u.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <TabsTrigger value="memos" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+              Memo
+            </TabsTrigger>
           )}
-          <Button onClick={() => setActiveSection("documents")} size="sm" className="flex items-center gap-2">
-            Company Docs
-          </Button>
           {canEdit && (
-            <Button
-              onClick={() => navigate(`/incorporation-documents?companyId=${company._id}`)}
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              MCAP Docs Hub
+            <TabsTrigger value="projects" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+              Project
+            </TabsTrigger>
+          )}
+          <TabsTrigger value="checklist" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            Checklist
+          </TabsTrigger>
+          <TabsTrigger value="raw" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+            Raw Data
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details" className="p-4 md:p-6">
+          {!isDashboardDetailView && companyName && <TodoApp id={company._id} name={companyName} />}
+
+          <div className="flex flex-wrap gap-3 mt-4">
+            {canEdit && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium">Assign Admin:</span>
+                <Select value={adminAssigned} onValueChange={setAdminAssigned}>
+                  <SelectTrigger className="w-60 h-8 text-xs">
+                    <SelectValue placeholder="Assign Admin to..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {adminUsers.map((u) => (
+                      <SelectItem key={u._id} value={u.fullName || ""}>
+                        {u.fullName || u.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <Button onClick={() => setActiveSection("documents")} size="sm" className="flex items-center gap-2">
+              Company Docs
             </Button>
-          )}
-          {canEdit && (
-            <Button onClick={() => navigate(`/incorporation?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
-              Open in Form
+            {canEdit && (
+              <Button
+                onClick={() => navigate(`/incorporation-documents?companyId=${company._id}`)}
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                MCAP Docs Hub
+              </Button>
+            )}
+            {canEdit && (
+              <Button onClick={() => navigate(`/incorporation?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
+                Open in Form
+              </Button>
+            )}
+            <Button onClick={() => navigate(dashboardPath)} size="sm" className="flex items-center gap-2">
+              Return
             </Button>
-          )}
-          <Button onClick={() => navigate(dashboardPath)} size="sm" className="flex items-center gap-2">
-            Return
-          </Button>
-        </div>
+          </div>
 
-        <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
-          <div className="lg:col-span-2 grid gap-6 min-w-0">
-            <Card className="min-w-0">
-              <CardHeader className="pb-2">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                    <Building2 className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        {isEditing && canEdit ? (
-                          <Input
-                            value={String(data?.[companyNameKey] ?? "")}
-                            onChange={(e) => updateDataField(companyNameKey, e.target.value)}
-                            className="h-8 text-base"
-                            placeholder="Company Name"
-                          />
-                        ) : (
-                          <CardTitle className="text-xl truncate">{companyName}</CardTitle>
-                        )}
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <Badge variant="secondary" className="text-muted-foreground">
-                            {company.countryName || company.countryCode} {company.countryCode ? `- ${company.countryCode}` : ""}
-                          </Badge>
-                          <Badge variant={isExistingCompanyOnboarding ? "outline" : "secondary"}>
-                            {t(
-                              `mcap.journey.labels.${journeyType}`,
-                              isExistingCompanyOnboarding ? "Existing Company Onboarding" : "New Incorporation"
-                            )}
-                          </Badge>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">Status</span>
-                            {canEdit ? (
-                              <Select value={company.incorporationStatus || ""} onValueChange={(v) => updateField("incorporationStatus", v)}>
-                                <SelectTrigger className="h-7 w-[240px]">
-                                  <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {STATUS_OPTIONS.map((s) => (
-                                    <SelectItem key={s} value={s}>
-                                      {s}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            ) : (
-                              <Badge variant="default">{company.incorporationStatus || "Pending"}</Badge>
-                            )}
+          <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
+            <div className="lg:col-span-2 grid gap-6 min-w-0">
+              <Card className="min-w-0">
+                <CardHeader className="pb-2">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                      <Building2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          {isEditing && canEdit ? (
+                            <Input
+                              value={String(data?.[companyNameKey] ?? "")}
+                              onChange={(e) => updateDataField(companyNameKey, e.target.value)}
+                              className="h-8 text-base"
+                              placeholder="Company Name"
+                            />
+                          ) : (
+                            <CardTitle className="text-xl truncate">{companyName}</CardTitle>
+                          )}
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <Badge variant="secondary" className="text-muted-foreground">
+                              {company.countryName || company.countryCode} {company.countryCode ? `- ${company.countryCode}` : ""}
+                            </Badge>
+                            <Badge variant={isExistingCompanyOnboarding ? "outline" : "secondary"}>
+                              {t(
+                                `mcap.journey.labels.${journeyType}`,
+                                isExistingCompanyOnboarding ? "Existing Company Onboarding" : "New Incorporation"
+                              )}
+                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">Status</span>
+                              {canEdit ? (
+                                <Select value={company.incorporationStatus || ""} onValueChange={(v) => updateField("incorporationStatus", v)}>
+                                  <SelectTrigger className="h-7 w-[240px]">
+                                    <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {STATUS_OPTIONS.map((s) => (
+                                      <SelectItem key={s} value={s}>
+                                        {s}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Badge variant="default">{company.incorporationStatus || "Pending"}</Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
-                        {canEdit && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setIsEditing((prev) => !prev)}
-                          >
-                            {isEditing ? "Cancel Edit" : "Edit"}
-                          </Button>
-                        )}
-                        <div>Created: {fmtDate(company.createdAt)}</div>
-                        <div>Updated: {fmtDate(company.updatedAt)}</div>
-                        {company.renewalDate && (
-                          <div className="flex items-center gap-1 mt-1 text-primary font-medium">
-                            <span>Renewal: {fmtDate(company.renewalDate)}</span>
-                            {company.renewalStatus && (
-                              <Badge variant="outline" className="text-[10px] h-4 px-1 leading-none uppercase">
-                                {company.renewalStatus}
-                              </Badge>
-                            )}
-                          </div>
-                        )}
+                        <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
+                          {canEdit && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setIsEditing((prev) => !prev)}
+                            >
+                              {isEditing ? "Cancel Edit" : "Edit"}
+                            </Button>
+                          )}
+                          <div>Created: {fmtDate(company.createdAt)}</div>
+                          <div>Updated: {fmtDate(company.updatedAt)}</div>
+                          {company.renewalDate && (
+                            <div className="flex items-center gap-1 mt-1 text-primary font-medium">
+                              <span>Renewal: {fmtDate(company.renewalDate)}</span>
+                              {company.renewalStatus && (
+                                <Badge variant="outline" className="text-[10px] h-4 px-1 leading-none uppercase">
+                                  {company.renewalStatus}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="grid gap-5 min-w-0">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="grid gap-1">
-                    <div className="text-xs text-muted-foreground">Applicant</div>
-                    {isEditing && canEdit ? (
-                      <Input
-                        value={String(data?.[applicantNameKey] ?? "")}
-                        onChange={(e) => updateDataField(applicantNameKey, e.target.value)}
-                        className="h-8"
-                        placeholder="Applicant name"
-                      />
-                    ) : (
-                      <div className="flex items-center gap-2 text-sm font-medium">{applicantName || "N/A"}</div>
-                    )}
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="text-xs text-muted-foreground">Contact</div>
-                    {isEditing && canEdit ? (
-                      <div className="grid gap-2">
+                </CardHeader>
+                <CardContent className="grid gap-5 min-w-0">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid gap-1">
+                      <div className="text-xs text-muted-foreground">Applicant</div>
+                      {isEditing && canEdit ? (
                         <Input
-                          value={String(data?.[applicantEmailKey] ?? "")}
-                          onChange={(e) => updateDataField(applicantEmailKey, e.target.value)}
+                          value={String(data?.[applicantNameKey] ?? "")}
+                          onChange={(e) => updateDataField(applicantNameKey, e.target.value)}
                           className="h-8"
-                          placeholder="Email"
-                          type="email"
+                          placeholder="Applicant name"
                         />
-                        <Input
-                          value={String(data?.[applicantPhoneKey] ?? "")}
-                          onChange={(e) => updateDataField(applicantPhoneKey, e.target.value)}
-                          className="h-8"
-                          placeholder="Phone"
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Mail className="h-3.5 w-3.5" />
-                          <span>{applicantEmail || "N/A"}</span>
+                      ) : (
+                        <div className="flex items-center gap-2 text-sm font-medium">{applicantName || "N/A"}</div>
+                      )}
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="text-xs text-muted-foreground">Contact</div>
+                      {isEditing && canEdit ? (
+                        <div className="grid gap-2">
+                          <Input
+                            value={String(data?.[applicantEmailKey] ?? "")}
+                            onChange={(e) => updateDataField(applicantEmailKey, e.target.value)}
+                            className="h-8"
+                            placeholder="Email"
+                            type="email"
+                          />
+                          <Input
+                            value={String(data?.[applicantPhoneKey] ?? "")}
+                            onChange={(e) => updateDataField(applicantPhoneKey, e.target.value)}
+                            className="h-8"
+                            placeholder="Phone"
+                          />
                         </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Phone className="h-3.5 w-3.5" />
-                          <span>{applicantPhone || "N/A"}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  {isExistingCompanyOnboarding && (
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Mail className="h-3.5 w-3.5" />
+                            <span>{applicantEmail || "N/A"}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="h-3.5 w-3.5" />
+                            <span>{applicantPhone || "N/A"}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
                     <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
                       <div className="grid gap-1">
                         <div className="text-xs text-muted-foreground">
@@ -781,445 +780,445 @@ const McapCompanyDetail: React.FC = () => {
                         )}
                       </div>
                     </div>
-                  )}
-                  <div className="grid gap-1 md:col-span-2">
-                    <div className="text-xs text-muted-foreground">Alternative Names</div>
-                    {isEditing && canEdit ? (
-                      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                        <Input
-                          value={String(data?.[companyAlt1Key] ?? "")}
-                          onChange={(e) => updateDataField(companyAlt1Key, e.target.value)}
-                          className="h-8"
-                          placeholder="Alternative name 2"
-                        />
-                        <Input
-                          value={String(data?.[companyAlt2Key] ?? "")}
-                          onChange={(e) => updateDataField(companyAlt2Key, e.target.value)}
-                          className="h-8"
-                          placeholder="Alternative name 3"
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {altNames.length ? altNames.map((n, idx) => (
-                          <Badge key={`${n}-${idx}`} variant="secondary">{n}</Badge>
-                        )) : <span className="text-sm text-muted-foreground">N/A</span>}
-                      </div>
-                    )}
+
+                    <div className="grid gap-1 md:col-span-2">
+                      <div className="text-xs text-muted-foreground">Alternative Names</div>
+                      {isEditing && canEdit ? (
+                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                          <Input
+                            value={String(data?.[companyAlt1Key] ?? "")}
+                            onChange={(e) => updateDataField(companyAlt1Key, e.target.value)}
+                            className="h-8"
+                            placeholder="Alternative name 2"
+                          />
+                          <Input
+                            value={String(data?.[companyAlt2Key] ?? "")}
+                            onChange={(e) => updateDataField(companyAlt2Key, e.target.value)}
+                            className="h-8"
+                            placeholder="Alternative name 3"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {altNames.length ? altNames.map((n, idx) => (
+                            <Badge key={`${n}-${idx}`} variant="secondary">{n}</Badge>
+                          )) : <span className="text-sm text-muted-foreground">N/A</span>}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <Separator />
+                  <Separator />
 
-                <div className="grid gap-3">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-muted-foreground">Progress</div>
-                    <div className="text-sm font-semibold">{pct}%</div>
-                  </div>
-                  <Progress value={pct} className="h-2" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {stepGroups.map((group) => (
-              <Card key={group.step.id} className="min-w-0">
-                <CardHeader>
-                  <CardTitle className="text-base">{t(group.step.title, group.step.title)}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {group.fields}
+                  <div className="grid gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-muted-foreground">Progress</div>
+                      <div className="text-sm font-semibold">{pct}%</div>
+                    </div>
+                    <Progress value={pct} className="h-2" />
                   </div>
                 </CardContent>
               </Card>
-            ))}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Parties (Shareholders/Directors/DCP)</CardTitle>
-                {company.roleStatus?.missing?.length ? (
-                  <div className="text-xs text-destructive">
-                    Missing required roles: {company.roleStatus.missing.join(", ")}
-                  </div>
-                ) : (
-                  <div className="text-xs text-muted-foreground">All mandatory roles present</div>
-                )}
-              </CardHeader>
-              <CardContent>
-                {company.parties?.length ? (
-                  <div className="rounded-md border">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[25%]">Party</TableHead>
-                          <TableHead className="w-[18%]">Roles</TableHead>
-                          <TableHead className="w-[12%]">Shares</TableHead>
-                          <TableHead className="w-[15%]">KYC</TableHead>
-                          <TableHead className="w-[15%]">Invite</TableHead>
-                          <TableHead className="w-[10%]">View</TableHead>
-                          {canEdit && <TableHead className="w-[15%]">Actions</TableHead>}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {company.parties.map((p) => (
-                          <TableRow key={p._id || p.email}>
-                            <TableCell>
-                              <div className="font-medium">{p.name || "N/A"}</div>
-                              <div className="text-xs text-muted-foreground">{p.email}</div>
-                            </TableCell>
-                            <TableCell className="text-xs text-muted-foreground">
-                              {(p.roles || []).join(", ") || "N/A"}
-                            </TableCell>
-                            <TableCell className="text-sm">{p.shares ?? "N/A"}</TableCell>
-                            <TableCell className="space-y-1">
-                              <Badge
-                                variant={
-                                  p.kycStatus === "approved"
-                                    ? "default"
-                                    : p.kycStatus === "expired" || p.kycStatus === "rejected"
-                                    ? "destructive"
-                                    : "outline"
-                                }
-                                className="capitalize"
-                              >
-                                {p.kycStatus || "pending"}
-                              </Badge>
-                              {p.kycExpiresAt && (
-                                <div className="text-[11px] text-muted-foreground">
-                                  Exp: {fmtDate(p.kycExpiresAt)}
-                                </div>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {canEdit ? (
-                                <Button variant="outline" size="sm" onClick={() => handleInviteParty(p)} className="inline-flex items-center gap-1">
-                                  <Send className="h-3.5 w-3.5" />
-                                  {p.invited ? "Remind" : "Invite"}
-                                </Button>
-                              ) : (
-                                <div className="space-y-1">
-                                  <Badge variant="secondary" className="capitalize">
-                                    {p.inviteStatus || (p.invited ? "sent" : "pending")}
-                                  </Badge>
-                                  {p.inviteExpiresAt && (
-                                    <div className="text-[11px] text-muted-foreground">
-                                      Expires: {fmtDate(p.inviteExpiresAt)}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Button variant="outline" size="sm" onClick={() => openPartyModal(p._id)} disabled={!p._id}>
-                                View
-                              </Button>
-                            </TableCell>
-                            {canEdit && (
-                              <TableCell className="space-y-1">
-                                <div className="flex flex-wrap gap-2">
-                                  <Button variant="outline" size="sm" onClick={() => handleKycStatus(p, "approved")}>
-                                    Mark Approved
-                                  </Button>
-                                  <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "expired")}>
-                                    Mark Expired
-                                  </Button>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                  <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "submitted")}>
-                                    Flag Submitted
-                                  </Button>
-                                  <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "rejected")}>
-                                    Reject
-                                  </Button>
-                                  {(p.roles || []).includes("dcp") && (
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() => handleRevokeDcp(p)}
-                                      disabled={!p._id}
-                                    >
-                                      Revoke DCP
-                                    </Button>
-                                  )}
-                                </div>
-                              </TableCell>
-                            )}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                ) : (
-                  <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties linked.</div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+              {stepGroups.map((group) => (
+                <Card key={group.step.id} className="min-w-0">
+                  <CardHeader>
+                    <CardTitle className="text-base">{t(group.step.title, group.step.title)}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {group.fields}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
 
-          <div className="grid gap-6">
-            {!isExistingCompanyOnboarding && (
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                    <Banknote className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base">Payment</CardTitle>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary" className="gap-1">
-                        <ReceiptText className="h-3.5 w-3.5" />
-                        {(company?.paymentStatus || "").toUpperCase() || "N/A"}
-                      </Badge>
-                      {company?.stripeLastStatus && <Badge variant="outline">{company.stripeLastStatus}</Badge>}
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="grid gap-4">
-                <div className="grid gap-2">
-                  <div className="text-xs text-muted-foreground">Receipt / Proof</div>
-                  {company?.paymentStatus === "paid" && company?.stripeLastStatus === "succeeded" && company?.stripeReceiptUrl ? (
-                    <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
-                      <div className="text-sm font-medium">Payment successful via Stripe.</div>
-                      <a href={company.stripeReceiptUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center text-sm underline">
-                        View Stripe Receipt
-                      </a>
-                    </div>
-                  ) : company?.uploadReceiptUrl ? (
-                    <div className="space-y-3">
-                      <a href={company.uploadReceiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
-                        <img src={company.uploadReceiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
-                      </a>
-                      {canEdit && (
-                        <div className="flex items-center gap-3">
-                          <Label className="text-sm font-medium">Payment Status:</Label>
-                          <Select value={company.paymentStatus || "unpaid"} onValueChange={(val) => updateField("paymentStatus", val)}>
-                            <SelectTrigger className="w-32">
-                              <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="unpaid">Pending</SelectItem>
-                              <SelectItem value="paid">Paid</SelectItem>
-                              <SelectItem value="rejected">Rejected</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Parties (Shareholders/Directors/DCP)</CardTitle>
+                  {company.roleStatus?.missing?.length ? (
+                    <div className="text-xs text-destructive">
+                      Missing required roles: {company.roleStatus.missing.join(", ")}
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No file uploaded</div>
+                    <div className="text-xs text-muted-foreground">All mandatory roles present</div>
                   )}
-                </div>
-
-                <div className="grid gap-4 py-2">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label className="text-right">Amount</Label>
-                    <div className="col-span-3 text-sm font-medium">
-                      {company?.stripeAmountCents
-                        ? `${(company.stripeAmountCents / 100).toFixed(2)} ${(company.stripeCurrency || "USD").toUpperCase()}`
-                        : "N/A"}
+                </CardHeader>
+                <CardContent>
+                  {company.parties?.length ? (
+                    <div className="rounded-md border">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[25%]">Party</TableHead>
+                            <TableHead className="w-[18%]">Roles</TableHead>
+                            <TableHead className="w-[12%]">Shares</TableHead>
+                            <TableHead className="w-[15%]">KYC</TableHead>
+                            <TableHead className="w-[15%]">Invite</TableHead>
+                            <TableHead className="w-[10%]">View</TableHead>
+                            {canEdit && <TableHead className="w-[15%]">Actions</TableHead>}
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {company.parties.map((p) => (
+                            <TableRow key={p._id || p.email}>
+                              <TableCell>
+                                <div className="font-medium">{p.name || "N/A"}</div>
+                                <div className="text-xs text-muted-foreground">{p.email}</div>
+                              </TableCell>
+                              <TableCell className="text-xs text-muted-foreground">
+                                {(p.roles || []).join(", ") || "N/A"}
+                              </TableCell>
+                              <TableCell className="text-sm">{p.shares ?? "N/A"}</TableCell>
+                              <TableCell className="space-y-1">
+                                <Badge
+                                  variant={
+                                    p.kycStatus === "approved"
+                                      ? "default"
+                                      : p.kycStatus === "expired" || p.kycStatus === "rejected"
+                                        ? "destructive"
+                                        : "outline"
+                                  }
+                                  className="capitalize"
+                                >
+                                  {p.kycStatus || "pending"}
+                                </Badge>
+                                {p.kycExpiresAt && (
+                                  <div className="text-[11px] text-muted-foreground">
+                                    Exp: {fmtDate(p.kycExpiresAt)}
+                                  </div>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {canEdit ? (
+                                  <Button variant="outline" size="sm" onClick={() => handleInviteParty(p)} className="inline-flex items-center gap-1">
+                                    <Send className="h-3.5 w-3.5" />
+                                    {p.invited ? "Remind" : "Invite"}
+                                  </Button>
+                                ) : (
+                                  <div className="space-y-1">
+                                    <Badge variant="secondary" className="capitalize">
+                                      {p.inviteStatus || (p.invited ? "sent" : "pending")}
+                                    </Badge>
+                                    {p.inviteExpiresAt && (
+                                      <div className="text-[11px] text-muted-foreground">
+                                        Expires: {fmtDate(p.inviteExpiresAt)}
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm" onClick={() => openPartyModal(p._id)} disabled={!p._id}>
+                                  View
+                                </Button>
+                              </TableCell>
+                              {canEdit && (
+                                <TableCell className="space-y-1">
+                                  <div className="flex flex-wrap gap-2">
+                                    <Button variant="outline" size="sm" onClick={() => handleKycStatus(p, "approved")}>
+                                      Mark Approved
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "expired")}>
+                                      Mark Expired
+                                    </Button>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "submitted")}>
+                                      Flag Submitted
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "rejected")}>
+                                      Reject
+                                    </Button>
+                                    {(p.roles || []).includes("dcp") && (
+                                      <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => handleRevokeDcp(p)}
+                                        disabled={!p._id}
+                                      >
+                                        Revoke DCP
+                                      </Button>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              )}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="expiresAt" className="text-right">Expires</Label>
-                    {canEdit ? (
-                      <Input
-                        id="expiresAt"
-                        type="date"
-                        value={company.expiresAt ? String(company.expiresAt).slice(0, 10) : ""}
-                        onChange={(e) => updateField("expiresAt", e.target.value)}
-                        className="col-span-3"
-                      />
-                    ) : (
-                      <div className="col-span-3 text-sm">{company.expiresAt ? fmtDate(company.expiresAt) : "N/A"}</div>
-                    )}
-                  </div>
-                </div>
+                  ) : (
+                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties linked.</div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
 
-                <Accordion type="single" collapsible className="rounded-lg border px-4">
-                  <AccordionItem value="invoice-breakdown" className="border-b-0">
-                    <AccordionTrigger className="py-3 hover:no-underline">
-                      <div className="flex flex-col items-start gap-1">
-                        <span className="text-sm font-medium">Invoice Breakdown</span>
-                        <span className="text-xs text-muted-foreground">
-                          {invoiceFees
-                            ? `Stored invoice snapshot${invoiceSummaryAmount ? ` • ${invoiceSummaryAmount}` : ""}`
-                            : "No saved invoice snapshot for this company."}
-                        </span>
+            <div className="grid gap-6">
+              {!isExistingCompanyOnboarding && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                        <Banknote className="h-5 w-5 text-primary" />
                       </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-3">
-                      {invoiceFees ? (
-                        <div className="flex flex-col gap-3 rounded-md bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
-                          <div className="space-y-1">
-                            <div className="text-sm font-medium">Invoice details available</div>
-                            <div className="text-xs text-muted-foreground">
-                              {invoiceItemCount > 0
-                                ? `${invoiceItemCount} charge line${invoiceItemCount > 1 ? "s" : ""} captured from the application invoice.`
-                                : "Totals were captured on this company record."}
+                      <div className="flex-1">
+                        <CardTitle className="text-base">Payment</CardTitle>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <Badge variant="secondary" className="gap-1">
+                            <ReceiptText className="h-3.5 w-3.5" />
+                            {(company?.paymentStatus || "").toUpperCase() || "N/A"}
+                          </Badge>
+                          {company?.stripeLastStatus && <Badge variant="outline">{company.stripeLastStatus}</Badge>}
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="grid gap-4">
+                    <div className="grid gap-2">
+                      <div className="text-xs text-muted-foreground">Receipt / Proof</div>
+                      {company?.paymentStatus === "paid" && company?.stripeLastStatus === "succeeded" && company?.stripeReceiptUrl ? (
+                        <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
+                          <div className="text-sm font-medium">Payment successful via Stripe.</div>
+                          <a href={company.stripeReceiptUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center text-sm underline">
+                            View Stripe Receipt
+                          </a>
+                        </div>
+                      ) : company?.uploadReceiptUrl ? (
+                        <div className="space-y-3">
+                          <a href={company.uploadReceiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
+                            <img src={company.uploadReceiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
+                          </a>
+                          {canEdit && (
+                            <div className="flex items-center gap-3">
+                              <Label className="text-sm font-medium">Payment Status:</Label>
+                              <Select value={company.paymentStatus || "unpaid"} onValueChange={(val) => updateField("paymentStatus", val)}>
+                                <SelectTrigger className="w-32">
+                                  <SelectValue placeholder="Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="unpaid">Pending</SelectItem>
+                                  <SelectItem value="paid">Paid</SelectItem>
+                                  <SelectItem value="rejected">Rejected</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
-                          </div>
-                          <Button type="button" variant="outline" size="sm" onClick={() => setInvoiceDialogOpen(true)}>
-                            View Invoice
-                          </Button>
+                          )}
                         </div>
                       ) : (
-                        <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                          Invoice details are not available for this record.
-                        </div>
+                        <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No file uploaded</div>
                       )}
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CardContent>
-            </Card>
-            )}
+                    </div>
 
-            <Card>
-              <CardHeader>
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                    <ShieldCheck className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base">Compliance and Declarations</CardTitle>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="grid gap-4">
-                {complianceGroup ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {complianceGroup.fields}
-                  </div>
-                ) : (
-                  <div className="text-sm text-muted-foreground">No compliance answers saved yet.</div>
-                )}
-                {(data?.sns || data?.snsId) && <Separator />}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-1">
-                    <div className="text-xs text-muted-foreground">Social App</div>
-                    <div className="text-sm">{data?.sns || "N/A"}</div>
-                  </div>
-                  <div className="grid gap-1">
-                    <div className="text-xs text-muted-foreground">Handle / ID</div>
-                    <div className="text-sm">{data?.snsId || "N/A"}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="grid gap-4 py-2">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label className="text-right">Amount</Label>
+                        <div className="col-span-3 text-sm font-medium">
+                          {company?.stripeAmountCents
+                            ? `${(company.stripeAmountCents / 100).toFixed(2)} ${(company.stripeCurrency || "USD").toUpperCase()}`
+                            : "N/A"}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="expiresAt" className="text-right">Expires</Label>
+                        {canEdit ? (
+                          <Input
+                            id="expiresAt"
+                            type="date"
+                            value={company.expiresAt ? String(company.expiresAt).slice(0, 10) : ""}
+                            onChange={(e) => updateField("expiresAt", e.target.value)}
+                            className="col-span-3"
+                          />
+                        ) : (
+                          <div className="col-span-3 text-sm">{company.expiresAt ? fmtDate(company.expiresAt) : "N/A"}</div>
+                        )}
+                      </div>
+                    </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Client</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                <div>
-                  <Label>Email</Label>
-                  <Input value={emailTo} onChange={(e) => setEmailTo(e.target.value)} readOnly={isDashboardDetailView} />
-                </div>
-                <div>
-                  <Label>Subject</Label>
-                  <Input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} readOnly={isDashboardDetailView} />
-                </div>
-                <div>
-                  <Label>Message</Label>
-                  <Textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)} rows={4} readOnly={isDashboardDetailView} />
-                </div>
-                <Button onClick={handleSendEmail} disabled={isDashboardDetailView}>Send Email</Button>
-              </CardContent>
-            </Card>
-          </div>
+                    <Accordion type="single" collapsible className="rounded-lg border px-4">
+                      <AccordionItem value="invoice-breakdown" className="border-b-0">
+                        <AccordionTrigger className="py-3 hover:no-underline">
+                          <div className="flex flex-col items-start gap-1">
+                            <span className="text-sm font-medium">Invoice Breakdown</span>
+                            <span className="text-xs text-muted-foreground">
+                              {invoiceFees
+                                ? `Stored invoice snapshot${invoiceSummaryAmount ? ` • ${invoiceSummaryAmount}` : ""}`
+                                : "No saved invoice snapshot for this company."}
+                            </span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="pb-3">
+                          {invoiceFees ? (
+                            <div className="flex flex-col gap-3 rounded-md bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
+                              <div className="space-y-1">
+                                <div className="text-sm font-medium">Invoice details available</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {invoiceItemCount > 0
+                                    ? `${invoiceItemCount} charge line${invoiceItemCount > 1 ? "s" : ""} captured from the application invoice.`
+                                    : "Totals were captured on this company record."}
+                                </div>
+                              </div>
+                              <Button type="button" variant="outline" size="sm" onClick={() => setInvoiceDialogOpen(true)}>
+                                View Invoice
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                              Invoice details are not available for this record.
+                            </div>
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              )}
 
-          {canEdit && (
-            <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
-                <div className="text-xs text-muted-foreground">
-                  Status: <strong>{company.incorporationStatus || "Pending"}</strong>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button onClick={handleSave} disabled={isSaving}>
-                    {isSaving ? "Saving..." : "Save"}
-                  </Button>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                      <ShieldCheck className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-base">Compliance and Declarations</CardTitle>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  {complianceGroup ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {complianceGroup.fields}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No compliance answers saved yet.</div>
+                  )}
+                  {(data?.sns || data?.snsId) && <Separator />}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-1">
+                      <div className="text-xs text-muted-foreground">Social App</div>
+                      <div className="text-sm">{data?.sns || "N/A"}</div>
+                    </div>
+                    <div className="grid gap-1">
+                      <div className="text-xs text-muted-foreground">Handle / ID</div>
+                      <div className="text-sm">{data?.snsId || "N/A"}</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contact Client</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-3">
+                  <div>
+                    <Label>Email</Label>
+                    <Input value={emailTo} onChange={(e) => setEmailTo(e.target.value)} readOnly={isDashboardDetailView} />
+                  </div>
+                  <div>
+                    <Label>Subject</Label>
+                    <Input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} readOnly={isDashboardDetailView} />
+                  </div>
+                  <div>
+                    <Label>Message</Label>
+                    <Textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)} rows={4} readOnly={isDashboardDetailView} />
+                  </div>
+                  <Button onClick={handleSendEmail} disabled={isDashboardDetailView}>Send Email</Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {canEdit && (
+              <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
+                  <div className="text-xs text-muted-foreground">
+                    Status: <strong>{company.incorporationStatus || "Pending"}</strong>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button onClick={handleSave} disabled={isSaving}>
+                      {isSaving ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      </TabsContent>
-
-      <TabsContent value="documents" className="p-6">
-        <McapCompanyDocumentCenter
-          companyId={company._id}
-          countryCode={company.countryCode}
-          companyName={companyName}
-          allowDelete={canEdit}
-        />
-      </TabsContent>
-
-      {canEdit && (
-        <TabsContent value="memos" className="p-6">
-          <div className="space-y-6">
-            <MemoApp id={company._id} />
+            )}
           </div>
         </TabsContent>
-      )}
 
-      {canEdit && (
-        <TabsContent value="projects" className="p-6">
-          <div className="space-y-6">
-            <AdminProject id={company._id} />
-          </div>
+        <TabsContent value="documents" className="p-6">
+          <McapCompanyDocumentCenter
+            companyId={company._id}
+            countryCode={company.countryCode}
+            companyName={companyName}
+            allowDelete={canEdit}
+          />
         </TabsContent>
-      )}
 
-      <TabsContent value="checklist" className="p-6">
-        <ChecklistHistory id={company._id} items={checklistItems} />
-      </TabsContent>
-
-      <TabsContent value="raw" className="p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Application Data</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <pre className="text-xs bg-muted/30 p-3 rounded-md overflow-auto">{JSON.stringify(company, null, 2)}</pre>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
-    <McapPartyKycModal
-      partyId={selectedPartyId}
-      open={partyModalOpen}
-      onOpenChange={handlePartyModalChange}
-      onSaved={fetchCompany}
-      forceReadOnly={isDashboardDetailView}
-    />
-    {!isExistingCompanyOnboarding && (
-    <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
-      <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto p-0">
-        <DialogHeader className="border-b px-6 py-4">
-          <DialogTitle>Invoice Details</DialogTitle>
-          <DialogDescription>
-            Stored fee breakdown captured from the company application flow.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="p-6">
-          {invoiceFees ? (
-            <InvoiceWidget
-              fees={invoiceFees}
-              companyName={companyName}
-              readOnly
-            />
-          ) : (
-            <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-              Invoice details are not available for this record.
+        {canEdit && (
+          <TabsContent value="memos" className="p-6">
+            <div className="space-y-6">
+              <MemoApp id={company._id} />
             </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-    )}
+          </TabsContent>
+        )}
+
+        {canEdit && (
+          <TabsContent value="projects" className="p-6">
+            <div className="space-y-6">
+              <AdminProject id={company._id} />
+            </div>
+          </TabsContent>
+        )}
+
+        <TabsContent value="checklist" className="p-6">
+          <ChecklistHistory id={company._id} items={checklistItems} />
+        </TabsContent>
+
+        <TabsContent value="raw" className="p-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Application Data</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <pre className="text-xs bg-muted/30 p-3 rounded-md overflow-auto">{JSON.stringify(company, null, 2)}</pre>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+      <McapPartyKycModal
+        partyId={selectedPartyId}
+        open={partyModalOpen}
+        onOpenChange={handlePartyModalChange}
+        onSaved={fetchCompany}
+        forceReadOnly={isDashboardDetailView}
+      />
+      {!isExistingCompanyOnboarding && (
+        <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
+          <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto p-0">
+            <DialogHeader className="border-b px-6 py-4">
+              <DialogTitle>Invoice Details</DialogTitle>
+              <DialogDescription>
+                Stored fee breakdown captured from the company application flow.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="p-6">
+              {invoiceFees ? (
+                <InvoiceWidget
+                  fees={invoiceFees}
+                  companyName={companyName}
+                  readOnly
+                />
+              ) : (
+                <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                  Invoice details are not available for this record.
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

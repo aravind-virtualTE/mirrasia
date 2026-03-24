@@ -1,4 +1,4 @@
-﻿# MCAP Unified Form Engine: Agentic Plan
+# MCAP Unified Form Engine: Agentic Plan
 
 Last updated: 2026-03-23
 
@@ -16,8 +16,8 @@ The runtime baseline is a normalized 10-stage journey:
 2. `compliance`
 3. `company` (includes parties for standard-flow countries)
 4. `accounting`
-5. `service-agreement`
-6. `services`
+5. `services`
+6. `service-agreement`
 7. `invoice`
 8. `payment`
 9. `review`

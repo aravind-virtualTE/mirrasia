@@ -174,8 +174,9 @@ const reorderSteps = (steps: McapStep[]) => {
       "deliverables",
     ].includes(step.id)) return 35;
     if (step.id === "accounting" || step.id === "acct" || step.id === "accounting-records") return 40;
-    if (step.id === "service-agreement") return 50;
-    if (step.id === "services" || step.id === "fees" || step.id === "invoice") return 60;
+    if (step.id === "services" || step.id === "fees") return 50;
+    if (step.id === "service-agreement") return 55;
+    if (step.id === "invoice") return 60;
     if (step.id === "payment" || step.widget === "PaymentWidget") return 70;
     if (step.id === "review") return 80;
     return 55;
