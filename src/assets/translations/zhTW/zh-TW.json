@@ -1,4 +1,55 @@
-﻿{
+{
+  "mcap": {
+    "admin": {
+      "coupon": {
+        "title": "優惠券管理",
+        "description": "建立和管理帶有 QR code 的客戶優惠券。",
+        "create": "建立優惠券",
+        "createTitle": "建立新優惠券",
+        "createDesc": "建立客戶在付款時可以使用的優惠券。",
+        "code": "優惠券代碼",
+        "generate": "生成",
+        "discountAmount": "折扣金額 (USD)",
+        "descriptionLabel": "描述（選填）",
+        "maxUses": "最大使用次數（0 = 無限制）",
+        "expiresAt": "到期日（選填）",
+        "countryCode": "這定國家",
+        "allCountries": "所有國家",
+        "createBtn": "建立優惠券",
+        "listTitle": "所有優惠券",
+        "listDesc": "管理現有優惠券並查看其 QR code。",
+        "noCoupons": "目前沒有優惠券。建立一個以開始。",
+        "codeCol": "代碼",
+        "discountCol": "折扣",
+        "usageCol": "使用次數",
+        "expiryCol": "到期日",
+        "countryCol": "國家",
+        "statusCol": "狀態",
+        "actionsCol": "操作",
+        "qrTitle": "優惠券 QR Code",
+        "qrDesc": "與客戶分享此 QR code。他們可以掃描以應用折扣。",
+        "copyCode": "複製代碼",
+        "downloadQr": "下載 QR"
+      }
+    },
+    "payment": {
+      "coupon": {
+        "haveCoupon": "有優惠券代碼嗎？",
+        "enterCode": "輸入優惠券代碼",
+        "apply": "應用",
+        "applied": "優惠券已應用！",
+        "codeApplied": "已應用優惠券：",
+        "discountApplied": "已折扣 {{amount}}。",
+        "couponDiscount": "優惠券折扣",
+        "invalid": "無效的優惠券代碼。",
+        "alreadyUsed": "此優惠券已使用過。",
+        "expired": "此優惠券已過期。",
+        "maxReached": "此優惠券已達使用次數上限。",
+        "countryMismatch": "此優惠券僅適用於 {{country}} 的申請。",
+        "error": "驗證優惠券失敗。"
+      }
+    }
+  },
   "userProfile": {
     "title": "個人資料設定",
     "subtitle": "管理您的帳戶資訊與安全設定",
@@ -3389,11 +3440,12 @@
       "pagination": {
         "rows": "每頁列數",
         "page": "頁碼 {{page}}/{{pages}}"
-      },
-      "columns": {
-        "company": "公司",
-        "country": "國家",
-        "status": "狀態",
+      }
+    },
+    "columns": {
+      "company": "公司",
+      "country": "國家",
+      "status": "狀態",
         "payment": "付款",
         "incorporationDate": "設立日期",
         "createdAt": "建立時間",
@@ -4703,12 +4755,11 @@
         "review": {
           "declaration": {
             "content": "我同意所有提供的資訊均屬真實完整，且是為了合法的商業目的而提交。"
-          }
         }
       }
-    },
-    "payment": {
-      "securePayment": "安全付款",
+    }
+  },
+  "appUpdate": {
       "totalToPay": "待支付總額：",
       "cancel": "取消",
       "pay": "支付 {{amount}}",
@@ -5461,7 +5512,7 @@
         "k123": "我了解若發現非法活動或意圖，服務可能會被暫停。"
       }
     }
-  },
+  ,
   "appUpdate": {
     "title": "有新版本可用",
     "description": "請重新整理頁面以使用最新版本。",

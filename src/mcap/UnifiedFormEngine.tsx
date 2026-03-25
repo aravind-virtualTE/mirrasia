@@ -39,6 +39,7 @@ import {
     resolveMcapConfigForJourney,
     resolveMcapJourneyType,
 } from "./journey";
+import { buildFormSummary } from "./utils/SummaryBuilder";
 
 // --- API Helper (Inlined for Demo) ---
 const API_BASE = API_URL.replace(/\/+$/, "");
@@ -700,6 +701,25 @@ export const UnifiedFormEngine = ({
                     });
                     return;
                 }
+
+                if (currentStep.id === "service-agreement" && companyIdRef.current) {
+                    try {
+                        const summaryData = buildFormSummary(runtimeConfig, formData, parties, t);
+                        const agreementData = t("serviceAgreement.content", { returnObjects: true });
+                        const token = localStorage.getItem("token");
+                        await fetch(`${API_BASE}/mcap/companies/${companyIdRef.current}/send-pre-payment-summary`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ summaryData, agreementData })
+                        }).catch(err => console.error("Failed to send pre-payment summary network error", err));
+                    } catch(err) {
+                        console.error("Failed to send pre-payment summary", err);
+                    }
+                }
+
                 setCurrentStepIdx((prev) => prev + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
             } catch (e) {
@@ -1451,6 +1471,9 @@ export const UnifiedFormEngine = ({
                                     fees={computedFees}
                                     onNext={handleNext}
                                     isSubmitting={isSubmitting}
+                                    data={formData}
+                                    onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
+                                    companyId={companyId}
                                 />
                             ) : currentStep.widget === "RepeatableSection" ? (
 

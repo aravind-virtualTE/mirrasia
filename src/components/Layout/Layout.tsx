@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -17,6 +18,7 @@ import {
   UserPlus,
   Building2,
   FileText,
+  Tag,
   type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -34,13 +36,14 @@ import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
 import { McapBotWidget } from '@/mcap/bot/McapBotWidget';
+import {PayoneerIcon} from "./Payoneer";
 
 type Role = "user" | "admin" | "master"
 type DecodedToken = { role?: Role };
 
 interface SidebarItemCfg {
   id: string;
-  icon: LucideIcon;
+  icon: any;
   label: string;
   roles: Role[];
   onClick?: () => void;
@@ -266,6 +269,13 @@ const Layout: React.FC = () => {
             roles: ["admin", "master"],
             to: "/incorporation-docs",
           },
+          {
+            id: "incorporation-coupons",
+            icon: Tag,
+            label: "Coupon Management",
+            roles: ["admin", "master"],
+            to: "/incorporation-coupons",
+          },
 
         ],
       }
@@ -314,6 +324,13 @@ const Layout: React.FC = () => {
         label: t("sideItems.compDocs"),
         roles: ["user", "admin", "master"],
         to: "/incorporation-documents",
+      },
+       {
+        id: "incorporation-payoneer",
+        icon: PayoneerIcon,
+        label: t("sideItems.payoneer"),
+        roles: ["user", "admin", "master"],
+        to: "/payoneer",
       },
       {
         id: "users",
