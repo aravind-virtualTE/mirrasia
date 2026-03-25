@@ -69,8 +69,10 @@ import McapAdditionalExecutivePricingDocs from './mcap/docs/McapAdditionalExecut
 import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLetterGenerator';
 import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
+import CouponManagement from './mcap/admin/CouponManagement';
 import MobileUpload from './pages/MobileUpload/MobileUpload';
 import VersionUpdateBanner from './components/system/VersionUpdateBanner';
+import PayoneerMirrAsiaIntegration from './pages/Payoneer/Payoneer';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -159,6 +161,8 @@ const App: React.FC = () => {
                         <Route path="/incorporation-parties" element={<McapParties />} />
                         <Route path="/incorporation-detail/:id" element={<McapCompanyDetail />} />
                         <Route path="/incorporation-documents" element={<McapDocumentsHub />} />
+                        <Route path="/payoneer" element={<PayoneerMirrAsiaIntegration />} />
+                        
                         
                       </Route>
                     </Route>
@@ -184,6 +188,7 @@ const App: React.FC = () => {
                       <Route path="/enquiries" element={<EnquiryList />} />
                       <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
                       <Route path="/incorporation-pricing" element={<PricingDashboard />} />
+                      <Route path="/incorporation-coupons" element={<CouponManagement />} />
 
                     </Route>
                   </Route>

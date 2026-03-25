@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Loader2, CreditCard, Building2, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, CreditCard, Building2, FileText, CheckCircle2, AlertCircle, Tag } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { API_URL } from "@/services/fetch";
@@ -301,6 +301,10 @@ export const PaymentWidget = ({
     const [payMethod, setPayMethod] = useState<"card" | "bank">(data?.payMethod || "card");
     const [stripeDrawerOpen, setStripeDrawerOpen] = useState(false);
 
+    // Coupon Data from InvoiceWidget
+    const couponCode = data?.couponCode || "";
+    const couponDiscountValue = data?.couponLocalDiscount ?? (data?.couponDiscount || 0);
+
     const allowedCurrencies = useMemo(() => {
         const base = Array.isArray(supportedCurrencies) && supportedCurrencies.length > 0
             ? supportedCurrencies
@@ -354,12 +358,14 @@ export const PaymentWidget = ({
 
     // If payMethod is card, use grandTotal (which includes surcharge). 
     // If payMethod is bank, use the base total (subtotal).
-    const amountToPay = useMemo(() => {
-        const fee = payMethod === "card" ? (finalFees.cardFeeSurcharge || (subtotal * cardFeePct)) : 0;
-        return subtotal + fee;
-    }, [payMethod, finalFees, subtotal, cardFeePct]);
 
-    const cardFee = payMethod === "card" ? (amountToPay - subtotal) : 0;
+    const amountToPay = useMemo(() => {
+        const afterCoupon = Math.max(0, subtotal - couponDiscountValue);
+        const fee = payMethod === "card" ? (finalFees.cardFeeSurcharge || (afterCoupon * cardFeePct)) : 0;
+        return afterCoupon + fee;
+    }, [payMethod, finalFees, subtotal, cardFeePct, couponDiscountValue]);
+
+    const cardFee = payMethod === "card" ? (amountToPay - Math.max(0, subtotal - couponDiscountValue)) : 0;
 
     const formatAmount = (amt: number, cur: string) => {
         return new Intl.NumberFormat("en-US", {
@@ -472,11 +478,36 @@ export const PaymentWidget = ({
 
         setIsInitStripe(true);
         try {
-            const res = await createPaymentIntent({
+            const payload: any = {
                 amount: Math.round(amountToPay * 100),
                 currency: activeCurrency.toLowerCase(),
-                companyId
-            });
+                companyId,
+            };
+            if (couponCode) {
+                payload.couponCode = couponCode;
+            }
+
+            const res = await createPaymentIntent(payload);
+
+            // If coupon covers full amount, backend returns fullyCoveredByCoupon
+            if (res?.fullyCoveredByCoupon) {
+                setSuccessInfo({
+                    amount: 0,
+                    currency: activeCurrency,
+                    paymentIntentStatus: "succeeded",
+                });
+                if (onChange) {
+                    onChange({
+                        ...data,
+                        payMethod: "coupon",
+                        paymentStatus: "paid",
+                        couponCode: couponCode,
+                        couponDiscount: data?.couponDiscount || 0,
+                        couponLocalDiscount: couponDiscountValue,
+                    });
+                }
+                return;
+            }
 
             if (res?.clientSecret) {
                 setClientSecret(res.clientSecret);
@@ -773,6 +804,8 @@ export const PaymentWidget = ({
 
     return (
         <div className="space-y-6">
+
+
             <div className="grid md:grid-cols-2 gap-6">
 
                 {/* Left: Method Selection */}
@@ -851,6 +884,16 @@ export const PaymentWidget = ({
                                         <span className="text-muted-foreground">{t("mcap.payment.subtotal", "Subtotal")}</span>
                                         <span className="font-medium text-slate-700">{formatAmount(subtotal, activeCurrency)}</span>
                                     </div>
+                                    {couponCode && couponDiscountValue > 0 && (
+                                        <div className="flex justify-between items-center text-sm">
+                                            <div className="flex items-center gap-1">
+                                                <Tag className="w-3.5 h-3.5 text-green-600" />
+                                                <span className="text-green-700 font-medium">{t("mcap.payment.coupon.couponDiscount", "Coupon Discount")}</span>
+                                                <Badge className="text-[10px] py-0 h-4 bg-green-100 text-green-800 border-green-300">{couponCode}</Badge>
+                                            </div>
+                                            <span className="font-medium text-green-700">-{formatAmount(couponDiscountValue, activeCurrency)}</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between items-center text-sm">
                                         <div className="flex items-center gap-1">
                                             <span className="text-muted-foreground">{t("mcap.payment.cardFee", "Card Processing Fee")}</span>
@@ -892,6 +935,21 @@ export const PaymentWidget = ({
                                     </div>
                                 )}
                                 <div className="space-y-2 p-3 bg-muted rounded-lg border">
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-muted-foreground">{t("mcap.payment.subtotal", "Subtotal")}</span>
+                                        <span className="font-medium text-slate-700">{formatAmount(subtotal, activeCurrency)}</span>
+                                    </div>
+                                    {couponCode && couponDiscountValue > 0 && (
+                                        <div className="flex justify-between items-center text-sm">
+                                            <div className="flex items-center gap-1">
+                                                <Tag className="w-3.5 h-3.5 text-green-600" />
+                                                <span className="text-green-700 font-medium">{t("mcap.payment.coupon.couponDiscount", "Coupon Discount")}</span>
+                                                <Badge className="text-[10px] py-0 h-4 bg-green-100 text-green-800 border-green-300">{couponCode}</Badge>
+                                            </div>
+                                            <span className="font-medium text-green-700">-{formatAmount(couponDiscountValue, activeCurrency)}</span>
+                                        </div>
+                                    )}
+                                    <Separator className="my-1 opacity-50" />
                                     <div className="flex justify-between items-center">
                                         <span className="font-semibold text-slate-900">{t("mcap.payment.totalToTransfer", "Total Amount to Transfer")}</span>
                                         <span className="font-bold text-xl text-primary">

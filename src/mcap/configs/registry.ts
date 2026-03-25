@@ -20,7 +20,7 @@ import { IE_FULL_CONFIG } from "./ie-full";
 import { AU_FULL_CONFIG } from "./au-full";
 import { getComplianceGuardForCountryCode } from "./complianceGuards";
 
-const STANDARD_FLOW_COUNTRIES = new Set([
+export const STANDARD_FLOW_COUNTRIES = new Set([
   "HK",
   "US",
   "SG",

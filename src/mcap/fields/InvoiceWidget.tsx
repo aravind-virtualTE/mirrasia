@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Receipt, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, Receipt, HelpCircle, ChevronDown, ChevronUp, Loader2, AlertCircle, Tag, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { getExchangeRate } from "@/services/exchangeRate";
+import { API_URL } from "@/services/fetch";
+import { toast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { McapFees } from "../configs/types";
 
 // ============================================
@@ -44,7 +49,21 @@ interface InvoiceWidgetProps {
     isSubmitting?: boolean;
     companyName?: string;
     readOnly?: boolean;
+    data?: any;
+    onChange?: (data: any) => void;
+    companyId?: string | null;
 }
+
+const API_BASE = API_URL.replace(/\/+$/, "");
+const validateCouponApi = async (code: string, companyId: string | null) => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE}/mcap/coupons/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        body: JSON.stringify({ code, companyId }),
+    });
+    return res.json();
+};
 
 // ============================================
 // HELPER COMPONENTS
@@ -246,9 +265,34 @@ export function InvoiceWidget({
     isSubmitting = false,
     companyName = "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED",
     readOnly = false,
+    data,
+    onChange,
+    companyId,
 }: InvoiceWidgetProps) {
     const { t: i18nT } = useTranslation();
     const [hintOpen, setHintOpen] = useState<Record<string, boolean>>({});
+
+    const initialCouponCode = data?.couponCode || data?.data?.couponCode || "";
+    const initialCouponDiscount = data?.couponDiscount || data?.data?.couponDiscount || 0;
+
+    const [couponInput, setCouponInput] = useState(initialCouponCode);
+    const [couponApplied, setCouponApplied] = useState<{ code: string; discountAmount: number; currency: string } | null>(
+        initialCouponCode && initialCouponDiscount ? { code: initialCouponCode, discountAmount: initialCouponDiscount, currency: "USD" } : null
+    );
+    const [couponValidating, setCouponValidating] = useState(false);
+    const [couponError, setCouponError] = useState<string | null>(null);
+    const [couponOpen, setCouponOpen] = useState(!!initialCouponCode);
+    const [couponFxRate, setCouponFxRate] = useState<number>(1);
+
+    useEffect(() => {
+        if (readOnly) {
+            const code = data?.couponCode || data?.data?.couponCode;
+            const discount = data?.couponDiscount || data?.data?.couponDiscount;
+            if (code && discount) {
+                setCouponApplied({ code, discountAmount: discount, currency: "USD" });
+            }
+        }
+    }, [data, readOnly]);
 
     const toggleHint = (key: string) => setHintOpen((s) => ({ ...s, [key]: !s[key] }));
 
@@ -314,13 +358,51 @@ export function InvoiceWidget({
     } = invoiceData;
     const normalizedCardFeePct = Number(cardFeePct || 0);
     const normalizedCardFeeSurcharge = Number(cardFeeSurcharge || 0);
-    const resolvedGrandTotal = Number.isFinite(Number(grandTotal))
-        ? Number(grandTotal)
-        : Number((total + normalizedCardFeeSurcharge).toFixed(2));
-    const hasCardFeeLine = normalizedCardFeeSurcharge > 0 || resolvedGrandTotal > total;
+
     const resolvedOriginalCurrency = String(
         originalCurrency || (typeof originalAmountUsd === "number" ? "USD" : currency)
     ).toUpperCase();
+
+    // FX Calculation for Coupon
+    useEffect(() => {
+        if (!couponApplied) return;
+        if (couponApplied.currency === currency) {
+            setCouponFxRate(1);
+            return;
+        }
+        if (couponApplied.currency === "USD" && resolvedOriginalCurrency === "USD" && exchangeRateUsed) {
+            setCouponFxRate(exchangeRateUsed);
+            return;
+        }
+        let mounted = true;
+        getExchangeRate(couponApplied.currency, currency).then(rate => {
+            if (mounted) {
+                setCouponFxRate(rate);
+                if (onChange && data?.couponCode) {
+                    onChange({ ...data, couponLocalDiscount: couponApplied.discountAmount * rate });
+                }
+            }
+        }).catch(err => {
+            console.error("Failed to fetch coupon exchange rate", err);
+            if (mounted) setCouponFxRate(1);
+        });
+        return () => { mounted = false; };
+    }, [couponApplied, currency, resolvedOriginalCurrency, exchangeRateUsed]);
+
+    const couponDiscountValue = couponApplied ? couponApplied.discountAmount * couponFxRate : 0;
+    const finalSubtotal = Math.max(0, total - couponDiscountValue);
+
+    // Adjust Card Fee based on new subtotal if a percentage was provided
+    const adjustedCardFeeSurcharge = normalizedCardFeePct > 0
+        ? Number((finalSubtotal * normalizedCardFeePct).toFixed(2))
+        : normalizedCardFeeSurcharge;
+
+    const resolvedGrandTotal = Number.isFinite(Number(grandTotal)) && !couponApplied
+        ? Number(grandTotal)
+        : Number((finalSubtotal + adjustedCardFeeSurcharge).toFixed(2));
+
+    const hasCardFeeLine = adjustedCardFeeSurcharge > 0 || resolvedGrandTotal > finalSubtotal;
+
     const resolvedOriginalAmount = typeof originalAmount === "number" ? originalAmount : originalAmountUsd;
     const hasFxBreakdown =
         resolvedOriginalCurrency !== String(currency).toUpperCase()
@@ -333,6 +415,41 @@ export function InvoiceWidget({
 
     const formatPrice = (amount: number) =>
         new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
+
+    const handleApplyCoupon = async () => {
+        if (!couponInput.trim() || !companyId) return;
+        setCouponValidating(true);
+        setCouponError(null);
+        try {
+            const res = await validateCouponApi(couponInput.trim(), companyId);
+            if (!res.success || !res.valid) {
+                setCouponError(res.message || t("mcap.payment.coupon.invalid", "Invalid coupon code."));
+                return;
+            }
+            const couponData = res.data;
+            setCouponApplied(couponData);
+            if (onChange) {
+                // Determine fx rate immediately for the update if possible, otherwise rely on the effect
+                const currentFx = (couponData.currency === currency) ? 1 : (couponData.currency === "USD" && resolvedOriginalCurrency === "USD" && exchangeRateUsed ? exchangeRateUsed : couponFxRate);
+                onChange({ ...data, couponCode: couponData.code, couponDiscount: couponData.discountAmount, couponLocalDiscount: couponData.discountAmount * currentFx });
+            }
+            toast({ title: t("mcap.payment.coupon.success", "Success"), description: t("mcap.payment.coupon.applied", "Coupon applied successfully.") });
+        } catch (err) {
+            console.log("Err",err)
+            setCouponError(t("mcap.payment.coupon.error", "Failed to validate coupon."));
+        } finally {
+            setCouponValidating(false);
+        }
+    };
+
+    const handleRemoveCoupon = () => {
+        setCouponApplied(null);
+        setCouponInput("");
+        setCouponError(null);
+        if (onChange) {
+            onChange({ ...data, couponCode: "", couponDiscount: 0, couponLocalDiscount: 0 });
+        }
+    };
 
     // Render a section (government or service fees)
     const renderSection = (
@@ -463,6 +580,62 @@ export function InvoiceWidget({
                 service
             )}
 
+            {/* Coupon Section */}
+            {!readOnly && companyId && (
+                <Collapsible open={couponOpen} onOpenChange={setCouponOpen}>
+                    <CollapsibleTrigger asChild>
+                        <Button variant="ghost" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary px-0">
+                            <Tag className="w-4 h-4" />
+                            {t("mcap.payment.coupon.haveCoupon", "Have a coupon code?")}
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-2">
+                        <Card>
+                            <CardContent className="pt-4 space-y-3">
+                                {couponApplied ? (
+                                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <Tag className="w-4 h-4 text-green-600" />
+                                            <span className="text-sm font-medium text-green-800">
+                                                {t("mcap.payment.coupon.codeApplied", "Coupon applied:")}{" "}
+                                                <Badge className="bg-green-100 text-green-800 border-green-300 ml-1">{couponApplied.code}</Badge>
+                                            </span>
+                                            <span className="text-sm font-bold text-green-700">
+                                                -{formatPrice(couponDiscountValue)}
+                                            </span>
+                                        </div>
+                                        <Button variant="ghost" size="sm" onClick={handleRemoveCoupon} className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                            <X className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                placeholder={t("mcap.payment.coupon.enterCode", "Enter coupon code")}
+                                                value={couponInput}
+                                                onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null); }}
+                                                onKeyDown={(e) => { if (e.key === "Enter") handleApplyCoupon(); }}
+                                                className="flex-1"
+                                            />
+                                            <Button onClick={handleApplyCoupon} disabled={!couponInput.trim() || couponValidating} variant="outline">
+                                                {couponValidating ? <Loader2 className="w-4 h-4 animate-spin" /> : t("mcap.payment.coupon.apply", "Apply")}
+                                            </Button>
+                                        </div>
+                                        {couponError && (
+                                            <div className="text-xs text-destructive flex items-center gap-1.5">
+                                                <AlertCircle className="w-3.5 h-3.5" />
+                                                {couponError}
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </CollapsibleContent>
+                </Collapsible>
+            )}
+
             {/* Totals Card */}
             <Card className="border-2 border-primary/20 bg-background">
                 <CardContent className="p-4 space-y-3">
@@ -489,11 +662,22 @@ export function InvoiceWidget({
                         </>
                     ) : null}
 
-                    {/* Subtotal */}
+                    {/* Subtotal Before Coupon */}
                     <div className="flex justify-between items-center text-sm">
                         <span className="text-muted-foreground">{t("invoice.subtotal", "Subtotal")}</span>
-                        <span className="font-medium">{formatPrice(total)}</span>
+                        <span className={cn("font-medium", couponApplied && "line-through text-muted-foreground")}>{formatPrice(total)}</span>
                     </div>
+
+                    {couponApplied && (
+                        <div className="flex justify-between items-center text-sm">
+                            <div className="flex items-center gap-1">
+                                <Tag className="w-3.5 h-3.5 text-green-600" />
+                                <span className="text-green-700 font-medium">{t("mcap.payment.coupon.couponDiscount", "Coupon Discount")}</span>
+                                <Badge className="text-[10px] py-0 h-4 bg-green-100 text-green-800 border-green-300">{couponApplied.code}</Badge>
+                            </div>
+                            <span className="font-medium text-green-700">-{formatPrice(couponDiscountValue)}</span>
+                        </div>
+                    )}
 
                     {hasCardFeeLine && (
                         <div className="flex justify-between items-center text-sm">
@@ -505,7 +689,7 @@ export function InvoiceWidget({
                                     </span>
                                 )}
                             </div>
-                            <span className="font-medium">{formatPrice(normalizedCardFeeSurcharge)}</span>
+                            <span className="font-medium">{formatPrice(adjustedCardFeeSurcharge)}</span>
                         </div>
                     )}
 

@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -34,7 +34,7 @@ import TodoApp from "@/pages/Todo/TodoApp";
 import MemoApp from "@/pages/Company/Details/MemosHK";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
-import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck } from "lucide-react";
+import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck, Ticket } from "lucide-react";
 import McapPartyKycModal from "@/mcap/McapPartyKycModal";
 import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCenter";
 import { InvoiceWidget } from "@/mcap/fields/InvoiceWidget";
@@ -98,6 +98,8 @@ type McapCompany = {
   // Renewal Tracking
   renewalDate?: string;
   lastRenewalDate?: string;
+  couponCode?: string;
+  couponDiscount?: number;
   renewalStatus?: string;
 
   expiresAt?: string;
@@ -1048,7 +1050,23 @@ const McapCompanyDetail: React.FC = () => {
                             </span>
                           </div>
                         </AccordionTrigger>
-                        <AccordionContent className="pb-3">
+                        <AccordionContent className="pb-3 space-y-3">
+                          {(company?.couponCode || company?.data?.couponCode) && (
+                            <div className="flex items-center justify-between rounded-md bg-primary/5 p-3 border border-primary/10">
+                              <div className="space-y-0.5">
+                                <div className="text-xs font-medium text-primary uppercase tracking-wider">Coupon Applied</div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="font-mono bg-background">
+                                    {company.couponCode || company.data?.couponCode}
+                                  </Badge>
+                                  <span className="text-sm font-semibold">
+                                    -{formatMoney(company.couponDiscount || company.data?.couponDiscount || 0, company.stripeCurrency || "USD")}
+                                  </span>
+                                </div>
+                              </div>
+                              <Ticket className="h-5 w-5 text-primary/40" />
+                            </div>
+                          )}
                           {invoiceFees ? (
                             <div className="flex flex-col gap-3 rounded-md bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
                               <div className="space-y-1">
@@ -1209,6 +1227,8 @@ const McapCompanyDetail: React.FC = () => {
                   fees={invoiceFees}
                   companyName={companyName}
                   readOnly
+                  data={company}
+                  companyId={company._id}
                 />
               ) : (
                 <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">

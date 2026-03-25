@@ -1,4 +1,4 @@
-﻿# Unified Form Engine Documentation
+# Unified Form Engine Documentation
 
 Version: 1.7
 Last updated: 2026-03-23
@@ -188,6 +188,10 @@ Related surfaces:
 - supports Stripe card and bank transfer proof upload
 - applies card surcharge only when method is `card`
 - supports admin-review status flow for bank proofs
+- supports client-facing discount coupons via `POST /api/mcap/coupons/validate`
+- applied coupons deduct a fixed USD amount from the final `amountToPay` calculation
+- successful coupon applications log `- $X.00` discount line items in the payment summary
+- passed `couponCode` is recorded on Stripe intent creation to apply discount server-side
 
 ### UnifiedSignatureField
 - used when `field.type === "signature"`
@@ -214,6 +218,7 @@ Recommended flow:
 4. invoice and payment steps reuse same `computeFees`
 5. `UnifiedFormEngine` wraps invoice/payment fee output with the same additional-executive helper
 6. payment method toggles card surcharge behavior
+7. `PaymentWidget` optionally applies client-provided discount coupons by subtracting `couponDiscount` from the `grandTotal` (card/bank)
 
 ### Additional executive KYC contract
 Shared implementation:
