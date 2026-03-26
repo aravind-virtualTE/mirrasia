@@ -31,59 +31,59 @@ const YES_NO_UNKNOWN = [
 ];
 
 // const RELATIONSHIP_OPTIONS = [
-//   { label: "mcap.ee.auto.k001", value: "officer" },
-//   { label: "mcap.ee.auto.k002", value: "authorizedProxy" },
-//   { label: "mcap.ee.auto.k003", value: "majorShareholder" },
-//   { label: "mcap.ee.auto.k004", value: "professionalAdvisor" },
+//   { label: "ee.auto.k001", value: "officer" },
+//   { label: "ee.auto.k002", value: "authorizedProxy" },
+//   { label: "ee.auto.k003", value: "majorShareholder" },
+//   { label: "ee.auto.k004", value: "professionalAdvisor" },
 //   { label: "mcap.common.options.other", value: "other" },
 // ];
 
 const REQUESTED_SERVICE_OPTIONS = [
   {
-    label: "mcap.ee.auto.k005",
+    label: "ee.auto.k005",
     value: "estonia_llc_with_initial_maintenance",
   },
-  { label: "mcap.ee.auto.k006", value: "emi_list" },
-  { label: "mcap.ee.auto.k007", value: "emi_account_opening" },
-  { label: "mcap.ee.auto.k008", value: "bank_account_opening" },
-  { label: "mcap.ee.auto.k009", value: "legal_opinion_estonia" },
-  { label: "mcap.ee.auto.k010", value: "legal_opinion_domestic_listing" },
-  // { label: "mcap.ee.auto.k011", value: "legal_opinion_other_country" },
-  { label: "mcap.ee.auto.k012", value: "business_consulting" },
+  { label: "ee.auto.k006", value: "emi_list" },
+  { label: "ee.auto.k007", value: "emi_account_opening" },
+  { label: "ee.auto.k008", value: "bank_account_opening" },
+  { label: "ee.auto.k009", value: "legal_opinion_estonia" },
+  { label: "ee.auto.k010", value: "legal_opinion_domestic_listing" },
+  // { label: "ee.auto.k011", value: "legal_opinion_other_country" },
+  { label: "ee.auto.k012", value: "business_consulting" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const INDUSTRY_OPTIONS = [
-  { label: "mcap.ee.auto.k013", value: "it_software_blockchain_dev" },
-  { label: "mcap.ee.auto.k014", value: "ecommerce_retail_wholesale" },
-  { label: "mcap.ee.auto.k015", value: "trading" },
-  { label: "mcap.ee.auto.k016", value: "management_it_consulting" },
-  { label: "mcap.ee.auto.k017", value: "manufacturing" },
-  { label: "mcap.ee.auto.k018", value: "crypto_exchange_wallet" },
-  { label: "mcap.ee.auto.k019", value: "crypto_investment_defi" },
-  { label: "mcap.ee.auto.k020", value: "forex_finance_investment" },
-  { label: "mcap.ee.auto.k021", value: "crypto_games_web3" },
+  { label: "ee.auto.k013", value: "it_software_blockchain_dev" },
+  { label: "ee.auto.k014", value: "ecommerce_retail_wholesale" },
+  { label: "ee.auto.k015", value: "trading" },
+  { label: "ee.auto.k016", value: "management_it_consulting" },
+  { label: "ee.auto.k017", value: "manufacturing" },
+  { label: "ee.auto.k018", value: "crypto_exchange_wallet" },
+  { label: "ee.auto.k019", value: "crypto_investment_defi" },
+  { label: "ee.auto.k020", value: "forex_finance_investment" },
+  { label: "ee.auto.k021", value: "crypto_games_web3" },
   { label: "mcap.common.fields.otherDetails", value: "other" },
 ];
 
 const PURPOSE_OPTIONS = [
-  { label: "mcap.ee.auto.k025", value: "international_business_expansion_cross_border_trade" },
-  { label: "mcap.ee.auto.k026", value: "service_provision_consulting_it_services" },
-  { label: "mcap.ee.auto.k027", value: "holding_company_corporate_structure" },
-  { label: "mcap.ee.auto.k028", value: "investment_wealth_management" },
-  { label: "mcap.ee.auto.k029", value: "project_joint_venture_vehicle" },
-  { label: "mcap.ee.auto.k030", value: "intellectual_property_holding" },
+  { label: "ee.auto.k025", value: "international_business_expansion_cross_border_trade" },
+  { label: "ee.auto.k026", value: "service_provision_consulting_it_services" },
+  { label: "ee.auto.k027", value: "holding_company_corporate_structure" },
+  { label: "ee.auto.k028", value: "investment_wealth_management" },
+  { label: "ee.auto.k029", value: "project_joint_venture_vehicle" },
+  { label: "ee.auto.k030", value: "intellectual_property_holding" },
   { label: "mcap.common.fields.otherDetails", value: "other" },
 ];
 
 const QUOTE_ONLY_OPTIONS = [
-  { label: "mcap.ee.auto.k033", value: "emi_account_opening" },
-  { label: "mcap.ee.auto.k034", value: "bank_account_opening" },
-  { label: "mcap.ee.auto.k009", value: "legal_opinion_estonia" },
-  { label: "mcap.ee.auto.k010", value: "legal_opinion_domestic_listing" },
-  // { label: "mcap.ee.auto.k011", value: "legal_opinion_other_country" },
-  { label: "mcap.ee.auto.k012", value: "business_consulting" },
-  { label: "mcap.ee.auto.k035", value: "other" },
+  { label: "ee.auto.k033", value: "emi_account_opening" },
+  { label: "ee.auto.k034", value: "bank_account_opening" },
+  { label: "ee.auto.k009", value: "legal_opinion_estonia" },
+  { label: "ee.auto.k010", value: "legal_opinion_domestic_listing" },
+  // { label: "ee.auto.k011", value: "legal_opinion_other_country" },
+  { label: "ee.auto.k012", value: "business_consulting" },
+  { label: "ee.auto.k035", value: "other" },
 ];
 
 const getSelectedServiceIds = (data: Record<string, any>) => {
@@ -104,58 +104,58 @@ export const buildEeServiceItems = (data: Record<string, any>): EeServiceItem[] 
   const items: EeServiceItem[] = [
     {
       id: "ee_incorporation_professional",
-      label: "mcap.ee.auto.k036",
+      label: "ee.auto.k036",
       amount: EE_PRICING.incorporation_professional,
       original: EE_PRICING.incorporation_professional,
       mandatory: true,
       kind: "service",
-      info: "mcap.ee.auto.k037",
+      info: "ee.auto.k037",
     },
     {
       id: "ee_state_fee",
-      label: "mcap.ee.auto.k038",
+      label: "ee.auto.k038",
       amount: EE_PRICING.state_fee,
       original: EE_PRICING.state_fee,
       mandatory: true,
       kind: "government",
-      info: "mcap.ee.auto.k039",
+      info: "ee.auto.k039",
     },
     {
       id: "ee_business_address_1y",
-      label: "mcap.ee.auto.k040",
+      label: "ee.auto.k040",
       amount: EE_PRICING.business_address_1y,
       original: EE_PRICING.business_address_1y,
       mandatory: true,
       kind: "service",
-      info: "mcap.ee.auto.k041",
+      info: "ee.auto.k041",
     },
     {
       id: "ee_management_followup_1y",
-      label: "mcap.ee.auto.k042",
+      label: "ee.auto.k042",
       amount: EE_PRICING.management_followup_1y,
       original: EE_PRICING.management_followup_1y,
       mandatory: true,
       kind: "service",
-      info: "mcap.ee.auto.k043",
+      info: "ee.auto.k043",
     },
   ];
 
   if (contactPersonMode === "mirr_provided") {
     items.push({
       id: "ee_contact_person_1y",
-      label: "mcap.ee.auto.k044",
+      label: "ee.auto.k044",
       amount: EE_PRICING.contact_person_1y,
       original: EE_PRICING.contact_person_1y,
       mandatory: true,
       kind: "service",
-      // info: "mcap.ee.auto.k045",
+      // info: "ee.auto.k045",
     });
   }
 
   items.push(
     {
       id: "ee_poa_addon",
-      label: "mcap.ee.auto.k046",
+      label: "ee.auto.k046",
       amount: EE_PRICING.poa_addon,
       original: EE_PRICING.poa_addon,
       mandatory: false,
@@ -163,12 +163,12 @@ export const buildEeServiceItems = (data: Record<string, any>): EeServiceItem[] 
     },
     {
       id: "ee_emi_list",
-      label: "mcap.ee.auto.k047",
+      label: "ee.auto.k047",
       amount: EE_PRICING.emi_list,
       original: EE_PRICING.emi_list,
       mandatory: false,
       kind: "optional",
-      info: "mcap.ee.auto.k048",
+      info: "ee.auto.k048",
     }
   );
 
@@ -234,16 +234,16 @@ export const computeEeFees = (data: Record<string, any>) => {
     originalAmount: totalBase,
     ...(shouldConvertFromBase ? { exchangeRateUsed: exchangeRateUsedRaw } : {}),
     note:
-      "mcap.ee.auto.k049",
+      "ee.auto.k049",
   };
 };
 
 const buildApplicantFields = (): McapField[] => [
   {
     type: "info",
-    label: "mcap.ee.auto.k050",
+    label: "ee.auto.k050",
     content:
-      "mcap.ee.auto.k051",
+      "ee.auto.k051",
     colSpan: 2,
   },
   {
@@ -263,28 +263,28 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "text",
     name: "proposedCompanyName1",
-    label: "mcap.ee.auto.k075",
+    label: "ee.auto.k075",
     required: true,
     colSpan: 2,
   },
   {
     type: "text",
     name: "proposedCompanyName2",
-    label: "mcap.ee.auto.k076",
+    label: "ee.auto.k076",
     required: true,
     colSpan: 2,
   },
   {
     type: "text",
     name: "proposedCompanyName3",
-    label: "mcap.ee.auto.k077",
+    label: "ee.auto.k077",
     required: true,
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "relationshipToEstonianCorporation",
-    label: "mcap.ee.auto.k053",
+    label: "ee.auto.k053",
     required: true,
     options: applicantRoles,
     colSpan: 2,
@@ -302,7 +302,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "text",
     name: "phoneNumber",
-    label: "mcap.ee.auto.k054",
+    label: "ee.auto.k054",
     required: true,
     colSpan: 2,
   },
@@ -310,7 +310,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "text",
     name: "snsId",
-    label: "mcap.ee.auto.k056",
+    label: "ee.auto.k056",
     colSpan: 2,
   },
 ];
@@ -319,32 +319,32 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "legalOrEthicalIssuesConcern",
-    label: "mcap.ee.auto.k057",
+    label: "ee.auto.k057",
     required: true,
     options: [
       { label: "mcap.common.options.no", value: "no" },
       { label: "mcap.common.options.yes", value: "yes" },
-      { label: "mcap.ee.auto.k058", value: "seek_legal_advice" },
+      { label: "ee.auto.k058", value: "seek_legal_advice" },
     ],
     colSpan: 2,
   },
   {
     type: "radio-group",
     name: "annualRenewalAgreement",
-    label: "mcap.ee.auto.k059",
+    label: "ee.auto.k059",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
-      { label: "mcap.ee.auto.k060", value: "self_handle" },
-      { label: "mcap.ee.auto.k061", value: "no_if_fixed_cost" },
-      { label: "mcap.ee.auto.k062", value: "advice_required" },
+      { label: "ee.auto.k060", value: "self_handle" },
+      { label: "ee.auto.k061", value: "no_if_fixed_cost" },
+      { label: "ee.auto.k062", value: "advice_required" },
     ],
     colSpan: 2,
   },
   {
     type: "radio-group",
     name: "businessInSanctionedCountries",
-    label: "mcap.ee.auto.k063",
+    label: "ee.auto.k063",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -352,7 +352,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "personsResidingInSanctionedCountries",
-    label: "mcap.ee.auto.k064",
+    label: "ee.auto.k064",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -360,7 +360,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "ownershipBySanctionedPersons",
-    label: "mcap.ee.auto.k065",
+    label: "ee.auto.k065",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -368,7 +368,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "oilGasMilitaryEnergySectorActivity",
-    label: "mcap.ee.auto.k066",
+    label: "ee.auto.k066",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -379,7 +379,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "industries",
-    label: "mcap.ee.auto.k068",
+    label: "ee.auto.k068",
     required: true,
     options: INDUSTRY_OPTIONS,
     colSpan: 2,
@@ -387,7 +387,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "otherIndustryDetails",
-    label: "mcap.ee.auto.k069",
+    label: "ee.auto.k069",
     condition: (f) => Array.isArray(f.industries) && f.industries.includes("other"),
     required: true,
     colSpan: 2,
@@ -395,7 +395,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "businessDescription",
-    label: "mcap.ee.auto.k070",
+    label: "ee.auto.k070",
     required: true,
     rows: 4,
     colSpan: 2,
@@ -403,14 +403,14 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "website",
-    label: "mcap.ee.auto.k071",
-    placeholder: "mcap.ee.auto.k072",
+    label: "ee.auto.k071",
+    placeholder: "ee.auto.k072",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "purposeOfEstablishment",
-    label: "mcap.ee.auto.k073",
+    label: "ee.auto.k073",
     required: true,
     options: PURPOSE_OPTIONS,
     colSpan: 2,
@@ -418,7 +418,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "otherPurposeDetails",
-    label: "mcap.ee.auto.k074",
+    label: "ee.auto.k074",
     condition: (f) => Array.isArray(f.purposeOfEstablishment) && f.purposeOfEstablishment.includes("other"),
     required: true,
     colSpan: 2,
@@ -427,14 +427,14 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "totalCapitalEUR",
-    label: "mcap.ee.auto.k078",
-    tooltip:  "mcap.ee.auto.totalCapitalTooltip",
+    label: "ee.auto.k078",
+    tooltip:  "ee.auto.totalCapitalTooltip",
     required: true,
     defaultValue: "1",
     options: [
-      { label: "mcap.ee.auto.k079", value: "1" },
-      { label: "mcap.ee.auto.k080", value: "2500" },
-      { label: "mcap.ee.auto.k081", value: "25000" },
+      { label: "ee.auto.k079", value: "1" },
+      { label: "ee.auto.k080", value: "2500" },
+      { label: "ee.auto.k081", value: "25000" },
       { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,
@@ -442,7 +442,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "number",
     name: "totalCapitalEUROther",
-    label: "mcap.ee.auto.k082",
+    label: "ee.auto.k082",
     condition: (f) => f.totalCapitalEUR === "other",
     required: true,
     colSpan: 2,
@@ -450,12 +450,12 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "executiveComposition",
-    label: "mcap.ee.auto.k083",
+    label: "ee.auto.k083",
     required: true,
     options: [
-      { label: "mcap.ee.auto.k084", value: "single_dcp_led", tooltip: "mcap.ee.auto.k084Info" },
-      { label: "mcap.ee.auto.k085", value: "multiple_individuals", tooltip: "mcap.ee.auto.k085Info" },
-      { label: "mcap.ee.auto.k086", value: "corporate_member_structure", tooltip: "mcap.ee.auto.k086Info" },
+      { label: "ee.auto.k084", value: "single_dcp_led", tooltip: "ee.auto.k084Info" },
+      { label: "ee.auto.k085", value: "multiple_individuals", tooltip: "ee.auto.k085Info" },
+      { label: "ee.auto.k086", value: "corporate_member_structure", tooltip: "ee.auto.k086Info" },
       { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,
@@ -463,7 +463,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "executiveCompositionOther",
-    label: "mcap.ee.auto.k087",
+    label: "ee.auto.k087",
     condition: (f) => f.executiveComposition === "other",
     required: true,
     colSpan: 2,
@@ -471,15 +471,15 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "registeredAddressOption",
-    label: "mcap.ee.auto.k088",
+    label: "ee.auto.k088",
     required: true,
     options: [
       {
-        label: "mcap.ee.auto.k089",
+        label: "ee.auto.k089",
         value: "mirr_business_address",
       },
       {
-        label: "mcap.ee.auto.k090",
+        label: "ee.auto.k090",
         value: "own_address",
       },
     ],
@@ -488,7 +488,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "registeredAddressDetails",
-    label: "mcap.ee.auto.k091",
+    label: "ee.auto.k091",
     condition: (f) => f.registeredAddressOption === "own_address",
     required: true,
     rows: 3,
@@ -524,7 +524,7 @@ const buildAccountingFields = (): McapField[] => [
   {
     type: "select",
     name: "expectedAnnualTransactions",
-    label: "mcap.ee.auto.k092",
+    label: "ee.auto.k092",
     options: [
       { label: "mcap.common.options.upTo300", value: "up_to_300" },
       { label: "mcap.common.options.from301To1000", value: "301_1000" },
@@ -539,7 +539,7 @@ const buildAccountingFields = (): McapField[] => [
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
-      { label: "mcap.ee.auto.k093", value: "advice" },
+      { label: "ee.auto.k093", value: "advice" },
     ],
     colSpan: 2,
   },
@@ -555,24 +555,24 @@ const buildAccountingFields = (): McapField[] => [
 const buildServiceFields = (): McapField[] => [
   // {
   //   type: "info",
-  //   label: "mcap.ee.auto.k094",
+  //   label: "ee.auto.k094",
   //   content:
-  //     "mcap.ee.auto.k095",
+  //     "ee.auto.k095",
   //   colSpan: 2,
   // },
   {
     type: "select",
     name: "contactPersonMode",
-    label: "mcap.ee.auto.k096",
+    label: "ee.auto.k096",
     required: true,
     defaultValue: "mirr_provided",
     options: [
       {
-        label: "mcap.ee.auto.k097",
+        label: "ee.auto.k097",
         value: "mirr_provided",
       },
       // {
-      //   label: "mcap.ee.auto.k098",
+      //   label: "ee.auto.k098",
       //   value: "dcp_provided",
       // },
     ],
@@ -581,7 +581,7 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "requestedServices",
-    label: "mcap.ee.auto.k099",
+    label: "ee.auto.k099",
     defaultValue: ["estonia_llc_with_initial_maintenance"],
     options: REQUESTED_SERVICE_OPTIONS,
     colSpan: 2,
@@ -589,7 +589,7 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "text",
     name: "requestedServicesOther",
-    label: "mcap.ee.auto.k100",
+    label: "ee.auto.k100",
     condition: (f) => Array.isArray(f.requestedServices) && f.requestedServices.includes("other"),
     required: true,
     colSpan: 2,
@@ -597,14 +597,14 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "eeQuoteOnlyServiceRequests",
-    label: "mcap.ee.auto.k101",
+    label: "ee.auto.k101",
     options: QUOTE_ONLY_OPTIONS,
     colSpan: 2,
   },
   {
     type: "text",
     name: "eeQuoteOnlyServiceRequestsOther",
-    label: "mcap.ee.auto.k102",
+    label: "ee.auto.k102",
     condition: (f) =>
       Array.isArray(f.eeQuoteOnlyServiceRequests) &&
       f.eeQuoteOnlyServiceRequests.includes("other"),
@@ -618,26 +618,26 @@ export const EE_FULL_CONFIG: McapConfig = {
   countryCode: "EE",
   countryName: "Estonia OÜ",
   currency: "EUR",
-  title: "mcap.ee.auto.k103",
+  title: "ee.auto.k103",
   confirmationDetails: {
-    title: "mcap.ee.auto.k104",
+    title: "ee.auto.k104",
     message:
-      "mcap.ee.auto.k105",
+      "ee.auto.k105",
     steps: [
       {
-        title: "mcap.ee.auto.k106",
+        title: "ee.auto.k106",
         description:
-          "mcap.ee.auto.k107",
+          "ee.auto.k107",
       },
       {
-        title: "mcap.ee.auto.k108",
+        title: "ee.auto.k108",
         description:
-          "mcap.ee.auto.k109",
+          "ee.auto.k109",
       },
       {
-        title: "mcap.ee.auto.k110",
+        title: "ee.auto.k110",
         description:
-          "mcap.ee.auto.k111",
+          "ee.auto.k111",
       },
     ],
   },
@@ -695,25 +695,25 @@ export const EE_FULL_CONFIG: McapConfig = {
     {
       id: "applicant",
       title: "mcap.common.steps.applicant",
-      description: "mcap.ee.auto.k112",
+      description: "ee.auto.k112",
       fields: buildApplicantFields(),
     },
     {
       id: "compliance",
-      title: "mcap.ee.auto.k113",
-      description: "mcap.ee.auto.k114",
+      title: "ee.auto.k113",
+      description: "ee.auto.k114",
       fields: buildComplianceFields(),
     },
     {
       id: "company",
       title: "mcap.common.steps.company",
-      description: "mcap.ee.auto.k115",
+      description: "ee.auto.k115",
       fields: buildCompanyFields(),
     },
     {
       id: "parties",
       title: "mcap.common.steps.parties",
-      description: "mcap.ee.auto.k116",
+      description: "ee.auto.k116",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -726,8 +726,8 @@ export const EE_FULL_CONFIG: McapConfig = {
     },
     {
       id: "services",
-      title: "mcap.ee.auto.k117",
-      description: "mcap.ee.auto.k118",
+      title: "ee.auto.k117",
+      description: "ee.auto.k118",
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildEeServiceItems(data),
@@ -737,33 +737,33 @@ export const EE_FULL_CONFIG: McapConfig = {
     {
       id: "invoice",
       title: "mcap.common.steps.invoice",
-      description: "mcap.ee.auto.k119",
+      description: "ee.auto.k119",
       widget: "InvoiceWidget",
       computeFees: (data) => computeEeFees(data),
     },
     {
       id: "payment",
-      title: "mcap.ee.auto.k120",
-      description: "mcap.ee.auto.k121",
+      title: "ee.auto.k120",
+      description: "ee.auto.k121",
       widget: "PaymentWidget",
       supportedCurrencies: ["EUR", "USD", "HKD"],
       computeFees: (data) => computeEeFees(data),
     },
     {
       id: "review",
-      title: "mcap.ee.auto.k122",
+      title: "ee.auto.k122",
       fields: [
         {
           type: "checkbox",
           name: "agreeToTerms",
-          label: "mcap.ee.auto.k123",
+          label: "ee.auto.k123",
           required: true,
           colSpan: 2,
         },
         {
           type: "checkbox",
           name: "truthfulnessDeclaration",
-          label: "mcap.ee.auto.k124",
+          label: "ee.auto.k124",
           required: true,
           colSpan: 2,
         },
@@ -771,7 +771,7 @@ export const EE_FULL_CONFIG: McapConfig = {
           type: "checkbox",
           name: "compliancePreconditionAcknowledgment",
           label:
-            "mcap.ee.auto.k125",
+            "ee.auto.k125",
           required: true,
           colSpan: 2,
         },

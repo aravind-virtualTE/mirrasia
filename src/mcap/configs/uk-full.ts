@@ -18,43 +18,43 @@ const APPLICANT_RELATIONSHIP_OPTIONS = [
 ];
 
 const BUSINESS_TYPE_OPTIONS = [
-  { label: "mcap.uk.options.businessType.softwareDevelopmentCryptoBlockchainRelated", value: "software_crypto_blockchain" },
-  { label: "mcap.uk.options.businessType.softwareDevelopmentGeneral", value: "software_general" },
-  { label: "mcap.uk.options.businessType.metaverseWeb3PlatformDevelopment", value: "metaverse_web3_platform" },
-  { label: "mcap.uk.options.businessType.itConsultingManagedServices", value: "it_consulting_managed_services" },
-  { label: "mcap.uk.options.businessType.ecommerceOnlineRetail", value: "ecommerce_online_retail" },
-  { label: "mcap.uk.options.businessType.generalTradingImportExport", value: "general_trading_import_export" },
-  { label: "mcap.uk.options.businessType.wholesaleDistribution", value: "wholesale_distribution" },
-  { label: "mcap.uk.options.businessType.managementProfessionalConsulting", value: "management_professional_consulting" },
-  { label: "mcap.uk.options.businessType.manufacturing", value: "manufacturing" },
-  { label: "mcap.uk.options.businessType.cryptoassetServicesExchangeWalletTokenIssuanceIco", value: "cryptoasset_services" },
-  { label: "mcap.uk.options.businessType.cryptoassetInvestmentDefi", value: "cryptoasset_investment_defi" },
-  { label: "mcap.uk.options.businessType.financialServicesBankingLendingWealthManagement", value: "financial_services" },
-  { label: "mcap.uk.options.businessType.foreignExchangeForexCfdTrading", value: "forex_cfd_trading" },
-  { label: "mcap.uk.options.businessType.gamblingBettingPrizeCompetitions", value: "gambling_betting_prize_competitions" },
+  { label: "uk.options.businessType.softwareDevelopmentCryptoBlockchainRelated", value: "software_crypto_blockchain" },
+  { label: "uk.options.businessType.softwareDevelopmentGeneral", value: "software_general" },
+  { label: "uk.options.businessType.metaverseWeb3PlatformDevelopment", value: "metaverse_web3_platform" },
+  { label: "uk.options.businessType.itConsultingManagedServices", value: "it_consulting_managed_services" },
+  { label: "uk.options.businessType.ecommerceOnlineRetail", value: "ecommerce_online_retail" },
+  { label: "uk.options.businessType.generalTradingImportExport", value: "general_trading_import_export" },
+  { label: "uk.options.businessType.wholesaleDistribution", value: "wholesale_distribution" },
+  { label: "uk.options.businessType.managementProfessionalConsulting", value: "management_professional_consulting" },
+  { label: "uk.options.businessType.manufacturing", value: "manufacturing" },
+  { label: "uk.options.businessType.cryptoassetServicesExchangeWalletTokenIssuanceIco", value: "cryptoasset_services" },
+  { label: "uk.options.businessType.cryptoassetInvestmentDefi", value: "cryptoasset_investment_defi" },
+  { label: "uk.options.businessType.financialServicesBankingLendingWealthManagement", value: "financial_services" },
+  { label: "uk.options.businessType.foreignExchangeForexCfdTrading", value: "forex_cfd_trading" },
+  { label: "uk.options.businessType.gamblingBettingPrizeCompetitions", value: "gambling_betting_prize_competitions" },
   { label: "mcap.common.options.other", value: "other" }
 ];
 
 const ESTABLISHMENT_PURPOSE_OPTIONS = [
-  { label: "mcap.uk.options.establishmentPurpose.commonwealthEuropeExpansion", value: "commonwealth_europe_expansion" },
-  { label: "mcap.uk.options.establishmentPurpose.advisorOrClientSuggested", value: "advisor_or_client_suggested" },
-  { label: "mcap.uk.options.establishmentPurpose.holdingManagement", value: "holding_management" },
-  { label: "mcap.uk.options.establishmentPurpose.assetManagement", value: "asset_management" },
-  { label: "mcap.uk.options.establishmentPurpose.policyCompetitiveness", value: "policy_competitiveness" },
-  { label: "mcap.uk.options.establishmentPurpose.internationalExpansion", value: "international_expansion" },
-  { label: "mcap.uk.options.establishmentPurpose.regulatoryDiversification", value: "regulatory_diversification" },
+  { label: "uk.options.establishmentPurpose.commonwealthEuropeExpansion", value: "commonwealth_europe_expansion" },
+  { label: "uk.options.establishmentPurpose.advisorOrClientSuggested", value: "advisor_or_client_suggested" },
+  { label: "uk.options.establishmentPurpose.holdingManagement", value: "holding_management" },
+  { label: "uk.options.establishmentPurpose.assetManagement", value: "asset_management" },
+  { label: "uk.options.establishmentPurpose.policyCompetitiveness", value: "policy_competitiveness" },
+  { label: "uk.options.establishmentPurpose.internationalExpansion", value: "international_expansion" },
+  { label: "uk.options.establishmentPurpose.regulatoryDiversification", value: "regulatory_diversification" },
    { label: "mcap.common.options.other", value: "other" }
 ];
 
 const QUOTE_ONLY_SERVICE_OPTIONS = [
-  { label: "mcap.uk.options.quoteOnlyServices.emiAccountAdvisory", value: "emi_account_opening_advisory" },
-  { label: "mcap.uk.options.quoteOnlyServices.ukLegalOpinion", value: "uk_legal_opinion" },
-  { label: "mcap.uk.options.quoteOnlyServices.domesticExchangeLegalOpinion", value: "domestic_exchange_legal_opinion" },
-  { label: "mcap.uk.options.quoteOnlyServices.crossBorderLegalOpinion", value: "cross_border_legal_opinion" },
-  { label: "mcap.uk.options.quoteOnlyServices.regulatoryConsulting", value: "regulatory_consulting" },
-  { label: "mcap.uk.options.quoteOnlyServices.vatReportingQuote", value: "vat_reporting_quote" },
-  { label: "mcap.uk.options.quoteOnlyServices.bookkeepingQuote", value: "bookkeeping_quote" },
-  { label: "mcap.uk.options.quoteOnlyServices.financialStatementsAndTaxQuote", value: "fs_and_tax_quote" },
+  { label: "uk.options.quoteOnlyServices.emiAccountAdvisory", value: "emi_account_opening_advisory" },
+  { label: "uk.options.quoteOnlyServices.ukLegalOpinion", value: "uk_legal_opinion" },
+  { label: "uk.options.quoteOnlyServices.domesticExchangeLegalOpinion", value: "domestic_exchange_legal_opinion" },
+  { label: "uk.options.quoteOnlyServices.crossBorderLegalOpinion", value: "cross_border_legal_opinion" },
+  { label: "uk.options.quoteOnlyServices.regulatoryConsulting", value: "regulatory_consulting" },
+  { label: "uk.options.quoteOnlyServices.vatReportingQuote", value: "vat_reporting_quote" },
+  { label: "uk.options.quoteOnlyServices.bookkeepingQuote", value: "bookkeeping_quote" },
+  { label: "uk.options.quoteOnlyServices.financialStatementsAndTaxQuote", value: "fs_and_tax_quote" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
@@ -78,24 +78,24 @@ const UK_ENTITY_PRICING: Record<UkEntityMode, { incorporation: number; registere
 const UK_OPTIONAL_FIXED_SERVICES = [
   {
     id: "uk_emi_list_provision",
-    label: "mcap.uk.services.optional.emiListProvision.label",
+    label: "uk.services.optional.emiListProvision.label",
     amount: 0,
     mandatory: false,
-    info: "mcap.uk.services.optional.emiListProvision.info",
+    info: "uk.services.optional.emiListProvision.info",
   },
   {
     id: "uk_bank_account_advisory",
-    label: "mcap.uk.services.optional.bankAccountAdvisory.label",
+    label: "uk.services.optional.bankAccountAdvisory.label",
     amount: 2400,
     mandatory: false,
-    info: "mcap.uk.services.optional.bankAccountAdvisory.info",
+    info: "uk.services.optional.bankAccountAdvisory.info",
   },
   {
     id: "uk_vat_registration",
-    label: "mcap.uk.services.optional.vatRegistration.label",
+    label: "uk.services.optional.vatRegistration.label",
     amount: 650,
     mandatory: false,
-    info: "mcap.uk.services.optional.vatRegistration.info",
+    info: "uk.services.optional.vatRegistration.info",
   },
 ];
 
@@ -140,19 +140,19 @@ const buildUkServiceItems = (data: any) => {
   }> = [
       {
         id: "uk_base_incorporation",
-        label: "mcap.uk.services.base.incorporation.label",
+        label: "uk.services.base.incorporation.label",
         amount: pricing.incorporation,
         original: pricing.incorporation,
         mandatory: true,
-        // info: "mcap.uk.services.base.incorporation.info",
+        // info: "uk.services.base.incorporation.info",
       },
       {
         id: "uk_base_registered_office",
-        label: "mcap.uk.services.base.registeredOffice.label",
+        label: "uk.services.base.registeredOffice.label",
         amount: pricing.registeredOffice,
         original: pricing.registeredOffice,
         mandatory: true,
-        // info: "mcap.uk.services.base.registeredOffice.info",
+        // info: "uk.services.base.registeredOffice.info",
       },
     ];
 
@@ -160,11 +160,11 @@ const buildUkServiceItems = (data: any) => {
     const amount = additionalDcpContacts * 250;
     items.push({
       id: "uk_additional_contact_persons",
-      label: "mcap.uk.services.additional.contactPersons.label",
+      label: "uk.services.additional.contactPersons.label",
       amount,
       original: amount,
       mandatory: true,
-      info: "mcap.uk.services.additional.contactPersons.info",
+      info: "uk.services.additional.contactPersons.info",
     });
   }
 
@@ -237,7 +237,7 @@ const computeUkFees = (data: any) => {
     cardFeeSurcharge,
     grandTotal,
     ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
-    note: "mcap.uk.fees.note",
+    note: "uk.fees.note",
   };
 };
 
@@ -246,26 +246,26 @@ export const UK_FULL_CONFIG: McapConfig = {
   countryCode: "UK",
   countryName: "United Kingdom",
   currency: "USD",
-  title: "mcap.uk.title",
+  title: "uk.title",
   confirmationDetails: {
-    title: "mcap.uk.confirmation.title",
-    message: "mcap.uk.confirmation.message",
+    title: "uk.confirmation.title",
+    message: "uk.confirmation.message",
     steps: [
       {
-        title: "mcap.uk.confirmation.steps.complianceReview.title",
-        description: "mcap.uk.confirmation.steps.complianceReview.description",
+        title: "uk.confirmation.steps.complianceReview.title",
+        description: "uk.confirmation.steps.complianceReview.description",
       },
       {
-        title: "mcap.uk.confirmation.steps.documentConfirmation.title",
-        description: "mcap.uk.confirmation.steps.documentConfirmation.description",
+        title: "uk.confirmation.steps.documentConfirmation.title",
+        description: "uk.confirmation.steps.documentConfirmation.description",
       },
       {
-        title: "mcap.uk.confirmation.steps.incorporationFiling.title",
-        description: "mcap.uk.confirmation.steps.incorporationFiling.description",
+        title: "uk.confirmation.steps.incorporationFiling.title",
+        description: "uk.confirmation.steps.incorporationFiling.description",
       },
       {
-        title: "mcap.uk.confirmation.steps.postFilingSupport.title",
-        description: "mcap.uk.confirmation.steps.postFilingSupport.description",
+        title: "uk.confirmation.steps.postFilingSupport.title",
+        description: "uk.confirmation.steps.postFilingSupport.description",
       },
     ],
   },
@@ -276,8 +276,8 @@ export const UK_FULL_CONFIG: McapConfig = {
       fields: [
         {
           type: "info",
-          label: "mcap.uk.applicant.guidance.label",
-          content: "mcap.uk.applicant.guidance.content",
+          label: "uk.applicant.guidance.label",
+          content: "uk.applicant.guidance.content",
           colSpan: 2,
         },
 
@@ -285,7 +285,7 @@ export const UK_FULL_CONFIG: McapConfig = {
           type: "text",
           name: "applicantName",
           label: "mcap.common.fields.applicantName",
-          placeholder: "mcap.uk.applicant.fields.applicantName.placeholder",
+          placeholder: "uk.applicant.fields.applicantName.placeholder",
           required: true,
           colSpan: 2,
         },
@@ -294,7 +294,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox-group",
           name: "applicantRelationshipType",
-          label: "mcap.uk.applicant.fields.relationship.label",
+          label: "uk.applicant.fields.relationship.label",
           required: true,
           options: APPLICANT_RELATIONSHIP_OPTIONS,
           colSpan: 2,
@@ -302,7 +302,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "text",
           name: "applicantRelationshipOther",
-          label: "mcap.uk.applicant.fields.relationshipOther.label",
+          label: "uk.applicant.fields.relationshipOther.label",
           condition: (f) => Array.isArray(f.applicantRelationshipType) && f.applicantRelationshipType.includes("other"),
           colSpan: 2,
         },
@@ -350,18 +350,18 @@ export const UK_FULL_CONFIG: McapConfig = {
     {
       id: "compliance",
       title: "mcap.common.steps.compliance",
-      description: "mcap.uk.steps.compliance.description",
+      description: "uk.steps.compliance.description",
       fields: [
         {
           type: "radio-group",
           name: "legalAndEthicalConcern",
-          label: "mcap.uk.compliance.legalAndEthicalConcern.label",
+          label: "uk.compliance.legalAndEthicalConcern.label",
           required: true,
           options: [
             { label: "mcap.common.options.yes", value: "yes" },
             { label: "mcap.common.options.no", value: "no" },
             { label: "mcap.common.options.doNotKnow", value: "unknown" },
-            { label: "mcap.uk.compliance.options.considerLegalAdvice", value: "consider_legal_advice" },
+            { label: "uk.compliance.options.considerLegalAdvice", value: "consider_legal_advice" },
             { label: "mcap.common.options.other", value: "other" },
           ],
           colSpan: 2,
@@ -376,7 +376,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "annualRenewalConsent",
-          label: "mcap.uk.compliance.annualRenewalConsent.label",
+          label: "uk.compliance.annualRenewalConsent.label",
           required: true,
           options: [
             { label: "mcap.common.options.yes", value: "yes" },
@@ -390,7 +390,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "sanctionedCountryOperations",
-          label: "mcap.uk.compliance.sanctionedCountryOperations.label",
+          label: "uk.compliance.sanctionedCountryOperations.label",
           required: true,
           options: YES_NO_DONT_KNOW,
           colSpan: 2,
@@ -398,7 +398,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "sanctionedResidenceExposure",
-          label: "mcap.uk.compliance.sanctionedResidenceExposure.label",
+          label: "uk.compliance.sanctionedResidenceExposure.label",
           required: true,
           options: YES_NO_DONT_KNOW,
           colSpan: 2,
@@ -406,7 +406,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "sanctionedOwnershipOrControl",
-          label: "mcap.uk.compliance.sanctionedOwnershipOrControl.label",
+          label: "uk.compliance.sanctionedOwnershipOrControl.label",
           required: true,
           options: YES_NO_DONT_KNOW,
           colSpan: 2,
@@ -414,7 +414,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         // {
         //   type: "radio-group",
         //   name: "crimeaSevastopolExposure",
-        //   label: "mcap.uk.compliance.crimeaSevastopolExposure.label",
+        //   label: "uk.compliance.crimeaSevastopolExposure.label",
         //   required: true,
         //   options: YES_NO_DONT_KNOW,
         //   colSpan: 2,
@@ -422,7 +422,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "oilGasMilitaryExposure",
-          label: "mcap.uk.compliance.oilGasMilitaryExposure.label",
+          label: "uk.compliance.oilGasMilitaryExposure.label",
           required: true,
           options: YES_NO_DONT_KNOW,
           colSpan: 2,
@@ -436,19 +436,19 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "selectedEntity",
-          label: "mcap.uk.company.selectedEntity.label",
+          label: "uk.company.selectedEntity.label",
           required: true,
           defaultValue: "individual",
           options: [
             {
-              label: "mcap.uk.company.selectedEntity.options.individual",
+              label: "uk.company.selectedEntity.options.individual",
               value: "individual",
-              tooltip: "mcap.uk.company.selectedEntity.options.individualInfo",
+              tooltip: "uk.company.selectedEntity.options.individualInfo",
             },
             {
-              label: "mcap.uk.company.selectedEntity.options.subsidiary",
+              label: "uk.company.selectedEntity.options.subsidiary",
               value: "subsidiary",
-              tooltip: "mcap.uk.company.selectedEntity.options.subsidiaryInfo",
+              tooltip: "uk.company.selectedEntity.options.subsidiaryInfo",
             },
           ],
           colSpan: 2,
@@ -456,7 +456,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox-group",
           name: "businessTypes",
-          label: "mcap.uk.company.businessTypes.label",
+          label: "uk.company.businessTypes.label",
           required: true,
           options: BUSINESS_TYPE_OPTIONS,
           colSpan: 2,
@@ -464,14 +464,14 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "text",
           name: "businessTypesOther",
-          label: "mcap.uk.company.businessTypesOther.label",
+          label: "uk.company.businessTypesOther.label",
           condition: (f) => Array.isArray(f.businessTypes) && f.businessTypes.includes("other"),
           colSpan: 2,
         },
         {
           type: "textarea",
           name: "tradedItemDescription",
-          label: "mcap.uk.company.tradedItemDescription.label",
+          label: "uk.company.tradedItemDescription.label",
           required: true,
           rows: 3,
           colSpan: 2,
@@ -479,7 +479,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "textarea",
           name: "businessSummary",
-          label: "mcap.uk.company.businessSummary.label",
+          label: "uk.company.businessSummary.label",
           required: true,
           rows: 4,
           colSpan: 2,
@@ -494,7 +494,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox-group",
           name: "establishmentPurpose",
-          label: "mcap.uk.company.establishmentPurpose.label",
+          label: "uk.company.establishmentPurpose.label",
           required: true,
           options: ESTABLISHMENT_PURPOSE_OPTIONS,
           colSpan: 2,
@@ -509,8 +509,8 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "textarea",
           name: "operatingCountries",
-          label: "mcap.uk.company.operatingCountries.label",
-          placeholder: "mcap.uk.company.operatingCountries.placeholder",
+          label: "uk.company.operatingCountries.label",
+          placeholder: "uk.company.operatingCountries.placeholder",
           required: true,
           rows: 3,
           colSpan: 2,
@@ -580,25 +580,25 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "textarea",
           name: "articlesSpecialClauses",
-          label: "mcap.uk.company.articlesSpecialClauses.label",
+          label: "uk.company.articlesSpecialClauses.label",
           rows: 3,
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "registeredOfficeChoice",
-          label: "mcap.uk.company.registeredOfficeChoice.label",
+          label: "uk.company.registeredOfficeChoice.label",
           required: true,
           options: [
-            { label: "mcap.uk.company.registeredOfficeChoice.options.useMirrAsiaAddress", value: "use_mirrasia_address" },
-            { label: "mcap.uk.company.registeredOfficeChoice.options.useOwnAddress", value: "use_own_address" },
+            { label: "uk.company.registeredOfficeChoice.options.useMirrAsiaAddress", value: "use_mirrasia_address" },
+            { label: "uk.company.registeredOfficeChoice.options.useOwnAddress", value: "use_own_address" },
           ],
           colSpan: 2,
         },
         {
           type: "text",
           name: "registeredOfficeOwnAddress",
-          label: "mcap.uk.company.registeredOfficeOwnAddress.label",
+          label: "uk.company.registeredOfficeOwnAddress.label",
           required: true,
           condition: (f) => f.registeredOfficeChoice === "use_own_address",
           colSpan: 2,
@@ -608,7 +608,7 @@ export const UK_FULL_CONFIG: McapConfig = {
     {
       id: "parties",
       title: "mcap.common.steps.parties",
-      description: "mcap.uk.steps.parties.description",
+      description: "uk.steps.parties.description",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -677,20 +677,20 @@ export const UK_FULL_CONFIG: McapConfig = {
     {
       id: "services",
       title: "mcap.common.steps.services",
-      description: "mcap.uk.steps.services.description",
+      description: "uk.steps.services.description",
       widget: "ServiceSelectionWidget",
       fields: [
         {
           type: "checkbox-group",
           name: "ukQuoteOnlyServices",
-          label: "mcap.uk.services.fields.quoteOnlyServices.label",
+          label: "uk.services.fields.quoteOnlyServices.label",
           options: QUOTE_ONLY_SERVICE_OPTIONS,
           colSpan: 2,
         },
         {
           type: "textarea",
           name: "ukQuoteOnlyServicesOther",
-          label: "mcap.uk.services.fields.quoteOnlyServicesOther.label",
+          label: "uk.services.fields.quoteOnlyServicesOther.label",
           condition: (f) => Array.isArray(f.ukQuoteOnlyServices) && f.ukQuoteOnlyServices.includes("other"),
           rows: 3,
           colSpan: 2,
@@ -703,14 +703,14 @@ export const UK_FULL_CONFIG: McapConfig = {
     {
       id: "invoice",
       title: "mcap.common.steps.invoice",
-      description: "mcap.uk.steps.invoice.description",
+      description: "uk.steps.invoice.description",
       widget: "InvoiceWidget",
       computeFees: (data) => computeUkFees(data),
     },
     {
       id: "payment",
       title: "mcap.common.steps.payment",
-      description: "mcap.uk.steps.payment.description",
+      description: "uk.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => computeUkFees(data),
@@ -722,7 +722,7 @@ export const UK_FULL_CONFIG: McapConfig = {
         {
           type: "info",
           label: "mcap.common.fields.agreementAndDeclaration",
-          content: "mcap.uk.review.declaration.content",
+          content: "uk.review.declaration.content",
           colSpan: 2,
         },
         {

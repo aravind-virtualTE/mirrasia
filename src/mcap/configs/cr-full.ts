@@ -34,26 +34,26 @@ export const CR_FULL_CONFIG: McapConfig = {
   countryCode: "CR",
   countryName: "Costa Rica",
   currency: "USD",
-  title: "mcap.cr.title",
+  title: "cr.title",
   confirmationDetails: {
-    title: "mcap.cr.confirmation.title",
-    message: "mcap.cr.confirmation.message",
+    title: "cr.confirmation.title",
+    message: "cr.confirmation.message",
     steps: [
       {
-        title: "mcap.cr.confirmation.steps.kycAmlVerification.title",
-        description: "mcap.cr.confirmation.steps.kycAmlVerification.description",
+        title: "cr.confirmation.steps.kycAmlVerification.title",
+        description: "cr.confirmation.steps.kycAmlVerification.description",
       },
       {
-        title: "mcap.cr.confirmation.steps.notaryPublicFiling.title",
-        description: "mcap.cr.confirmation.steps.notaryPublicFiling.description",
+        title: "cr.confirmation.steps.notaryPublicFiling.title",
+        description: "cr.confirmation.steps.notaryPublicFiling.description",
       },
       {
-        title: "mcap.cr.confirmation.steps.registrationApproval.title",
-        description: "mcap.cr.confirmation.steps.registrationApproval.description",
+        title: "cr.confirmation.steps.registrationApproval.title",
+        description: "cr.confirmation.steps.registrationApproval.description",
       },
       {
-        title: "mcap.cr.confirmation.steps.postRegistration.title",
-        description: "mcap.cr.confirmation.steps.postRegistration.description",
+        title: "cr.confirmation.steps.postRegistration.title",
+        description: "cr.confirmation.steps.postRegistration.description",
       },
     ],
   },
@@ -61,7 +61,7 @@ export const CR_FULL_CONFIG: McapConfig = {
     {
       id: "applicant",
       title: "mcap.common.steps.applicant",
-      description: "mcap.cr.steps.applicant.description",
+      description: "cr.steps.applicant.description",
       fields: [
         { type: "text", name: "applicantName", label: "mcap.common.fields.applicantName", required: true, colSpan: 2 },
         { type: "email", name: "applicantEmail", label: "mcap.common.fields.applicantEmail", required: true, colSpan: 2 },
@@ -69,7 +69,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox-group",
           name: "relationshipToCrCorporation",
-          label: "mcap.cr.applicant.fields.relationshipToCrCorporation.label",
+          label: "cr.applicant.fields.relationshipToCrCorporation.label",
           required: true,
           options: applicantRoles,
           colSpan: 2,
@@ -102,7 +102,7 @@ export const CR_FULL_CONFIG: McapConfig = {
           label: "mcap.common.fields.messengerId",
           condition: (f) => !!f.sns,
         },
-        { type: "text", name: "address", label: "mcap.cr.applicant.fields.address.label", required: true, colSpan: 2 },
+        { type: "text", name: "address", label: "cr.applicant.fields.address.label", required: true, colSpan: 2 },
         { type: "text", name: "companyName1", label: "mcap.common.fields.companyNameFirstChoice", required: true, colSpan: 2 },
         { type: "text", name: "companyName2", label: "mcap.common.fields.companyNameSecondChoice", required: true, colSpan: 2 },
         { type: "text", name: "companyName3", label: "mcap.common.fields.companyNameThirdChoice", required: true, colSpan: 2 },
@@ -111,12 +111,12 @@ export const CR_FULL_CONFIG: McapConfig = {
     {
       id: "compliance",
       title: "mcap.common.steps.compliance",
-      description: "mcap.cr.steps.compliance.description",
+      description: "cr.steps.compliance.description",
       fields: [
         {
           type: "radio-group",
           name: "annualRenewalConsent",
-          label: "mcap.cr.compliance.annualRenewalConsent.label",
+          label: "cr.compliance.annualRenewalConsent.label",
           required: true,
           colSpan: 2,
           options: YES_NO_OPTIONS,
@@ -124,7 +124,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "sanctionsExposureDeclaration",
-          label: "mcap.cr.compliance.sanctionsExposureDeclaration.label",
+          label: "cr.compliance.sanctionsExposureDeclaration.label",
           required: true,
           colSpan: 2,
           options: YES_NO_DONT_KNOW_OPTIONS,
@@ -132,7 +132,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "legalAndEthicalConcern",
-          label: "mcap.cr.compliance.legalAndEthicalConcern.label",
+          label: "cr.compliance.legalAndEthicalConcern.label",
           required: true,
           colSpan: 2,
           options: YES_NO_DONT_KNOW_OPTIONS,
@@ -140,7 +140,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "q_country",
-          label: "mcap.cr.compliance.qCountry.label",
+          label: "cr.compliance.qCountry.label",
           required: true,
           colSpan: 2,
           options: YES_NO_DONT_KNOW_OPTIONS,
@@ -148,7 +148,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "crimeaSevastapolPresence",
-          label: "mcap.cr.compliance.crimeaSevastapolPresence.label",
+          label: "cr.compliance.crimeaSevastapolPresence.label",
           required: true,
           colSpan: 2,
           options: YES_NO_DONT_KNOW_OPTIONS,
@@ -156,7 +156,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "russianEnergyPresence",
-          label: "mcap.cr.compliance.russianEnergyPresence.label",
+          label: "cr.compliance.russianEnergyPresence.label",
           required: true,
           colSpan: 2,
           options: YES_NO_DONT_KNOW_OPTIONS,
@@ -164,7 +164,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "criminalHistory",
-          label: "mcap.cr.compliance.criminalHistory.label",
+          label: "cr.compliance.criminalHistory.label",
           required: true,
           colSpan: 2,
           options: YES_NO_DONT_KNOW_OPTIONS,
@@ -174,31 +174,31 @@ export const CR_FULL_CONFIG: McapConfig = {
     {
       id: "company",
       title: "mcap.common.steps.company",
-      description: "mcap.cr.steps.company.description",
+      description: "cr.steps.company.description",
       fields: [
         {
           type: "checkbox-group",
           name: "selectedIndustry",
-          label: "mcap.cr.company.fields.selectedIndustry.label",
+          label: "cr.company.fields.selectedIndustry.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "mcap.cr.options.industry.trade", value: "trade" },
-            { label: "mcap.cr.options.industry.retailDistribution", value: "retail" },
-            { label: "mcap.cr.options.industry.consulting", value: "consulting" },
-            { label: "mcap.cr.options.industry.manufacturing", value: "manufacturing" },
-            { label: "mcap.cr.options.industry.financeAdvisory", value: "finance" },
-            { label: "mcap.cr.options.industry.ecommerce", value: "ecommerce" },
-            { label: "mcap.cr.options.industry.onlineProxy", value: "proxy" },
-            { label: "mcap.cr.options.industry.itSoftware", value: "it" },
-            { label: "mcap.cr.options.industry.crypto", value: "crypto" },
+            { label: "cr.options.industry.trade", value: "trade" },
+            { label: "cr.options.industry.retailDistribution", value: "retail" },
+            { label: "cr.options.industry.consulting", value: "consulting" },
+            { label: "cr.options.industry.manufacturing", value: "manufacturing" },
+            { label: "cr.options.industry.financeAdvisory", value: "finance" },
+            { label: "cr.options.industry.ecommerce", value: "ecommerce" },
+            { label: "cr.options.industry.onlineProxy", value: "proxy" },
+            { label: "cr.options.industry.itSoftware", value: "it" },
+            { label: "cr.options.industry.crypto", value: "crypto" },
             { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "textarea",
           name: "productDescription",
-          label: "mcap.cr.company.fields.productDescription.label",
+          label: "cr.company.fields.productDescription.label",
           required: true,
           colSpan: 2,
           rows: 3,
@@ -206,79 +206,79 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox-group",
           name: "establishmentPurpose",
-          label: "mcap.cr.company.fields.establishmentPurpose.label",
+          label: "cr.company.fields.establishmentPurpose.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "mcap.cr.options.establishmentPurpose.expansion", value: "expansion" },
-            { label: "mcap.cr.options.establishmentPurpose.assetManagement", value: "asset" },
-            { label: "mcap.cr.options.establishmentPurpose.holdingCompany", value: "holding" },
-            { label: "mcap.cr.options.establishmentPurpose.investorSuggestion", value: "investor" },
-            { label: "mcap.cr.options.establishmentPurpose.internationalTransactions", value: "international" },
-            { label: "mcap.cr.options.establishmentPurpose.businessDiversification", value: "diversification" },
-            { label: "mcap.cr.options.establishmentPurpose.taxEfficiency", value: "tax" },
-            { label: "mcap.cr.options.establishmentPurpose.noCapitalGainsTax", value: "capital-gain" },
+            { label: "cr.options.establishmentPurpose.expansion", value: "expansion" },
+            { label: "cr.options.establishmentPurpose.assetManagement", value: "asset" },
+            { label: "cr.options.establishmentPurpose.holdingCompany", value: "holding" },
+            { label: "cr.options.establishmentPurpose.investorSuggestion", value: "investor" },
+            { label: "cr.options.establishmentPurpose.internationalTransactions", value: "international" },
+            { label: "cr.options.establishmentPurpose.businessDiversification", value: "diversification" },
+            { label: "cr.options.establishmentPurpose.taxEfficiency", value: "tax" },
+            { label: "cr.options.establishmentPurpose.noCapitalGainsTax", value: "capital-gain" },
             { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "listCountry",
-          label: "mcap.cr.company.fields.listCountry.label",
+          label: "cr.company.fields.listCountry.label",
           required: true,
           colSpan: 2,
         },
         {
           type: "checkbox-group",
           name: "sourceFunding",
-          label: "mcap.cr.company.fields.sourceFunding.label",
+          label: "cr.company.fields.sourceFunding.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "mcap.cr.options.sourceFunding.earnedIncome", value: "earned" },
-            { label: "mcap.cr.options.sourceFunding.savings", value: "savings" },
-            { label: "mcap.cr.options.sourceFunding.investmentIncome", value: "investment" },
-            { label: "mcap.cr.options.sourceFunding.loan", value: "loan" },
-            { label: "mcap.cr.options.sourceFunding.companySale", value: "sale" },
-            { label: "mcap.cr.options.sourceFunding.businessIncome", value: "business" },
-            { label: "mcap.cr.options.sourceFunding.inheritance", value: "inheritance" },
+            { label: "cr.options.sourceFunding.earnedIncome", value: "earned" },
+            { label: "cr.options.sourceFunding.savings", value: "savings" },
+            { label: "cr.options.sourceFunding.investmentIncome", value: "investment" },
+            { label: "cr.options.sourceFunding.loan", value: "loan" },
+            { label: "cr.options.sourceFunding.companySale", value: "sale" },
+            { label: "cr.options.sourceFunding.businessIncome", value: "business" },
+            { label: "cr.options.sourceFunding.inheritance", value: "inheritance" },
             { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "radio-group",
           name: "businessAddress",
-          label: "mcap.cr.company.fields.businessAddress.label",
+          label: "cr.company.fields.businessAddress.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "mcap.cr.options.businessAddress.mirrAsia", value: "mirasia" },
-            { label: "mcap.cr.options.businessAddress.ownAddress", value: "own" },
+            { label: "cr.options.businessAddress.mirrAsia", value: "mirasia" },
+            { label: "cr.options.businessAddress.ownAddress", value: "own" },
             { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "otherBusinessAddress",
-          label: "mcap.cr.company.fields.otherBusinessAddress.label",
+          label: "cr.company.fields.otherBusinessAddress.label",
           condition: (f) => f.businessAddress === "other",
           colSpan: 2,
         },
         {
           type: "select",
           name: "currency",
-          label: "mcap.cr.company.fields.currency.label",
+          label: "cr.company.fields.currency.label",
           required: true,
           options: [
-            { label: "mcap.cr.options.currency.usd", value: "USD" },
-            { label: "mcap.cr.options.currency.eur", value: "EUR" },
-            { label: "mcap.cr.options.currency.crc", value: "CRC" },
+            { label: "cr.options.currency.usd", value: "USD" },
+            { label: "cr.options.currency.eur", value: "EUR" },
+            { label: "cr.options.currency.crc", value: "CRC" },
           ],
         },
         {
           type: "select",
           name: "capAmount",
-          label: "mcap.cr.company.fields.capAmount.label",
+          label: "cr.company.fields.capAmount.label",
           required: true,
           options: [
             { label: "10,000", value: "10000" },
@@ -290,13 +290,13 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "number",
           name: "capOther",
-          label: "mcap.cr.company.fields.capOther.label",
+          label: "cr.company.fields.capOther.label",
           condition: (f) => f.capAmount === "other",
         },
         {
           type: "select",
           name: "shareCount",
-          label: "mcap.cr.company.fields.shareCount.label",
+          label: "cr.company.fields.shareCount.label",
           required: true,
           options: [
             { label: "1", value: "1" },
@@ -311,7 +311,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "number",
           name: "shareOther",
-          label: "mcap.cr.company.fields.shareOther.label",
+          label: "cr.company.fields.shareOther.label",
           condition: (f) => f.shareCount === "other",
         },
         {
@@ -330,24 +330,24 @@ export const CR_FULL_CONFIG: McapConfig = {
     {
       id: "services",
       title: "mcap.common.steps.services",
-      description: "mcap.cr.steps.services.description",
+      description: "cr.steps.services.description",
       widget: "ServiceSelectionWidget",
       serviceItems: [
-        { id: "base", label: "mcap.cr.services.items.base.label", amount: CR_PRICES.base, original: CR_PRICES.base, mandatory: true },
-        { id: "directorNominee", label: "mcap.cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, original: CR_PRICES.nominee, mandatory: false },
-        { id: "shareholderNominee", label: "mcap.cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, original: CR_PRICES.nominee, mandatory: false },
+        { id: "base", label: "cr.services.items.base.label", amount: CR_PRICES.base, original: CR_PRICES.base, mandatory: true },
+        { id: "directorNominee", label: "cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, original: CR_PRICES.nominee, mandatory: false },
+        { id: "shareholderNominee", label: "cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, original: CR_PRICES.nominee, mandatory: false },
       ],
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => {
         const selectedServiceIds = getSelectedCrServiceIds(data);
         const items: McapFeeItem[] = [
-          { id: "base", label: "mcap.cr.services.items.base.label", amount: CR_PRICES.base, kind: "service" as const },
+          { id: "base", label: "cr.services.items.base.label", amount: CR_PRICES.base, kind: "service" as const },
         ];
         if (selectedServiceIds.has("directorNominee")) {
-          items.push({ id: "directorNominee", label: "mcap.cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
+          items.push({ id: "directorNominee", label: "cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
         if (selectedServiceIds.has("shareholderNominee")) {
-          items.push({ id: "shareholderNominee", label: "mcap.cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
+          items.push({ id: "shareholderNominee", label: "cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
         const cardFeePct = 0.06;
@@ -369,7 +369,7 @@ export const CR_FULL_CONFIG: McapConfig = {
     {
       id: "parties",
       title: "mcap.common.steps.parties",
-      description: "mcap.cr.steps.parties.description",
+      description: "cr.steps.parties.description",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -382,7 +382,7 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "textarea",
           name: "accountingAddress",
-          label: "mcap.cr.accounting.fields.accountingAddress.label",
+          label: "cr.accounting.fields.accountingAddress.label",
           required: true,
           rows: 3,
           colSpan: 2,
@@ -390,16 +390,16 @@ export const CR_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "xero",
-          label: "mcap.cr.accounting.fields.xero.label",
+          label: "cr.accounting.fields.xero.label",
           options: [
             { label: "mcap.common.options.yes", value: "Yes" },
             { label: "mcap.common.options.no", value: "No" },
-            { label: "mcap.cr.accounting.options.xero.recommendationRequired", value: "Recommendation required" },
+            { label: "cr.accounting.options.xero.recommendationRequired", value: "Recommendation required" },
             { label: "mcap.common.options.other", value: "Other" },
           ],
           colSpan: 2,
         },
-        { type: "text", name: "softNote", label: "mcap.cr.accounting.fields.softNote.label", colSpan: 2 },
+        { type: "text", name: "softNote", label: "cr.accounting.fields.softNote.label", colSpan: 2 },
       ],
     },
     {
@@ -410,13 +410,13 @@ export const CR_FULL_CONFIG: McapConfig = {
       computeFees: (data) => {
         const selectedServiceIds = getSelectedCrServiceIds(data);
         const items: McapFeeItem[] = [
-          { id: "base", label: "mcap.cr.services.items.base.label", amount: CR_PRICES.base, kind: "service" as const },
+          { id: "base", label: "cr.services.items.base.label", amount: CR_PRICES.base, kind: "service" as const },
         ];
         if (selectedServiceIds.has("directorNominee")) {
-          items.push({ id: "directorNominee", label: "mcap.cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
+          items.push({ id: "directorNominee", label: "cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
         if (selectedServiceIds.has("shareholderNominee")) {
-          items.push({ id: "shareholderNominee", label: "mcap.cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
+          items.push({ id: "shareholderNominee", label: "cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
         const cardFeePct = 0.06; // Standard CR card fee

@@ -1,55 +1,4 @@
-{
-  "mcap": {
-    "admin": {
-      "coupon": {
-        "title": "優惠券管理",
-        "description": "建立和管理帶有 QR code 的客戶優惠券。",
-        "create": "建立優惠券",
-        "createTitle": "建立新優惠券",
-        "createDesc": "建立客戶在付款時可以使用的優惠券。",
-        "code": "優惠券代碼",
-        "generate": "生成",
-        "discountAmount": "折扣金額 (USD)",
-        "descriptionLabel": "描述（選填）",
-        "maxUses": "最大使用次數（0 = 無限制）",
-        "expiresAt": "到期日（選填）",
-        "countryCode": "這定國家",
-        "allCountries": "所有國家",
-        "createBtn": "建立優惠券",
-        "listTitle": "所有優惠券",
-        "listDesc": "管理現有優惠券並查看其 QR code。",
-        "noCoupons": "目前沒有優惠券。建立一個以開始。",
-        "codeCol": "代碼",
-        "discountCol": "折扣",
-        "usageCol": "使用次數",
-        "expiryCol": "到期日",
-        "countryCol": "國家",
-        "statusCol": "狀態",
-        "actionsCol": "操作",
-        "qrTitle": "優惠券 QR Code",
-        "qrDesc": "與客戶分享此 QR code。他們可以掃描以應用折扣。",
-        "copyCode": "複製代碼",
-        "downloadQr": "下載 QR"
-      }
-    },
-    "payment": {
-      "coupon": {
-        "haveCoupon": "有優惠券代碼嗎？",
-        "enterCode": "輸入優惠券代碼",
-        "apply": "應用",
-        "applied": "優惠券已應用！",
-        "codeApplied": "已應用優惠券：",
-        "discountApplied": "已折扣 {{amount}}。",
-        "couponDiscount": "優惠券折扣",
-        "invalid": "無效的優惠券代碼。",
-        "alreadyUsed": "此優惠券已使用過。",
-        "expired": "此優惠券已過期。",
-        "maxReached": "此優惠券已達使用次數上限。",
-        "countryMismatch": "此優惠券僅適用於 {{country}} 的申請。",
-        "error": "驗證優惠券失敗。"
-      }
-    }
-  },
+﻿{
   "userProfile": {
     "title": "個人資料設定",
     "subtitle": "管理您的帳戶資訊與安全設定",
@@ -2423,7 +2372,7 @@
           "unsure": "不確定"
         },
         "questions": {
-         "legalAndEthicalConcern": "擬成立的公司是否為滿足洗錢、非法博彩、逃稅、資產隱匿、欺詐或其他任何非法活動之目的而設立，或與上述活動有所關聯？",
+          "legalAndEthicalConcern": "擬成立的公司是否為滿足洗錢、非法博彩、逃稅、資產隱匿、欺詐或其他任何非法活動之目的而設立，或與上述活動有所關聯？",
           "q_country": "貴公司在以下國家/地區是否有任何現有或計劃中的業務活動：伊朗、蘇丹、北韓、敘利亞、古巴、南蘇丹、白俄羅斯或津巴布韋（辛巴威）？",
           "sanctionsExposureDeclaration": "制裁風險：該公司或任何關聯方是否在聯合國、歐盟、英國財政部、香港金融管理局、美國財政部外國資產控制辦公室（美國）或當地制裁法律的制裁對象或實體中設有業務、往來或所有權關係？",
           "crimeaSevastapolPresence": "在克里米亞/塞瓦斯托波爾地區是否有任何現有或計劃中的業務？",
@@ -3296,35 +3245,81 @@
     }
   },
   "mcap": {
+    "admin": {
+      "coupon": {
+        "title": "優惠券管理",
+        "description": "為客戶建立並管理帶有 QR Code 的折扣優惠券。",
+        "create": "建立優惠券",
+        "createTitle": "建立新優惠券",
+        "createDesc": "建立客戶在付款時可以使用的折扣優惠券。",
+        "code": "優惠券代碼",
+        "generate": "自動產生",
+        "discountAmount": "折扣金額 (USD)",
+        "descriptionLabel": "描述（選填）",
+        "maxUses": "最大使用次數 (0 = 無限制)",
+        "expiresAt": "過期日期（選填）",
+        "countryCode": "適用國家",
+        "allCountries": "所有國家",
+        "createBtn": "建立優惠券",
+        "listTitle": "所有優惠券",
+        "listDesc": "管理現有優惠券並查看其 QR Code。",
+        "noCoupons": "尚無優惠券。請建立一個以開始。",
+        "codeCol": "代碼",
+        "discountCol": "折扣",
+        "usageCol": "使用情況",
+        "expiryCol": "過期日期",
+        "countryCol": "國家",
+        "statusCol": "狀態",
+        "actionsCol": "操作",
+        "qrTitle": "優惠券 QR Code",
+        "qrDesc": "將此 QR Code 分享給客戶。",
+        "copyCode": "複製代碼",
+        "downloadQr": "下載 QR Code"
+      }
+    },
+    "payment": {
+      "coupon": {
+        "haveCoupon": "有優惠券代碼嗎？",
+        "enterCode": "請輸入優惠券代碼",
+        "apply": "套用",
+        "codeApplied": "已套用優惠券：",
+        "couponDiscount": "優惠券折扣",
+        "invalid": "無效的優惠券代碼。",
+        "alreadyUsed": "此優惠券已使用過。",
+        "expired": "此優惠券已過期。",
+        "maxReached": "此優惠券已達使用上限。",
+        "countryMismatch": "此優惠券僅適用於 {{country}} 的公司註冊。"
+      }
+    },
     "common": {
       "steps": {
         "applicant": "申請人資訊",
-        "compliance": "合規性與監管聲明",
+        "compliance": "合規及監管聲明",
         "company": "公司資訊",
         "parties": "相關方與邀請",
-        "accounting": "會計與稅務",
-        "services": "服務選擇",
+        "accounting": "會計及稅務",
+        "services": "選擇服務",
         "invoice": "發票預覽",
         "payment": "付款",
-        "review": "檢視與聲明"
+        "review": "審閱與聲明"
       },
       "options": {
         "yes": "是",
         "no": "否",
         "doNotKnow": "不知道",
         "other": "其他",
-        "notSureYet": "尚未確定",
-        "selfHandleAfterSetup": "成立後可自行處理",
-        "noIfFixedAnnualCosts": "若產生固定年度費用則無意設立",
-        "adviceRequiredBeforeProceeding": "進行前需要建議",
-        "internalResolution": "可於內部解決",
-        "upTo300": "300個以下",
-        "from301To1000": "301 - 1000個",
-        "moreThan1000": "超過 1000個"
+        "notSureYet": "尚不確定",
+        "selfHandleAfterSetup": "公司成立後可自行內部處理",
+        "noIfFixedAnnualCosts": "若產生固定年度費用則無意願註冊",
+        "adviceRequiredBeforeProceeding": "開始前需要諮詢建議",
+        "internalResolution": "可內部解決",
+        "upTo300": "300 張以內",
+        "from301To1000": "301 - 1000 張",
+        "moreThan1000": "超過 1000 張"
       },
       "relationship": {
-        "director": "董事",
-        "shareholder": "股東",
+        "director": "董事 (Director)",
+        "shareholder": "股東 (Shareholder)",
         "authorizedRepresentative": "授權代表",
         "professionalAdvisor": "專業顧問"
       },
@@ -3336,53 +3331,53 @@
         "telegram": "Telegram"
       },
       "currency": {
-        "aud": "澳元 (AUD)",
-        "hkd": "港幣 (HKD)",
-        "usd": "美元 (USD)",
-        "eur": "歐元 (EUR)",
-        "gbp": "英鎊"
+        "aud": "AUD",
+        "hkd": "HKD",
+        "usd": "USD",
+        "eur": "EUR",
+        "gbp": "GBP"
       },
       "fields": {
         "applicantName": "申請人姓名",
         "applicantEmail": "申請人電子郵件",
         "applicantPhone": "申請人電話",
-        "companyNameFirstChoice": "公司名稱 (首選)",
-        "companyNameSecondChoice": "公司名稱 (次選)",
-        "companyNameThirdChoice": "公司名稱 (第三選擇)",
+        "companyNameFirstChoice": "公司名稱（第一志願）",
+        "companyNameSecondChoice": "公司名稱（第二志願）",
+        "companyNameThirdChoice": "公司名稱（第三志願）",
         "relationshipToCompany": "與公司的關係",
         "otherRelationshipDetails": "其他關係詳情",
-        "additionalContactInfo": "額外聯絡資訊 (SNS ID 等)",
+        "additionalContactInfo": "額外聯繫資訊（SNS ID 等）",
         "preferredMessenger": "偏好通訊軟體",
         "messengerId": "通訊軟體 ID",
         "selectedIndustry": "選擇行業",
         "productServiceDescription": "預計交易的產品/服務描述",
-        "businessSummary": "請以 3-4 句話描述業務內容",
+        "businessSummary": "請以 3-4 句話描述業務",
         "businessOperatingCountries": "業務營運國家",
-        "websiteAddressOptional": "網站地址 (如有)",
+        "websiteAddressOptional": "網站地址（如有）",
         "capitalCurrency": "資本貨幣",
-        "capitalCurrencyOther": "資本貨幣 (其他)",
-        "totalCapitalToBePaid": "擬繳足資本總額",
-        "totalCapitalToBePaidOther": "擬繳足資本總額 (其他)",
-        "capitalRequirementAcknowledged": "我明白資本要求屬於合規要求，不計入發票總額。",
-        "totalNumberOfShares": "股份總數",
-        "totalNumberOfSharesOther": "股份總數 (其他)",
-        "shareCountOther": "股數 (其他)",
+        "capitalCurrencyOther": "資本貨幣（其他）",
+        "totalCapitalToBePaid": "預計繳納資本總額",
+        "totalCapitalToBePaidOther": "預計繳納資本總額（其他）",
+        "capitalRequirementAcknowledged": "我明白資本要求屬於合規要求，不包含在發票總額中。",
+        "totalNumberOfShares": "總股數",
+        "totalNumberOfSharesOther": "總股數（其他）",
+        "shareCountOther": "股數（其他）",
         "parValuePerShare": "每股面值",
         "otherIndustryDetails": "其他行業詳情",
         "otherPurposeDetails": "其他目的詳情",
         "financialYearEnd": "財政年度結算日",
         "otherFinancialYearEnd": "其他財政年度結算日",
         "bookKeepingCycle": "簿記週期",
-        "expectedAnnualTransactions": "預計年交易量",
-        "vatRegistrationSupport": "是否需要增值稅 (VAT) 註冊支援？",
+        "expectedAnnualTransactions": "預計年度交易量",
+        "vatRegistrationSupport": "是否需要增值稅 (VAT) 登記支援？",
         "vatTaxSupportNeed": "是否需要增值稅 (VAT)/稅務申報支援？",
-        "accountingAndTaxNotes": "會計與稅務備註",
+        "accountingAndTaxNotes": "會計及稅務備註",
         "shareType": "股份類型",
-        "directorAppointment": "董事委任",
-        "issuedShareTypeOther": "已發行股份類型 (其他)",
+        "directorAppointment": "董事任命",
+        "issuedShareTypeOther": "發行股份類型（其他）",
         "agreementAndDeclaration": "協議與聲明",
         "doYouAgreeToDeclaration": "您是否同意上述聲明？",
-        "truthfulnessDeclaration": "我確認所提交的資訊真實且準確。",
+        "truthfulnessDeclaration": "我確認所提交的資訊均屬實且準確。",
         "complianceSuspensionAcknowledgement": "我明白若發現法律/合規違規行為，服務可能會被暫停。",
         "electronicSignature": "電子簽名",
         "otherDetails": "其他詳情"
@@ -3401,31 +3396,47 @@
         "preference": "優先股"
       },
       "coverage": {
-        "director": "董事覆蓋",
-        "directorAtLeastOne": "至少委任一名董事"
+        "director": "董事配置",
+        "directorAtLeastOne": "至少任命一名董事",
+        "shareholder": "股東配置",
+        "shareholderAtLeastOne": "至少一名股東"
+      }
+    },
+    "review": {
+      "summary": {
+        "title": "審閱摘要",
+        "applicant": "申請人",
+        "companyName": "公司名稱",
+        "email": "電子郵件",
+        "phone": "電話",
+        "entityType": "關係",
+        "industry": "行業",
+        "parties": "相關方",
+        "services": "已選服務",
+        "value": "金額"
       }
     },
     "dashboard": {
-      "title": "法人設立申請",
-      "desc": "追蹤並繼續您的統一法人設立與現有公司上線申請。",
+      "title": "公司註冊申請",
+      "desc": "追蹤並繼續您的統一公司註冊及對接申請。",
       "loading": "正在載入申請...",
-      "empty": "目前尚無設立或上線申請。",
+      "empty": "尚無公司註冊或對接申請。",
       "filters": {
         "all": "所有申請",
         "pending": "待處理申請",
         "paid": "已付款申請",
-        "documentCollection": "文件收集階段",
-        "currentCorporateClient": "現有法人客戶",
-        "renewalInProgress": "續約處理中",
-        "renewed": "已續約公司",
+        "documentCollection": "文件收集",
+        "currentCorporateClient": "現有公司客戶",
+        "renewalInProgress": "續期處理中",
+        "renewed": "已續期公司",
         "rejected": "已拒絕公司",
-        "showing": "顯示第 {{start}}-{{end}} 筆，共 {{filtered}} 筆篩選結果 (總計 {{total}} 筆)",
-        "empty": "在 {{filter}} 中找不到相關申請。",
+        "showing": "顯示第 {{start}}-{{end}} 項，共 {{total}} 項",
+        "empty": "未找到符合 {{filter}} 的申請。",
         "reset": "顯示所有申請"
       },
       "search": {
         "placeholder": "按公司或申請人姓名搜尋",
-        "empty": "在 {{filter}} 中找不到符合此搜尋條件的申請。",
+        "empty": "在 {{filter}} 中未找到搜尋結果。",
         "clear": "清除搜尋"
       },
       "sort": {
@@ -3434,2088 +3445,2354 @@
         "country": "國家",
         "status": "狀態",
         "payment": "付款",
-        "asc": "升冪",
-        "desc": "降冪"
+        "asc": "遞增",
+        "desc": "遞減"
       },
       "pagination": {
-        "rows": "每頁列數",
-        "page": "頁碼 {{page}}/{{pages}}"
+        "rows": "行數",
+        "page": "第 {{page}}/{{pages}} 頁"
       }
     },
     "columns": {
       "company": "公司",
       "country": "國家",
       "status": "狀態",
-        "payment": "付款",
-        "incorporationDate": "設立日期",
-        "createdAt": "建立時間",
-        "assignedTo": "指派給",
-        "filledBy": "填寫人",
-        "userLastLogin": "用戶最近登入",
-        "actions": "操作"
+      "payment": "付款",
+      "incorporationDate": "註冊日期",
+      "createdAt": "建立於",
+      "assignedTo": "負責人",
+      "filledBy": "填寫者",
+      "userLastLogin": "使用者最後登入",
+      "actions": "操作"
+    },
+    "actions": {
+      "edit": "編輯"
+    },
+    "values": {
+      "notAvailable": "不適用",
+      "untitled": "未命名",
+      "draft": "草稿",
+      "unpaid": "未付款"
+    },
+    "launcher": {
+      "back": "返回控制台",
+      "hero": {
+        "eyebrow": "公司註冊中心",
+        "description": "選擇一個轄區以啟動統一的公司註冊或現有公司對接流程。"
+      },
+      "accessRestricted": {
+        "title": "存取受限",
+        "description": "您沒有權限存取此註冊表單。"
+      },
+      "groups": {
+        "available_one": "可選 {{count}} 種配置",
+        "available_other": "可選 {{count}} 種配置"
+      },
+      "countries": {
+        "hk-full": "香港",
+        "us-full": "美國",
+        "sg-full": "新加坡",
+        "pa-full": "巴拿馬",
+        "ppif-full": "巴拿馬私益基金會",
+        "cr-full": "哥斯大黎加",
+        "uk-full": "英國",
+        "ch-ag-full": "瑞士股份有限公司 (AG)",
+        "ch-gmbh-full": "瑞士有限責任公司 (GmbH; LLC)",
+        "ch-foundation-full": "瑞士基金會",
+        "ee-full": "愛沙尼亞 OÜ",
+        "lt-full": "立陶宛",
+        "ie-full": "愛爾蘭",
+        "au-full": "澳洲",
+        "uae-ifza": "杜拜 IFZA / 阿聯酋",
+        "uae-difc": "杜拜 DIFC / 阿聯酋",
+        "uae-dmcc": "杜拜 DMCC / 阿聯酋",
+        "uae-dwtc": "杜拜世界貿易中心 / 阿聯酋",
+        "uae-dic": "杜拜網際網路城 / 阿聯酋",
+        "uae-ifza-fzco": "杜拜 IFZA FZCO / 阿聯酋"
+      },
+      "config": {
+        "fallbackTitle": "MCAP 配置"
+      },
+      "tooltip": {
+        "currency": "貨幣：{{currency}}",
+        "steps": "步驟：{{count}}"
       },
       "actions": {
-        "edit": "編輯"
+        "start": "開始"
+      },
+      "errors": {
+        "loadTitle": "無法載入申請",
+        "retry": "請再試一次。",
+        "companyNotFound": "找不到公司",
+        "unsupportedCountryConfiguration": "不支援的國家配置"
+      }
+    },
+    "invitations": {
+      "title": "我的邀請",
+      "desc": "為邀請您的公司完成 KYC。",
+      "showing": "顯示第 {{start}}-{{end}} 項，共 {{total}} 項邀請",
+      "loading": "正在載入邀請...",
+      "empty": "尚無待處理的邀請。",
+      "columns": {
+        "company": "公司",
+        "country": "國家",
+        "roles": "角色",
+        "kyc": "KYC",
+        "expires": "到期日期",
+        "action": "操作"
+      },
+      "actions": {
+        "completeKyc": "完成 KYC",
+        "openIncorporation": "開啟註冊程序"
       },
       "values": {
-        "notAvailable": "不適用",
-        "untitled": "無標題",
-        "draft": "草稿",
-        "unpaid": "未付款"
+        "companyFallback": "公司",
+        "pending": "待處理"
+      }
+    }
+  },
+  "journey": {
+    "labels": {
+      "new_incorporation": "新設公司",
+      "existing_company_onboarding": "現有公司上線"
+    },
+    "chooser": {
+      "title": "選擇申請類型",
+      "description": "請選擇此申請是新設公司，還是現有公司上線。"
+    },
+    "banner": {
+      "title": "現有公司上線",
+      "description": "此流程適用於已在其他地方設立、現正上線至 MIRRASIA 的公司。您仍需回答相同的國家問卷，但不需要服務選擇、發票與付款。"
+    },
+    "confirmation": {
+      "title": "上線申請已提交",
+      "message": "我們已收到您的現有公司上線申請。我們的團隊將審核您提交的資料，並與您聯繫說明下一步。"
+    },
+    "onboardingFields": {
+      "brnNo": {
+        "label": "BRN 編號",
+        "placeholder": "輸入 BRN 編號"
       },
-      "launcher": {
-        "hero": {
-          "description": "請選擇要啟動統一新設公司或現有公司上線流程的司法管轄區。"
-        }
-      },
-      "invitations": {
-        "title": "我的邀請",
-        "desc": "為邀請您的公司完成 KYC (身份認證)。",
-        "showing": "顯示第 {{start}}-{{end}} 封，共 {{total}} 封邀請",
-        "loading": "正在載入邀請...",
-        "empty": "無待處理的邀請。",
-        "columns": {
-          "company": "公司",
-          "country": "國家",
-          "roles": "角色",
-          "kyc": "KYC 狀態",
-          "expires": "到期日",
-          "action": "操作"
+      "incorporationDate": {
+        "label": "成立日期",
+        "placeholder": "選擇成立日期"
+      }
+    },
+    "pageTitle": "{{country}} 現有公司上線",
+    "actions": {
+      "submit": "提交上線申請"
+    }
+  },
+  "au": {
+    "title": "澳洲公司註冊",
+    "confirmation": {
+      "title": "澳洲公司註冊申請已提交",
+      "message": "我們已收到您的澳洲註冊申請。標準處理時間通常為 2-3 個月。急件處理通常為 1-2 週，ABN 目標為 4 個工作日內。金融機構開戶時間另計。",
+      "steps": {
+        "complianceReview": {
+          "title": "合規審核",
+          "description": "針對所有擬定相關方及控制人進行 KYC/CDD 及制裁審查。"
         },
-        "actions": {
-          "completeKyc": "完成 KYC",
-          "openIncorporation": "開啟設立申請"
+        "structureValidation": {
+          "title": "架構驗證",
+          "description": "在提交申請前核實董事居留身份及註冊地址要求。"
         },
-        "values": {
-          "companyFallback": "公司名",
-          "pending": "待處理"
+        "incorporationAndAbn": {
+          "title": "註冊與 ABN 處理",
+          "description": "我們將提交註冊文件，並根據所選服務級別進行 ABN 處理。"
+        },
+        "postIncorporationSupport": {
+          "title": "註冊後支援",
+          "description": "若有選擇，將協調 EMI 協助及開戶支援。"
         }
       }
     },
-    "journey": {
-      "labels": {
-        "new_incorporation": "新設公司",
-        "existing_company_onboarding": "現有公司上線"
+    "fees": {
+      "note": "所有金額均不含稅。企業稅通常為 30%（符合條件的小型企業可能適用 25% 的稅率）。"
+    },
+    "options": {
+      "industry": {
+        "technology": "技術 / 軟體 / 人工智能",
+        "consulting": "諮詢與專業服務",
+        "trading": "貿易 / 進出口",
+        "ecommerce": "電子商務",
+        "investment": "投資 / 控股活動",
+        "manufacturing": "製造業",
+        "fintech": "金融服務 / 핀테크"
       },
-      "chooser": {
-        "title": "選擇申請類型",
-        "description": "請選擇此申請是新設公司，還是現有公司上線。"
-      },
-      "banner": {
-        "title": "現有公司上線",
-        "description": "此流程適用於已在其他地方設立、現正上線至 MIRRASIA 的公司。您仍需回答相同的國家問卷，但不需要服務選擇、發票與付款。"
-      },
-      "confirmation": {
-        "title": "上線申請已提交",
-        "message": "我們已收到您的現有公司上線申請。我們的團隊將審核您提交的資料，並與您聯繫說明下一步。"
-      },
-      "onboardingFields": {
-        "brnNo": {
-          "label": "BRN 編號",
-          "placeholder": "輸入 BRN 編號"
-        },
-        "incorporationDate": {
-          "label": "成立日期",
-          "placeholder": "選擇成立日期"
-        }
-      },
-      "pageTitle": "{{country}} 現有公司上線",
-      "actions": {
-        "submit": "提交上線申請"
+      "purpose": {
+        "marketExpansion": "擴展至澳洲市場",
+        "regionalOperations": "設立區域營運中心",
+        "assetHolding": "持有並管理資產/投資",
+        "localCustomerSupport": "為澳洲本地客戶提供支援",
+        "investorRequirement": "投資者 / 合夥人要求"
       }
     },
-    "au": {
-      "title": "澳洲公司註冊",
-      "confirmation": {
-        "title": "澳洲公司註冊申請已提交",
-        "message": "我們已收到您的澳洲註冊申請。標準處理時間通常為 2-3 個月。急件處理通常為 1-2 週，ABN 目標為 4 個工作日內。金融機構開戶時間另計。",
-        "steps": {
-          "complianceReview": {
-            "title": "合規審核",
-            "description": "針對所有擬定相關方及控制人進行 KYC/CDD 及制裁審查。"
-          },
-          "structureValidation": {
-            "title": "架構驗證",
-            "description": "在提交申請前核實董事居留身份及註冊地址要求。"
-          },
-          "incorporationAndAbn": {
-            "title": "註冊與 ABN 處理",
-            "description": "我們將提交註冊文件，並根據所選服務級別進行 ABN 處理。"
-          },
-          "postIncorporationSupport": {
-            "title": "註冊後支援",
-            "description": "若有選擇，將協調 EMI 協助及開戶支援。"
-          }
-        }
+    "compliance": {
+      "annualRenewalConsent": {
+        "label": "您是否知悉註冊後的年度續期、會計及稅務義務？"
       },
-      "fees": {
-        "note": "所有金額均不含稅。企業稅通常為 30%（符合條件的小型企業可能適用 25% 的稅率）。"
+      "legalAndEthicalConcern": {
+        "label": "註冊目的是否涉及法律/倫理疑慮（洗錢、詐騙、規避制裁等）？"
+      },
+      "sanctionsExposureDeclaration": {
+        "label": "申請人或相關方是否與受制裁國家、實體或個人有關聯？"
+      },
+      "corporateTaxAcknowledgement": {
+        "label": "您是否知悉澳洲企業稅通常為 30%（合資格小型企業可能為 25%）？"
       },
       "options": {
-        "industry": {
-          "technology": "技術 / 軟體 / 人工智能",
-          "consulting": "諮詢與專業服務",
-          "trading": "貿易 / 進出口",
-          "ecommerce": "電子商務",
-          "investment": "投資 / 控股活動",
-          "manufacturing": "製造業",
-          "fintech": "金融服務 / 핀테크"
+        "needTaxAdvice": "需要稅務建議"
+      }
+    },
+    "company": {
+      "requirements": {
+        "label": "澳洲公司註冊要求",
+        "content": "法律要求至少一名澳洲常駐董事。需要一個澳洲實體註冊地址（不接受郵政信箱）。預計時間：標準 2-3 個月，急件 1-2 週（目標 4 個工作日內獲得 ABN）。金融機構開戶時間另計。"
+      },
+      "selectedIndustry": {
+        "label": "選擇行業（可多選）"
+      },
+      "businessDescription": {
+        "label": "描述您的業務活動"
+      },
+      "establishmentPurpose": {
+        "label": "設立澳洲公司的目的"
+      },
+      "auHasResidentDirector": {
+        "label": "您目前是否擁有至少一名澳洲常駐董事？"
+      },
+      "auNomineeDirectorAcknowledgment": {
+        "label": "我明白若沒有澳洲常駐董事，必須使用指定董事服務（每年 5,000 澳元）。"
+      },
+      "auHasOwnRegisteredAddress": {
+        "label": "您是否有自己的澳洲實體註冊地址？"
+      },
+      "auRegisteredAddressDetails": {
+        "label": "澳洲註冊地址詳情"
+      },
+      "auNoPoBoxAcknowledgement": {
+        "label": "我確認此註冊地址為實體地址，而非郵政信箱。"
+      },
+      "capitalAmountOther": {
+        "label": "資本金額 (其他)"
+      }
+    },
+    "services": {
+      "items": {
+        "base": {
+          "label": "澳洲公司註冊（文件準備、電子提交、標準公司文件）",
+          "info": "基礎註冊費用。所有金額均不含稅。"
         },
-        "purpose": {
-          "marketExpansion": "擴展至澳洲市場",
-          "regionalOperations": "設立區域營運中心",
-          "assetHolding": "持有並管理資產/投資",
-          "localCustomerSupport": "為澳洲本地客戶提供支援",
-          "investorRequirement": "投資者 / 合夥人要求"
+        "nomineeDirector": {
+          "label": "指定董事服務（年度）",
+          "info": "當您沒有至少一名澳洲常駐董事時為強制性服務。包含必要的 KYC、合約及補償協議。"
+        },
+        "registeredAddress": {
+          "label": "註冊地址服務（年度）",
+          "info": "僅供申報用途的註冊地址。非實體辦公空間。不接受郵政信箱。"
+        },
+        "express": {
+          "label": "急件服務",
+          "info": "目標於 4 個工作日內簽發 ABN。通常先以僅限澳洲居民的架構處理，隨後添加非居民股東/董事。"
+        },
+        "emiAssistance": {
+          "label": "EMI 帳戶開立協助",
+          "infoIncluded": "透過核准的合作夥伴渠道開立時，不額外收費。",
+          "infoConditional": "透過核准的合作夥伴渠道開立時可能免費。"
         }
       },
-      "compliance": {
-        "annualRenewalConsent": {
-          "label": "您是否知悉註冊後的年度續期、會計及稅務義務？"
-        },
-        "legalAndEthicalConcern": {
-          "label": "註冊目的是否涉及法律/倫理疑慮（洗錢、詐騙、規避制裁等）？"
-        },
-        "sanctionsExposureDeclaration": {
-          "label": "申請人或相關方是否與受制裁國家、實體或個人有關聯？"
-        },
-        "corporateTaxAcknowledgement": {
-          "label": "您是否知悉澳洲企業稅通常為 30%（合資格小型企業可能為 25%）？"
-        },
-        "options": {
-          "needTaxAdvice": "需要稅務建議"
-        }
+      "pricingSummary": {
+        "label": "澳洲定價摘要",
+        "content": "基礎註冊費：2,000 澳元。預計時間：標準 2-3 個月，急件 1-2 週（目標 4 工作日內獲得 ABN）。金額不含稅。"
       },
-      "company": {
-        "requirements": {
-          "label": "澳洲公司註冊要求",
-          "content": "法律要求至少一名澳洲常駐董事。需要一個澳洲實體註冊地址（不接受郵政信箱）。預計時間：標準 2-3 個月，急件 1-2 週（目標 4 個工作日內獲得 ABN）。金融機構開戶時間另計。"
-        },
-        "selectedIndustry": {
-          "label": "選擇行業（可多選）"
-        },
-        "businessDescription": {
-          "label": "描述您的業務活動"
-        },
-        "establishmentPurpose": {
-          "label": "設立澳洲公司的目的"
-        },
-        "auHasResidentDirector": {
-          "label": "您目前是否擁有至少一名澳洲常駐董事？"
-        },
-        "auNomineeDirectorAcknowledgment": {
-          "label": "我明白若沒有澳洲常駐董事，必須使用指定董事服務（每年 5,000 澳元）。"
-        },
-        "auHasOwnRegisteredAddress": {
-          "label": "您是否有自己的澳洲實體註冊地址？"
-        },
-        "auRegisteredAddressDetails": {
-          "label": "澳洲註冊地址詳情"
-        },
-        "auNoPoBoxAcknowledgement": {
-          "label": "我確認此註冊地址為實體地址，而非郵政信箱。"
-        },
-        "capitalAmountOther": {
-          "label": "資本金額 (其他)"
-        }
-      },
-      "services": {
-        "items": {
-          "base": {
-            "label": "澳洲公司註冊（文件準備、電子提交、標準公司文件）",
-            "info": "基礎註冊費用。所有金額均不含稅。"
-          },
-          "nomineeDirector": {
-            "label": "指定董事服務（年度）",
-            "info": "當您沒有至少一名澳洲常駐董事時為強制性服務。包含必要的 KYC、合約及補償協議。"
-          },
-          "registeredAddress": {
-            "label": "註冊地址服務（年度）",
-            "info": "僅供申報用途的註冊地址。非實體辦公空間。不接受郵政信箱。"
-          },
-          "express": {
-            "label": "急件服務",
-            "info": "目標於 4 個工作日內簽發 ABN。通常先以僅限澳洲居民的架構處理，隨後添加非居民股東/董事。"
-          },
-          "emiAssistance": {
-            "label": "EMI 帳戶開立協助",
-            "infoIncluded": "透過核准的合作夥伴渠道開立時，不額外收費。",
-            "infoConditional": "透過核准的合作夥伴渠道開立時可能免費。"
-          }
-        },
-        "pricingSummary": {
-          "label": "澳洲定價摘要",
-          "content": "基礎註冊費：2,000 澳元。預計時間：標準 2-3 個月，急件 1-2 週（目標 4 工作日內獲得 ABN）。金額不含稅。"
-        },
-        "auEmiViaPartnerChannel": {
-          "label": "是否透過我們的合作夥伴渠道處理 EMI 帳戶開立？"
-        }
-      },
-      "parties": {
-        "fields": {
-          "auIsResidentDirector": {
-            "label": "澳洲常駐董事"
-          }
-        }
-      },
-      "steps": {
-        "compliance": {
-          "description": "請在提交前提供合規及年度義務確認。"
-        },
-        "parties": {
-          "description": "邀請所有股東/董事，並指定至少一名聯絡人。"
-        },
-        "services": {
-          "description": "選擇服務並檢視以澳元計價的不含稅價格。"
+      "auEmiViaPartnerChannel": {
+        "label": "是否透過我們的合作夥伴渠道處理 EMI 帳戶開立？"
+      }
+    },
+    "parties": {
+      "fields": {
+        "auIsResidentDirector": {
+          "label": "澳洲常駐董事"
         }
       }
     },
-    "uk": {
-      "title": "英國公司成立",
-      "confirmation": {
-        "title": "英國公司成立申請已提交",
-        "message": "我們已收集您的英國公司成立詳情。我們的團隊將驗證 KYC/CDD，審閱您選擇的服務，並進行註冊申報。",
-        "steps": {
-          "complianceReview": {
-            "title": "合規審查",
-            "description": "KYC/CDD 驗證及制裁名單篩選審查。"
-          },
-          "documentConfirmation": {
-            "title": "文件確認",
-            "description": "審閱公司成立詳情、成員資訊及所需的證明文件。"
-          },
-          "incorporationFiling": {
-            "title": "註冊申報",
-            "description": "在完成所有檢查後，向英國公司註冊處 (Companies House) 提交申請。"
-          },
-          "postFilingSupport": {
-            "title": "註冊後支援",
-            "description": "根據您的選擇，協調註冊辦事處及選購的註冊後支援服務。"
-          }
-        }
+    "steps": {
+      "compliance": {
+        "description": "請在提交前提供合規及年度義務確認。"
       },
-      "fees": {
-        "note": "僅限報價之服務請求將單獨追蹤，在定價前不計入發票總額。"
+      "parties": {
+        "description": "邀請所有股東/董事，並指定至少一名聯絡人。"
       },
-      "applicant": {
-        "guidance": {
-          "label": "英國公司成立指南",
-          "content": "設立英國私人有限公司（英格蘭及威爾斯）之申請表。如需支援，請聯繫：www.mirrasia.com, +82-2-543-6187 (韓國), +852-2187-2428 (香港), cs@mirrasia.com。"
+      "services": {
+        "description": "選擇服務並檢視以澳元計價的不含稅價格。"
+      }
+    }
+  },
+  "uk": {
+    "title": "英國公司成立",
+    "confirmation": {
+      "title": "英國公司成立申請已提交",
+      "message": "我們已收集您的英國公司成立詳情。我們的團隊將驗證 KYC/CDD，審閱您選擇的服務，並進行註冊申報。",
+      "steps": {
+        "complianceReview": {
+          "title": "合規審查",
+          "description": "KYC/CDD 驗證及制裁名單篩選審查。"
         },
-        "fields": {
-          "applicantName": {
-            "placeholder": "填寫本表單的人員姓名"
-          },
-          "relationship": {
-            "label": "申請人與待設立之英國公司之間的關係"
-          },
-          "relationshipOther": {
-            "label": "其他關係（請註明）"
-          }
+        "documentConfirmation": {
+          "title": "文件確認",
+          "description": "審閱公司成立詳情、成員資訊及所需的證明文件。"
+        },
+        "incorporationFiling": {
+          "title": "註冊申報",
+          "description": "在完成所有檢查後，向英國公司註冊處 (Companies House) 提交申請。"
+        },
+        "postFilingSupport": {
+          "title": "註冊後支援",
+          "description": "根據您的選擇，協調註冊辦事處及選購的註冊後支援服務。"
         }
+      }
+    },
+    "fees": {
+      "note": "僅限報價之服務請求將單獨追蹤，在定價前不計入發票總額。"
+    },
+    "applicant": {
+      "guidance": {
+        "label": "英國公司成立指南",
+        "content": "設立英國私人有限公司（英格蘭及威爾斯）之申請表。如需支援，請聯繫：www.mirrasia.com, +82-2-543-6187 (韓國), +852-2187-2428 (香港), cs@mirrasia.com。"
+      },
+      "fields": {
+        "applicantName": {
+          "placeholder": "填寫本表單的人員姓名"
+        },
+        "relationship": {
+          "label": "申請人與待設立之英國公司之間的關係"
+        },
+        "relationshipOther": {
+          "label": "其他關係（請註明）"
+        }
+      }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "擬設立之英國實體是否為了、涉及或關聯於任何包含洗錢、非法賭博、逃稅、資產隱匿、欺詐或其他非法活動之目的？"
+      },
+      "annualRenewalConsent": {
+        "label": "您是否知悉並同意在公司成立後，該實體將承擔定期產生的費用及法律義務，包括年度續約、會計及稅務合規？"
+      },
+      "sanctionedCountryOperations": {
+        "label": "擬設立之英國實體（包括任何母公司、子公司或關聯集團公司）是否在以下司法管轄區營運或計劃營運？（伊朗、北韓、俄羅斯、白俄羅斯、敘利亞、古巴、緬甸、阿富汗、委內瑞拉、烏克蘭非政府控制地區包括克里米亞、頓內茨克及盧甘斯克，或其他受國際制裁之司法管轄區）"
+      },
+      "sanctionedResidenceExposure": {
+        "label": "該實體之任何高級職員、董事或實質控制人是否居住在受聯合國 (UN)、歐盟 (EU)、英國財政部 (UKHMT)、香港金融管理局 (HKMA) 或美國海外資產控制辦公室 (OFAC) 制裁的國家或地區？"
+      },
+      "sanctionedOwnershipOrControl": {
+        "label": "擬設立之英國實體是否由任何受制裁的個人、團體、組織或政府機構所擁有、控制，或代表其行事？"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "擬設立之英國實體或任何關聯公司目前是否在、或計劃在以下高風險行業營運？（石油、天然氣、能源、軍事/國防、金融科技，或虛擬資產/加密貨幣相關服務）"
+      },
+      "options": {
+        "considerLegalAdvice": "其他 / 尋求法律建議"
+      }
+    },
+    "company": {
+      "selectedEntity": {
+        "label": "選擇英國設立路徑",
+        "options": {
+          "individual": "英國有限公司（個人持股）",
+          "individualInfo": "（適用於所有股東均為自然人之實體）",
+          "subsidiary": "英國子公司（法人持股）",
+          "subsidiaryInfo": "（由現有外國公司持有的新英國法人實體）"
+        }
+      },
+      "businessTypes": {
+        "label": "選擇業務類型（勾選所有相關項目）"
+      },
+      "businessTypesOther": {
+        "label": "其他業務類型"
+      },
+      "tradedItemDescription": {
+        "label": "交易項目/服務內容/服務類型之描述"
+      },
+      "businessSummary": {
+        "label": "請以 3-4 句話描述業務內容"
+      },
+      "establishmentPurpose": {
+        "label": "設立英國公司的目的及預期效果"
+      },
+      "operatingCountries": {
+        "label": "公司成立後將開展業務的國家/地區",
+        "placeholder": "列出所有涉及開發、營運、員工居住、辦公室、客服、庫存、決策、營銷、銷售等的國家。"
+      },
+      "articlesSpecialClauses": {
+        "label": "欲記錄在組織章程中的特殊條款（如有）"
+      },
+      "registeredOfficeChoice": {
+        "label": "英國公司註冊辦事處地址",
+        "options": {
+          "useMirrAsiaAddress": "使用由 Mirr Asia 提供之英國註冊辦事處地址（已包含在標準方案中）",
+          "useOwnAddress": "我將提供自己在英國的註冊辦事處地址（需經合規審查；方案費用維持不變）"
+        }
+      },
+      "registeredOfficeOwnAddress": {
+        "label": "英國營業地址詳情"
+      }
+    },
+    "options": {
+      "businessType": {
+        "softwareDevelopmentCryptoBlockchainRelated": "軟體開發（虛擬資產/區塊鏈相關）",
+        "softwareDevelopmentGeneral": "軟體開發（一般）",
+        "metaverseWeb3PlatformDevelopment": "元宇宙及 Web3 平台開發",
+        "itConsultingManagedServices": "IT 諮詢及託管服務",
+        "ecommerceOnlineRetail": "電子商務及線上零售",
+        "generalTradingImportExport": "一般貿易（進出口）",
+        "wholesaleDistribution": "批發及分銷",
+        "managementProfessionalConsulting": "管理及專業諮詢",
+        "manufacturing": "製造業",
+        "cryptoassetServicesExchangeWalletTokenIssuanceIco": "虛擬資產服務（交易所、錢包、代幣發行/ICO）",
+        "cryptoassetInvestmentDefi": "虛擬資產投資及 DeFi",
+        "financialServicesBankingLendingWealthManagement": "金融服務（銀行、貸款、財富管理）",
+        "foreignExchangeForexCfdTrading": "外匯 (Forex) 及 CFD 交易",
+        "gamblingBettingPrizeCompetitions": "博彩 / 投注 / 抽獎活動"
+      },
+      "establishmentPurpose": {
+        "commonwealthEuropeExpansion": "市場擴展（英國、歐洲或英聯邦地區）",
+        "regulatoryDiversification": "業務多元化",
+        "advisorOrClientSuggested": "服務提供 / 諮詢 / IT 服務",
+        "internationalExpansion": "一般貿易 / 電子商務擴展",
+        "assetManagement": "資產管理（房地產或金融投資）",
+        "holdingManagement": "控股公司（子公司或關聯公司管理）",
+        "policyCompetitiveness": "知識產權 (IP) 持有及管理"
+      },
+      "quoteOnlyServices": {
+        "emiAccountAdvisory": "EMI 帳戶開立申請諮詢",
+        "ukLegalOpinion": "英國當地法律意見書（審閱白皮書後報價）",
+        "domesticExchangeLegalOpinion": "國內交易所上市用法律意見書",
+        "crossBorderLegalOpinion": "其他國家提交用法律意見書",
+        "regulatoryConsulting": "合規與營運諮詢服務",
+        "vatReportingQuote": "VAT 季度/年度申報報價",
+        "bookkeepingQuote": "年度會計簿記報價",
+        "financialStatementsAndTaxQuote": "財務報表及企業稅申報報價"
+      }
+    },
+    "services": {
+      "base": {
+        "incorporation": {
+          "label": "英國公司成立 (Ltd)",
+          "info": "基礎公司成立服務費。"
+        },
+        "kyc": {
+          "label": "KYC 及 AML 合規審查",
+          "info": "根據所選英國設立路徑收取的基礎 KYC 費用。"
+        },
+        "registeredOffice": {
+          "label": "英國註冊辦事處地址 (1 年)",
+          "info": "已包含在基礎首年套裝中。"
+        }
+      },
+      "additional": {
+        "executivePacks": {
+          "label": "額外管理人員包（每包 2 人）",
+          "info": "每增加 2 名個人管理人員為 100 美元。"
+        },
+        "corporateLayers": {
+          "label": "額外法人股東層級",
+          "info": "每增加一個法人股東層級為 150 美元。"
+        },
+        "contactPersons": {
+          "label": "額外指定聯絡人",
+          "info": "首位指定聯絡人免費。每增加一位聯絡人每年 250 美元。"
+        },
+        "corporateMemberKyc": {
+          "label": "法人成員額外 KYC 費用 (150 美元)"
+        }
+      },
+      "optional": {
+        "emiListProvision": {
+          "label": "合作 EMI 免費對接支援",
+          "info": "提供合作 EMI 供應商的免費開戶對接支援。請注意：不保證開戶成功，最終結果取決於所選 EMI 的自行決定權及其合規政策。"
+        },
+        "bankAccountAdvisory": {
+          "label": "英國銀行開戶對接諮詢",
+          "info": "申請支援與諮詢服務。"
+        },
+        "vatRegistration": {
+          "label": "VAT 註冊",
+          "info": "VAT 註冊支援。當年度應稅營業額達到 90,000 英鎊時，通常需要進行英國 VAT 註冊。"
+        }
+      },
+      "fields": {
+        "additionalExecutivePairs": {
+          "label": "額外 KYC 及合規選項 *",
+          "options": {
+            "none": "無（標準：已包含最多 2 位個人）",
+            "individualPack1": "+1 個人方案（最多額외 2 人）- 100 美元",
+            "individualPack2": "+2 個人方案（最多額外 4 人）- 200 美元",
+            "corporateShareholder1": "+1 法人股東（法人實體）- 150 美元",
+            "corporateShareholder2": "+2 法人股東（法人實體）- 300 美元",
+            "combinationPack1": "+1 法人實體 及 +1 個人方案 - 250 美元"
+          }
+        },
+        "additionalCorporateLayers": {
+          "label": "額外法人股東層級（每層 150 美元）"
+        },
+        "quoteOnlyServices": {
+          "label": "僅限報價之服務請求（僅供追蹤，不計入發票）"
+        },
+        "quoteOnlyServicesOther": {
+          "label": "其他僅限報價請求之詳情"
+        }
+      }
+    },
+    "review": {
+      "declaration": {
+        "content": "您聲明所有提供的資訊和文件均為真實、完整且準確。若發現非法目的或違法行為，服務可能會被暫停。"
+      }
+    },
+    "steps": {
+      "compliance": {
+        "description": "請準確回答合規問題，以避免未來的誤解和監管問題。"
+      },
+      "parties": {
+        "description": "邀請相關方並確保符合所需的職責/居住地覆蓋範圍。"
+      },
+      "services": {
+        "description": "選擇已定價的服務以計入發票。僅限報價之請求將單獨追蹤，不計入總額。"
+      },
+      "invoice": {
+        "description": "付款前請審閱服務費用。"
+      },
+      "payment": {
+        "description": "進行刷卡付款或上傳銀行轉帳證明。"
+      }
+    }
+  },
+  "uae": {
+    "title": "杜拜 IFZA 公司成立",
+    "freezones": {
+      "titles": {
+        "difc": "杜拜 DIFC 自貿區公司成立",
+        "dmcc": "杜拜 DMCC 自貿區公司成立",
+        "dwtc": "杜拜 DWTC 自貿區公司成立",
+        "dic": "杜拜 DIC 自貿區公司成立",
+        "ifzaFzco": "杜拜 IFZA 自貿區公司成立"
+      }
+    },
+    "confirmation": {
+      "title": "申請已成功提交",
+      "message": "我們已收到您的杜拜 IFZA 公司成立申請。我們的團隊將審核您的詳細資料，並與您聯繫以進行後續步驟。",
+      "steps": {
+        "initialReview": {
+          "title": "初步審核",
+          "description": "審核您的公司詳情及業務意圖（1-2 個工作日）。"
+        },
+        "kycVerification": {
+          "title": "KYC 驗證",
+          "description": "處理個人文件及反洗錢 (AML) 審查。"
+        },
+        "filing": {
+          "title": "提交申報",
+          "description": "向阿聯酋/IFZA 當局正式提交申請。"
+        }
+      }
+    },
+    "fees": {
+      "note": "初始費用因司法管轄區而異；最終報價將在審核後確認。"
+    },
+    "steps": {
+      "applicant": {
+        "description": "提供申請人詳情並確認提交權限。"
       },
       "compliance": {
-        "legalAndEthicalConcern": {
-          "label": "擬設立之英國實體是否為了、涉及或關聯於任何包含洗錢、非法賭博、逃稅、資產隱匿、欺詐或其他非法活動之目的？"
-        },
-        "annualRenewalConsent": {
-          "label": "您是否知悉並同意在公司成立後，該實體將承擔定期產生的費用及法律義務，包括年度續約、會計及稅務合規？"
-        },
-        "sanctionedCountryOperations": {
-          "label": "擬設立之英國實體（包括任何母公司、子公司或關聯集團公司）是否在以下司法管轄區營運或計劃營運？（伊朗、北韓、俄羅斯、白俄羅斯、敘利亞、古巴、緬甸、阿富汗、委內瑞拉、烏克蘭非政府控制地區包括克里米亞、頓內茨克及盧甘斯克，或其他受國際制裁之司法管轄區）"
-        },
-        "sanctionedResidenceExposure": {
-          "label": "該實體之任何高級職員、董事或實質控制人是否居住在受聯合國 (UN)、歐盟 (EU)、英國財政部 (UKHMT)、香港金融管理局 (HKMA) 或美國海外資產控制辦公室 (OFAC) 制裁的國家或地區？"
-        },
-        "sanctionedOwnershipOrControl": {
-          "label": "擬設立之英國實體是否由任何受制裁的個人、團體、組織或政府機構所擁有、控制，或代表其行事？"
-        },
-        "oilGasMilitaryExposure": {
-          "label": "擬設立之英國實體或任何關聯公司目前是否在、或計劃在以下高風險行業營運？（石油、天然氣、能源、軍事/國防、金融科技，或虛擬資產/加密貨幣相關服務）"
-        },
-        "options": {
-          "considerLegalAdvice": "其他 / 尋求法律建議"
-        }
+        "description": "反洗錢 (AML) 及客戶盡職調查 (CDD) 問卷。"
       },
       "company": {
-        "selectedEntity": {
-          "label": "選擇英國設立路徑",
-          "options": {
-            "individual": "英國有限公司（個人持股）",
-            "individualInfo": "（適用於所有股東均為自然人之實體）",
-            "subsidiary": "英國子公司（法人持股）",
-            "subsidiaryInfo": "（由現有外國公司持有的新英國法人實體）"
-          }
+        "description": "提供公司業務詳情、資本及地址，然後邀請相關方。"
+      },
+      "accounting": {
+        "description": "提供會計偏好及簿記週期。"
+      },
+      "services": {
+        "description": "選擇由 Mirr Asia 提供的服務。"
+      },
+      "invoice": {
+        "description": "審核您的服務費用及政府規費。"
+      },
+      "payment": {
+        "description": "選擇您的付款方式並完成交易。"
+      }
+    },
+    "applicant": {
+      "notice": {
+        "label": "申請須知",
+        "content": "此申請必須由主要控制人（未來董事）或授權人士填寫。最終申請書必須由董事親自簽署。資訊將根據 TCSP/AMLO 規則用於 KYC 及盡職調查。請避免錯誤或遺漏。"
+      },
+      "fields": {
+        "applicantRelationship": {
+          "label": "申請人與杜拜 IFZA 公司（待成立）之間的關係（可多選）"
+        },
+        "applicantRelationshipOther": {
+          "label": "其他關係（請註明）"
+        }
+      }
+    },
+    "compliance": {
+      "legalEthicalIssues": {
+        "label": "設立杜拜 IFZA 公司的目的，是否可能涉及法律或倫理問題（洗錢、賭博、逃稅、詐騙等）？"
+      },
+      "annualRenewalConsent": {
+        "label": "公司成立後，每年均需辦理年度續期工作，並產生相關費用及數據需求。您是否同意？"
+      },
+      "sanctionCountriesOps": {
+        "label": "計劃設立的實體或關聯公司是否在伊朗、蘇丹、南蘇丹、北韓、敘利亞、古巴、白俄羅斯或津巴布韋營運或計劃營運？"
+      },
+      "sanctionPersonnelResidency": {
+        "label": "是否有任何人員居住在伊朗、蘇丹、北韓、敘利亞、古巴或其他受聯合國/歐盟/英國/OFAC 制裁的國家？"
+      },
+      "crimeaSevastopol": {
+        "label": "計劃設立的實體或關聯公司是否在克里米亞或塞凡堡營運或計劃營運？"
+      },
+      "sensitiveSectors": {
+        "label": "計劃設立的實體或關聯公司是否在石油、天然氣、能源、軍事或國防領域營運或計劃營運？"
+      },
+      "fields": {
+        "legalEthicalIssuesOther": {
+          "label": "其他（請註明）"
+        }
+      },
+      "options": {
+        "considerLegalAdvice": "考慮法律諮詢",
+        "internalAfterEstablishment": "成立後可於內部解決"
+      }
+    },
+    "company": {
+      "fields": {
+        "entityType": {
+          "label": "實體類型"
+        },
+        "initialCostUsd": {
+          "label": "初始費用 (USD)"
+        },
+        "capital": {
+          "label": "資本"
+        },
+        "officeRequirement": {
+          "label": "辦公室要求"
+        },
+        "visaCost": {
+          "label": "簽證費用"
+        },
+        "establishmentPeriod": {
+          "label": "成立週期"
         },
         "businessTypes": {
           "label": "選擇業務類型（勾選所有相關項目）"
         },
         "businessTypesOther": {
-          "label": "其他業務類型"
+          "label": "其他業務類型（請註明）"
         },
-        "tradedItemDescription": {
-          "label": "交易項目/服務內容/服務類型之描述"
+        "tradeDescription": {
+          "label": "項目名稱、項目類型、服務詳情之描述"
         },
         "businessSummary": {
-          "label": "請以 3-4 句話描述業務內容"
+          "label": "公司業務描述（3-4 句話）"
         },
-        "establishmentPurpose": {
-          "label": "設立英國公司的目的及預期效果"
+        "purposeOfEstablishment": {
+          "label": "在杜拜設立 IFZA 公司的目的及預期效果"
         },
-        "operatingCountries": {
-          "label": "公司成立後將開展業務的國家/地區",
-          "placeholder": "列出所有涉及開發、營運、員工居住、辦公室、客服、庫存、決策、營銷、銷售等的國家。"
+        "paidInCapital": {
+          "label": "總實收資本 (AED)"
         },
-        "articlesSpecialClauses": {
-          "label": "欲記錄在組織章程中的特殊條款（如有）"
+        "paidInCapitalOther": {
+          "label": "其他資本金額 (AED)"
         },
-        "registeredOfficeChoice": {
-          "label": "英國公司註冊辦事處地址",
-          "options": {
-            "useMirrAsiaAddress": "使用由 Mirr Asia 提供之英國註冊辦事處地址（已包含在標準方案中）",
-            "useOwnAddress": "我將提供自己在英國的註冊辦事處地址（需經合規審查；方案費用維持不變）"
-          }
+        "registeredAddressChoice": {
+          "label": "在杜拜 IFZA 的註冊地址"
         },
-        "registeredOfficeOwnAddress": {
-          "label": "英國營業地址詳情"
-        }
-      },
-      "options": {
-        "businessType": {
-          "softwareDevelopmentCryptoBlockchainRelated": "軟體開發（虛擬資產/區塊鏈相關）",
-          "softwareDevelopmentGeneral": "軟體開發（一般）",
-          "metaverseWeb3PlatformDevelopment": "元宇宙及 Web3 平台開發",
-          "itConsultingManagedServices": "IT 諮詢及託管服務",
-          "ecommerceOnlineRetail": "電子商務及線上零售",
-          "generalTradingImportExport": "一般貿易（進出口）",
-          "wholesaleDistribution": "批發及分銷",
-          "managementProfessionalConsulting": "管理及專業諮詢",
-          "manufacturing": "製造業",
-          "cryptoassetServicesExchangeWalletTokenIssuanceIco": "虛擬資產服務（交易所、錢包、代幣發行/ICO）",
-          "cryptoassetInvestmentDefi": "虛擬資產投資及 DeFi",
-          "financialServicesBankingLendingWealthManagement": "金融服務（銀行、貸款、財富管理）",
-          "foreignExchangeForexCfdTrading": "外匯 (Forex) 及 CFD 交易",
-          "gamblingBettingPrizeCompetitions": "博彩 / 投注 / 抽獎活動"
-        },
-        "establishmentPurpose": {
-          "commonwealthEuropeExpansion": "市場擴展（英國、歐洲或英聯邦地區）",
-          "regulatoryDiversification": "業務多元化",
-          "advisorOrClientSuggested": "服務提供 / 諮詢 / IT 服務",
-          "internationalExpansion": "一般貿易 / 電子商務擴展",
-          "assetManagement": "資產管理（房地產或金融投資）",
-          "holdingManagement": "控股公司（子公司或關聯公司管理）",
-          "policyCompetitiveness": "知識產權 (IP) 持有及管理"
-        },
-        "quoteOnlyServices": {
-          "emiAccountAdvisory": "EMI 帳戶開立申請諮詢",
-          "ukLegalOpinion": "英國當地法律意見書（審閱白皮書後報價）",
-          "domesticExchangeLegalOpinion": "國內交易所上市用法律意見書",
-          "crossBorderLegalOpinion": "其他國家提交用法律意見書",
-          "regulatoryConsulting": "合規與營運諮詢服務",
-          "vatReportingQuote": "VAT 季度/年度申報報價",
-          "bookkeepingQuote": "年度會計簿記報價",
-          "financialStatementsAndTaxQuote": "財務報表及企業稅申報報價"
-        }
-      },
-      "services": {
-        "base": {
-          "incorporation": {
-            "label": "英國公司成立 (Ltd)",
-            "info": "基礎公司成立服務費。"
-          },
-          "kyc": {
-            "label": "KYC 及 AML 合規審查",
-            "info": "根據所選英國設立路徑收取的基礎 KYC 費用。"
-          },
-          "registeredOffice": {
-            "label": "英國註冊辦事處地址 (1 年)",
-            "info": "已包含在基礎首年套裝中。"
-          }
-        },
-        "additional": {
-          "executivePacks": {
-            "label": "額外管理人員包（每包 2 人）",
-            "info": "每增加 2 名個人管理人員為 100 美元。"
-          },
-          "corporateLayers": {
-            "label": "額外法人股東層級",
-            "info": "每增加一個法人股東層級為 150 美元。"
-          },
-          "contactPersons": {
-            "label": "額外指定聯絡人",
-            "info": "首位指定聯絡人免費。每增加一位聯絡人每年 250 美元。"
-          },
-          "corporateMemberKyc": {
-            "label": "法人成員額外 KYC 費用 (150 美元)"
-          }
-        },
-        "optional": {
-          "emiListProvision": {
-            "label": "合作 EMI 免費對接支援",
-            "info": "提供合作 EMI 供應商的免費開戶對接支援。請注意：不保證開戶成功，最終結果取決於所選 EMI 的自行決定權及其合規政策。"
-          },
-          "bankAccountAdvisory": {
-            "label": "英國銀行開戶對接諮詢",
-            "info": "申請支援與諮詢服務。"
-          },
-          "vatRegistration": {
-            "label": "VAT 註冊",
-            "info": "VAT 註冊支援。當年度應稅營業額達到 90,000 英鎊時，通常需要進行英國 VAT 註冊。"
-          }
-        },
-        "fields": {
-          "additionalExecutivePairs": {
-            "label": "額外 KYC 及合規選項 *",
-            "options": {
-              "none": "無（標準：已包含最多 2 位個人）",
-              "individualPack1": "+1 個人方案（最多額외 2 人）- 100 美元",
-              "individualPack2": "+2 個人方案（最多額外 4 人）- 200 美元",
-              "corporateShareholder1": "+1 法人股東（法人實體）- 150 美元",
-              "corporateShareholder2": "+2 法人股東（法人實體）- 300 美元",
-              "combinationPack1": "+1 法人實體 及 +1 個人方案 - 250 美元"
-            }
-          },
-          "additionalCorporateLayers": {
-            "label": "額外法人股東層級（每層 150 美元）"
-          },
-          "quoteOnlyServices": {
-            "label": "僅限報價之服務請求（僅供追蹤，不計入發票）"
-          },
-          "quoteOnlyServicesOther": {
-            "label": "其他僅限報價請求之詳情"
-          }
-        }
-      },
-      "review": {
-        "declaration": {
-          "content": "您聲明所有提供的資訊和文件均為真實、完整且準確。若發現非法目的或違法行為，服務可能會被暫停。"
-        }
-      },
-      "steps": {
-        "compliance": {
-          "description": "請準確回答合規問題，以避免未來的誤解和監管問題。"
-        },
-        "parties": {
-          "description": "邀請相關方並確保符合所需的職責/居住地覆蓋範圍。"
-        },
-        "services": {
-          "description": "選擇已定價的服務以計入發票。僅限報價之請求將單獨追蹤，不計入總額。"
-        },
-        "invoice": {
-          "description": "付款前請審閱服務費用。"
-        },
-        "payment": {
-          "description": "進行刷卡付款或上傳銀行轉帳證明。"
+        "registeredAddress": {
+          "label": "輸入您在杜拜 IFZA 的營業地址"
         }
       }
     },
-    "uae": {
-      "title": "杜拜 IFZA 公司成立",
-      "freezones": {
-        "titles": {
-          "difc": "杜拜 DIFC 自貿區公司成立",
-          "dmcc": "杜拜 DMCC 自貿區公司成立",
-          "dwtc": "杜拜 DWTC 自貿區公司成立",
-          "dic": "杜拜 DIC 自貿區公司成立",
-          "ifzaFzco": "杜拜 IFZA 自貿區公司成立"
+    "accounting": {
+      "fields": {
+        "xero": {
+          "label": "雲端會計軟體 (Xero) 需求"
         }
       },
+      "options": {
+        "xero": {
+          "yesNeedSetup": "是，我需要設置 Xero",
+          "noOwnSystem": "否，我有自己的系統",
+          "needAdvice": "需要專業建議"
+        }
+      }
+    },
+    "options": {
+      "entityType": {
+        "localLlc": "杜拜本地有限責任公司 (Local LLC)",
+        "ifzaFzco": "杜拜 DSO/IFZA 自貿區公司 (FZCO)",
+        "difcFzco": "杜拜 DIFC 自貿區公司 (FZCO)",
+        "dwtcFzco": "杜拜 DWTC 自貿區公司 (FZCO)",
+        "dmccFzco": "杜拜 DMCC 自貿區公司 (FZCO)",
+        "dicFzco": "杜拜 DIC 自貿區公司 (FZCO)"
+      },
+      "applicantRelationship": {
+        "director": "杜拜 IFZA 公司的董事（待委任）",
+        "chiefManager": "杜拜 IFZA 公司的總經理（待委任）",
+        "authorizedPerson": "由杜拜 IFZA 公司董事授權的人士（待委任）",
+        "majorShareholder": "杜拜 IFZA 公司的主要股東（待委任）",
+        "expertAdvisor": "提供成立諮詢的專家（律師、會計師、代理人等）"
+      },
+      "businessType": {
+        "crypto": "加密貨幣相關（發行、交易所、錢包服務）",
+        "itBlockchain": "IT、區塊鏈、軟體開發",
+        "cryptoInvestment": "基於加密貨幣的投資業務",
+        "cryptoGames": "基於加密貨幣的遊戲",
+        "forexTrading": "外匯交易",
+        "finance": "金融、投資、諮詢、貸款",
+        "trading": "貿易業務",
+        "distribution": "批發/零售分銷",
+        "consulting": "諮詢服務",
+        "manufacturing": "製造業",
+        "ecommerce": "在線服務業務（電子商務）",
+        "onlineDelivery": "在線直購/快遞"
+      },
+      "purpose": {
+        "diversification": "因監管寬鬆而實現業務多元化",
+        "advisorSuggested": "由法律顧問、投資者或客戶建議",
+        "internationalExpansion": "擴張至海外國家",
+        "assetManagement": "資產管理（房地產或金融資產）",
+        "holdingCompany": "管理子公司或關聯公司的控股公司",
+        "competitiveAdvantage": "因自由金融政策產生的競爭優勢",
+        "lowTax": "因低稅率增加交易量"
+      },
+      "paidInCapital": {
+        "oneAed": "1 AED",
+        "hundredAed": "100 AED",
+        "tenThousandAed": "10,000 AED（杜拜公司最低限額）"
+      },
+      "registeredAddressChoice": {
+        "mirrAsia": "使用 Mirr Asia 註冊地址服務",
+        "own": "使用杜拜 IFZA 的獨立地址"
+      }
+    },
+    "services": {
+      "items": {
+        "setup": {
+          "label": "阿聯酋設立費用",
+          "info": "包含初始政府規費及 Mirr Asia 服務費。"
+        },
+        "vaspSetupEmi": {
+          "label": "[VASP] IFZA 設立 + 公證 + 1 年維護 + VASP 牌照 + EMI 帳戶",
+          "info": "涵蓋牌照及銀行開戶設置的綜合 VASP 套裝。"
+        },
+        "vaspKycKyt": {
+          "label": "[VASP] KYC/KYT 外包公司設置",
+          "info": "VASP 牌照持有者之強制性要求。"
+        },
+        "vaspAml10": {
+          "label": "[VASP] AML 合規官註冊（每月 10 小時）"
+        },
+        "vaspAml20": {
+          "label": "[VASP] AML 合規官註冊（每月 20 小時）"
+        },
+        "vaspAccounting": {
+          "label": "[VASP] VASP 會計服務"
+        },
+        "ifzaSetupBank": {
+          "label": "IFZA 設立 + 公證 + 1 年維護 + 銀行開戶"
+        },
+        "legalOpinionIfza": {
+          "label": "法律意見書（本地 IFZA）"
+        },
+        "legalOpinionDomestic": {
+          "label": "國內交易所上市用法律意見書"
+        },
+        "consulting": {
+          "label": "諮詢服務（監管、可行性、文件、營運）"
+        }
+      }
+    }
+  },
+  "cr": {
+    "title": "哥斯大黎加公司成立",
+    "confirmation": {
+      "title": "哥斯大黎加申請流程",
+      "message": "我們已收集您的詳細資料，您的哥斯大黎加公司成立申請正由國家登記處處理中。通常需要 2-4 個工作週。若需要任何進一步資訊，我們的團隊將與您聯繫。",
+      "steps": {
+        "kycAmlVerification": {
+          "title": "KYC 與 AML 驗證",
+          "description": "我們的合規團隊將驗證所有股東及董事的身份證明文件。"
+        },
+        "notaryPublicFiling": {
+          "title": "公證人申報",
+          "description": "擬定公司章程並向國家登記處 (Registro Nacional) 提交申請。"
+        },
+        "registrationApproval": {
+          "title": "註冊核准",
+          "description": "等待登記處核發公司識別號 (Cédula Jurídica)。"
+        },
+        "postRegistration": {
+          "title": "註冊後續作業",
+          "description": "取得稅務識別號並完成代名 (Nominee) 協議（如有選擇）。"
+        }
+      }
+    },
+    "steps": {
+      "applicant": {
+        "description": "提供您的個人資訊及公司名稱選擇"
+      },
+      "compliance": {
+        "description": "關於合規與制裁的相關問題"
+      },
+      "company": {
+        "description": "業務詳情、資本及成員資訊"
+      },
+      "services": {
+        "description": "選擇代名支援 (Nominee support) 的服務選項。"
+      },
+      "parties": {
+        "description": "邀請股東、董事及指定聯絡人進行 KYC 驗證。"
+      }
+    },
+    "applicant": {
+      "fields": {
+        "relationshipToCrCorporation": {
+          "label": "與哥斯大黎加公司的關係"
+        },
+        "address": {
+          "label": "居住地"
+        }
+      }
+    },
+    "compliance": {
+      "annualRenewalConsent": {
+        "label": "您是否同意年度合規續期及 AML/KYC 程序？"
+      },
+      "sanctionsExposureDeclaration": {
+        "label": "是否涉及任何受制裁個人或實體？"
+      },
+      "legalAndEthicalConcern": {
+        "label": "是否有任何法律或倫理疑慮（洗錢、逃稅、詐騙等）？"
+      },
+      "qCountry": {
+        "label": "目前或計劃在受制裁國家/地區開展任何業務活動嗎？"
+      },
+      "crimeaSevastapolPresence": {
+        "label": "目前或計劃在克里米亞/塞凡堡地區開展任何業務嗎？"
+      },
+      "russianEnergyPresence": {
+        "label": "在能源/石油/天然氣、軍事或國防領域是否涉及俄羅斯？"
+      },
+      "criminalHistory": {
+        "label": "是否有任何金融犯罪記錄？"
+      }
+    },
+    "company": {
+      "fields": {
+        "selectedIndustry": {
+          "label": "行業類型"
+        },
+        "productDescription": {
+          "label": "商品/服務描述"
+        },
+        "establishmentPurpose": {
+          "label": "成立目的"
+        },
+        "listCountry": {
+          "label": "業務交易國家"
+        },
+        "sourceFunding": {
+          "label": "資金來源"
+        },
+        "businessAddress": {
+          "label": "註冊營業地址"
+        },
+        "otherBusinessAddress": {
+          "label": "其他營業地址（請註明）"
+        },
+        "currency": {
+          "label": "貨幣"
+        },
+        "capAmount": {
+          "label": "資本金額"
+        },
+        "capOther": {
+          "label": "資本金額（其他）"
+        },
+        "shareCount": {
+          "label": "股份數量"
+        },
+        "shareOther": {
+          "label": "股份數量（其他）"
+        }
+      }
+    },
+    "options": {
+      "industry": {
+        "trade": "貿易",
+        "retailDistribution": "零售/批發分銷",
+        "consulting": "諮詢",
+        "manufacturing": "製造",
+        "financeAdvisory": "金融/投資/顧問",
+        "ecommerce": "在線服務（電子商務）",
+        "onlineProxy": "在線直購/代運代理",
+        "itSoftware": "IT 及軟體開發",
+        "crypto": "加密貨幣相關"
+      },
+      "establishmentPurpose": {
+        "expansion": "業務擴張至美洲及歐洲",
+        "assetManagement": "資產管理",
+        "holdingCompany": "控股公司",
+        "investorSuggestion": "投資者建議",
+        "internationalTransactions": "國際交易",
+        "businessDiversification": "業務多元化",
+        "taxEfficiency": "稅務效率",
+        "noCapitalGainsTax": "無資本利得稅"
+      },
+      "sourceFunding": {
+        "earnedIncome": "工資收入",
+        "savings": "儲蓄",
+        "investmentIncome": "投資收益",
+        "loan": "貸款",
+        "companySale": "出售公司所得",
+        "businessIncome": "營業收入",
+        "inheritance": "遺產"
+      },
+      "businessAddress": {
+        "mirrAsia": "使用 MirrAsia 註冊地址",
+        "ownAddress": "使用位於哥斯大黎加的自有地址"
+      },
+      "currency": {
+        "usd": "USD - 美元",
+        "eur": "EUR - 歐元",
+        "crc": "CRC - 哥斯大黎加科朗"
+      }
+    },
+    "services": {
+      "fields": {
+        "directorNominee": {
+          "label": "代名董事 (Nominee Director)"
+        },
+        "shareholderNominee": {
+          "label": "代名股東 (Nominee Shareholder)"
+        }
+      },
+      "items": {
+        "base": {
+          "label": "公司成立規費"
+        },
+        "directorNominee": {
+          "label": "代名董事服務"
+        },
+        "shareholderNominee": {
+          "label": "代名股東服務"
+        }
+      }
+    },
+    "accounting": {
+      "fields": {
+        "accountingAddress": {
+          "label": "會計數據存儲地址"
+        },
+        "xero": {
+          "label": "您是否使用 Xero 或其他會計軟體？"
+        },
+        "softNote": {
+          "label": "額外備註"
+        }
+      },
+      "options": {
+        "xero": {
+          "recommendationRequired": "需要推薦"
+        }
+      }
+    }
+  },
+  "ch": {
+    "ag": {
+      "title": "瑞士股份有限公司 (AG) 設立",
       "confirmation": {
-        "title": "申請已成功提交",
-        "message": "我們已收到您的杜拜 IFZA 公司成立申請。我們的團隊將審核您的詳細資料，並與您聯繫以進行後續步驟。",
+        "title": "瑞士股份有限公司 (AG) 申請已提交"
+      }
+    },
+    "gmbh": {
+      "title": "瑞士有限公司 (GmbH; LLC) 設立",
+      "confirmation": {
+        "title": "瑞士有限公司 (GmbH; LLC) 申請已提交"
+      }
+    },
+    "options": {
+      "relationship": {
+        "directorOfSwissEntity": "瑞士實體董事",
+        "delegate": "經董事授權之人士",
+        "directOrIndirectShareholder": "直接/間接股東",
+        "expert": "專家（律師、會計師等）"
+      },
+      "industry": {
+        "cryptoRelated": "加密貨幣相關",
+        "itBlockchain": "IT / 區塊鏈開發",
+        "financeInvestment": "金融 / 投資",
+        "tradeWholesale": "貿易 / 批發",
+        "manufacturing": "製造業",
+        "ecommerce": "電子商務",
+        "consulting": "諮詢"
+      },
+      "purpose": {
+        "euExpansion": "業務擴張至歐洲市場",
+        "regulatoryDiversification": "監管環境多元化",
+        "advisorRecommendation": "投資者 / 顧問建議",
+        "holdingAssetManagement": "控股及資產管理",
+        "internationalStructuring": "國際交易架構化",
+        "optimization": "營運 / 稅務優化"
+      },
+      "quoteOnly": {
+        "annualAccountingTax": "年度會計 / 稅務服務（需報價）",
+        "emiOpening": "EMI 帳戶代開戶服務（需報價）",
+        "legalOpinionSwiss": "法律意見書（瑞士本地）（審核白皮書後報價）",
+        "legalOpinionExchange": "法律意見書（國內交易所上市用）（審核白皮書後報價）",
+        "consulting": "諮詢（可行性 / 監管）（需報價）"
+      }
+    },
+    "common": {
+      "options": {
+        "considerLegalAdvice": "考慮法律建議"
+      },
+      "steps": {
+        "parties": {
+          "description": "邀請所有必要的相關方，並指派一名指定的聯繫人。"
+        }
+      },
+      "compliance": {
+        "ethicalLegalConfirmation": {
+          "label": "業務目的是否涉及法律/倫理問題（洗錢、賭博、逃稅等）？"
+        },
+        "annualRenewalAgreement": {
+          "label": "您是否同意年度續約及產生的相關固定成本？"
+        },
+        "sanctionedCountriesBusiness": {
+          "label": "您是否在受制裁國家或地區開展業務？"
+        },
+        "sanctionedPersonsInvolved": {
+          "label": "相關人員中是否有居住在受制裁地區的人士？"
+        },
+        "restrictedSectors": {
+          "label": "您是否從事石油、天然氣、軍事或國防領域？"
+        }
+      },
+      "services": {
+        "fields": {
+          "registeredOfficeMode": {
+            "label": "註冊辦公室服務"
+          },
+          "registeredOfficeClientAddress": {
+            "label": "客戶提供的瑞士註冊地址"
+          },
+          "bankOpeningMode": {
+            "label": "瑞士銀行開戶服務"
+          }
+        },
+        "options": {
+          "registeredOfficeMode": {
+            "pobox": "郵政信箱 (PO Box)（每年 3,000 美元）",
+            "flexidesk": "彈性辦公桌 (Flexi Desk)（每年 6,800 美元）",
+            "clientAddress": "客戶使用其自有的瑞士地址"
+          },
+          "bankOpeningMode": {
+            "mirrOpening": "使用 Mirr Asia 銀行代開戶服務",
+            "selfArranged": "客戶將自行安排銀行開戶"
+          }
+        }
+      }
+    },
+    "corporate": {
+      "confirmation": {
+        "message": "我們已收到您的瑞士公司設立請求。我們的團隊將在正式提交申報前審核合規性、架構及所選服務。",
         "steps": {
-          "initialReview": {
-            "title": "初步審核",
-            "description": "審核您的公司詳情及業務意圖（1-2 個工作日）。"
+          "complianceReview": {
+            "title": "合規審核",
+            "description": "在申報前完成 KYC/CDD 及制裁名單核查。"
           },
-          "kycVerification": {
-            "title": "KYC 驗證",
-            "description": "處理個人文件及反洗錢 (AML) 審查。"
+          "registrationPreparation": {
+            "title": "註冊準備",
+            "description": "驗證公司架構及入駐文件。"
           },
-          "filing": {
-            "title": "提交申報",
-            "description": "向阿聯酋/IFZA 當局正式提交申請。"
+          "filingAndSupport": {
+            "title": "申報及後續支援",
+            "description": "協調實體申報、營運設置及其他可選服務。"
           }
         }
       },
-      "fees": {
-        "note": "初始費用因司法管轄區而異；最終報價將在審核後確認。"
-      },
       "steps": {
         "applicant": {
-          "description": "提供申請人詳情並確認提交權限。"
+          "description": "此申請的作者及聯繫詳情。"
         },
         "compliance": {
-          "description": "反洗錢 (AML) 及客戶盡職調查 (CDD) 問卷。"
+          "description": "制裁及法律風險聲明。"
         },
         "company": {
-          "description": "提供公司業務詳情、資本及地址，然後邀請相關方。"
-        },
-        "accounting": {
-          "description": "提供會計偏好及簿記週期。"
+          "description": "業務、註冊及資本詳情。"
         },
         "services": {
-          "description": "選擇由 Mirr Asia 提供的服務。"
+          "description": "選擇計費服務並追蹤僅需報價的請求項目。"
         },
         "invoice": {
-          "description": "審核您的服務費用及政府規費。"
+          "description": "付款前審核計費服務。"
         },
         "payment": {
-          "description": "選擇您的付款方式並完成交易。"
+          "description": "進行卡片支付或上傳銀行轉帳憑證。"
         }
       },
       "applicant": {
         "notice": {
           "label": "申請須知",
-          "content": "此申請必須由主要控制人（未來董事）或授權人士填寫。最終申請書必須由董事親自簽署。資訊將根據 TCSP/AMLO 規則用於 KYC 及盡職調查。請避免錯誤或遺漏。"
+          "content": "此表單應由董事或授權代表填寫。請提供準確資料以便進行合規審核及入駐程序。"
         },
         "fields": {
-          "applicantRelationship": {
-            "label": "申請人與杜拜 IFZA 公司（待成立）之間的關係（可多選）"
-          },
-          "applicantRelationshipOther": {
-            "label": "其他關係（請註明）"
+          "authorRelationship": {
+            "label": "與瑞士實體的關係"
           }
-        }
-      },
-      "compliance": {
-        "legalEthicalIssues": {
-          "label": "設立杜拜 IFZA 公司的目的，是否可能涉及法律或倫理問題（洗錢、賭博、逃稅、詐騙等）？"
-        },
-        "annualRenewalConsent": {
-          "label": "公司成立後，每年均需辦理年度續期工作，並產生相關費用及數據需求。您是否同意？"
-        },
-        "sanctionCountriesOps": {
-          "label": "計劃設立的實體或關聯公司是否在伊朗、蘇丹、南蘇丹、北韓、敘利亞、古巴、白俄羅斯或津巴布韋營運或計劃營運？"
-        },
-        "sanctionPersonnelResidency": {
-          "label": "是否有任何人員居住在伊朗、蘇丹、北韓、敘利亞、古巴或其他受聯合國/歐盟/英國/OFAC 制裁的國家？"
-        },
-        "crimeaSevastopol": {
-          "label": "計劃設立的實體或關聯公司是否在克里米亞或塞凡堡營運或計劃營運？"
-        },
-        "sensitiveSectors": {
-          "label": "計劃設立的實體或關聯公司是否在石油、天然氣、能源、軍事或國防領域營運或計劃營運？"
-        },
-        "fields": {
-          "legalEthicalIssuesOther": {
-            "label": "其他（請註明）"
-          }
-        },
-        "options": {
-          "considerLegalAdvice": "考慮法律諮詢",
-          "internalAfterEstablishment": "成立後可於內部解決"
         }
       },
       "company": {
-        "fields": {
-          "entityType": {
-            "label": "實體類型"
-          },
-          "initialCostUsd": {
-            "label": "初始費用 (USD)"
-          },
-          "capital": {
-            "label": "資本"
-          },
-          "officeRequirement": {
-            "label": "辦公室要求"
-          },
-          "visaCost": {
-            "label": "簽證費用"
-          },
-          "establishmentPeriod": {
-            "label": "成立週期"
-          },
-          "businessTypes": {
-            "label": "選擇業務類型（勾選所有相關項目）"
-          },
-          "businessTypesOther": {
-            "label": "其他業務類型（請註明）"
-          },
-          "tradeDescription": {
-            "label": "項目名稱、項目類型、服務詳情之描述"
-          },
-          "businessSummary": {
-            "label": "公司業務描述（3-4 句話）"
-          },
-          "purposeOfEstablishment": {
-            "label": "在杜拜設立 IFZA 公司的目的及預期效果"
-          },
-          "paidInCapital": {
-            "label": "總實收資本 (AED)"
-          },
-          "paidInCapitalOther": {
-            "label": "其他資本金額 (AED)"
-          },
-          "registeredAddressChoice": {
-            "label": "在杜拜 IFZA 的註冊地址"
-          },
-          "registeredAddress": {
-            "label": "輸入您在杜拜 IFZA 的營業地址"
-          }
-        }
-      },
-      "accounting": {
-        "fields": {
-          "xero": {
-            "label": "雲端會計軟體 (Xero) 需求"
-          }
+        "context": {
+          "label": "瑞士公司設立背景",
+          "contentAg": "您選擇了瑞士股份有限公司 (AG)。董事會成員的過半數必須為瑞士居民。",
+          "contentGmbh": "您選擇了瑞士有限公司 (GmbH / LLC)。至少一名執行官必須為瑞士居民。"
         },
-        "options": {
-          "xero": {
-            "yesNeedSetup": "是，我需要設置 Xero",
-            "noOwnSystem": "否，我有自己的系統",
-            "needAdvice": "需要專業建議"
+        "fields": {
+          "purposeOfEstablishment": {
+            "label": "設立此瑞士實體之目的及預期效果"
+          },
+          "tokenIssuancePlanned": {
+            "label": "該實體是否計劃發行或分發代幣？"
+          },
+          "tokenUtilityAtIssuance": {
+            "label": "若發行代幣，在發行時是否已具備功能性 (Utility)？"
+          },
+          "tokenRightsFeatures": {
+            "label": "代幣是否包含分紅/利潤分配/投票權？"
+          },
+          "sroMembershipPlan": {
+            "label": "若作為金融中介機構，您是否瞭解並計劃申請 SRO 會員資格？"
+          },
+          "totalCapital": {
+            "ag": {
+              "label": "總繳付資本（最低 100,000 瑞士法郎）"
+            },
+            "gmbh": {
+              "label": "總繳付資本（GmbH 通常最低為 20,000 瑞士法郎）"
+            }
+          },
+          "addressServiceChoice": {
+            "label": "本地公司地址選擇"
+          },
+          "addressServiceOwnAddress": {
+            "label": "提供獨立地址詳情"
           }
         }
       },
       "options": {
-        "entityType": {
-          "localLlc": "杜拜本地有限責任公司 (Local LLC)",
-          "ifzaFzco": "杜拜 DSO/IFZA 自貿區公司 (FZCO)",
-          "difcFzco": "杜拜 DIFC 自貿區公司 (FZCO)",
-          "dwtcFzco": "杜拜 DWTC 自貿區公司 (FZCO)",
-          "dmccFzco": "杜拜 DMCC 自貿區公司 (FZCO)",
-          "dicFzco": "杜拜 DIC 自貿區公司 (FZCO)"
+        "totalCapital": {
+          "agDefault": "100,000 瑞士法郎",
+          "gmbhDefault": "20,000 瑞士法郎"
         },
-        "applicantRelationship": {
-          "director": "杜拜 IFZA 公司的董事（待委任）",
-          "chiefManager": "杜拜 IFZA 公司的總經理（待委任）",
-          "authorizedPerson": "由杜拜 IFZA 公司董事授權的人士（待委任）",
-          "majorShareholder": "杜拜 IFZA 公司的主要股東（待委任）",
-          "expertAdvisor": "提供成立諮詢的專家（律師、會計師、代理人等）"
+        "addressServiceChoice": {
+          "mirr": "使用 Mirr Asia 註冊地址服務",
+          "own": "擁有獨立地址"
         },
-        "businessType": {
-          "crypto": "加密貨幣相關（發行、交易所、錢包服務）",
-          "itBlockchain": "IT、區塊鏈、軟體開發",
-          "cryptoInvestment": "基於加密貨幣的投資業務",
-          "cryptoGames": "基於加密貨幣的遊戲",
-          "forexTrading": "外匯交易",
-          "finance": "金融、投資、諮詢、貸款",
-          "trading": "貿易業務",
-          "distribution": "批發/零售分銷",
-          "consulting": "諮詢服務",
-          "manufacturing": "製造業",
-          "ecommerce": "在線服務業務（電子商務）",
-          "onlineDelivery": "在線直購/快遞"
-        },
-        "purpose": {
-          "diversification": "因監管寬鬆而實現業務多元化",
-          "advisorSuggested": "由法律顧問、投資者或客戶建議",
-          "internationalExpansion": "擴張至海外國家",
-          "assetManagement": "資產管理（房地產或金融資產）",
-          "holdingCompany": "管理子公司或關聯公司的控股公司",
-          "competitiveAdvantage": "因自由金融政策產生的競爭優勢",
-          "lowTax": "因低稅率增加交易量"
-        },
-        "paidInCapital": {
-          "oneAed": "1 AED",
-          "hundredAed": "100 AED",
-          "tenThousandAed": "10,000 AED（杜拜公司最低限額）"
-        },
-        "registeredAddressChoice": {
-          "mirrAsia": "使用 Mirr Asia 註冊地址服務",
-          "own": "使用杜拜 IFZA 的獨立地址"
+        "swissResidencyStatus": {
+          "swissResident": "瑞士居民",
+          "nonSwissResident": "非瑞士居民"
+        }
+      },
+      "parties": {
+        "fields": {
+          "swissResidencyStatus": {
+            "label": "瑞士居住狀態"
+          }
+        }
+      },
+      "coverage": {
+        "swissResidency": {
+          "label": "瑞士居民身分覆蓋",
+          "swissResidentRequired": "至少需一名瑞士居民"
         }
       },
       "services": {
-        "items": {
-          "setup": {
-            "label": "阿聯酋設立費用",
-            "info": "包含初始政府規費及 Mirr Asia 服務費。"
+        "fields": {
+          "boardServiceMode": {
+            "ag": {
+              "label": "本地董事支援服務選擇"
+            },
+            "gmbh": {
+              "label": "本地執行官 / 董事支援服務選擇"
+            }
           },
-          "vaspSetupEmi": {
-            "label": "[VASP] IFZA 設立 + 公證 + 1 年維護 + VASP 牌照 + EMI 帳戶",
-            "info": "涵蓋牌照及銀行開戶設置的綜合 VASP 套裝。"
+          "quoteOnlyServices": {
+            "label": "僅需報價之服務請求（追蹤用，不計入發票總額）"
           },
-          "vaspKycKyt": {
-            "label": "[VASP] KYC/KYT 外包公司設置",
-            "info": "VASP 牌照持有者之強制性要求。"
-          },
-          "vaspAml10": {
-            "label": "[VASP] AML 合規官註冊（每月 10 小時）"
-          },
-          "vaspAml20": {
-            "label": "[VASP] AML 合規官註冊（每月 20 小時）"
-          },
-          "vaspAccounting": {
-            "label": "[VASP] VASP 會計服務"
-          },
-          "ifzaSetupBank": {
-            "label": "IFZA 設立 + 公證 + 1 年維護 + 銀行開戶"
-          },
-          "legalOpinionIfza": {
-            "label": "法律意見書（本地 IFZA）"
-          },
-          "legalOpinionDomestic": {
-            "label": "國內交易所上市用法律意見書"
-          },
-          "consulting": {
-            "label": "諮詢服務（監管、可行性、文件、營運）"
+          "quoteOnlyServicesOther": {
+            "label": "其他報價請求詳情"
           }
+        },
+        "options": {
+          "boardServiceMode": {
+            "mirrProvided": "使用 Mirr Asia 本地支援服務",
+            "clientProvided": "客戶提供其自有的合規本地高管"
+          }
+        },
+        "items": {
+          "setupMaintenance": {
+            "label": "瑞士公司設立 + 1 年維護",
+            "info": "包含設立及首年核心維護服務。"
+          },
+          "localSupport": {
+            "ag": {
+              "label": "註冊 2 名本地董事（1 年）",
+              "info": "AG 通常需要具備瑞士居民身分的董事。此方案涵蓋本地董事支援。"
+            },
+            "gmbh": {
+              "label": "本地執行官 / 董事支援方案（1 年）",
+              "info": "GmbH 通常需要至少一名瑞士居民執行官。此方案涵蓋本地支援。"
+            }
+          },
+          "registeredOfficePobox": {
+            "label": "營業地址：郵政信箱（1 年）",
+            "info": "瑞士本地註冊辦公室郵政信箱地址服務。"
+          },
+          "registeredOfficeFlexidesk": {
+            "label": "營業地址：彈性辦公桌（1 年）",
+            "info": "包含租賃支援、會議室使用權及瑞士電話號碼。"
+          },
+          "bankOpening": {
+            "label": "資本金及銀行開戶代辦",
+            "info": "支援資本金帳戶及營運銀行帳戶開立。"
+          },
+          "emiListProvision": {
+            "label": "提供 EMI 服務商清單",
+            "info": "免費提供的 EMI 服務商資訊清單。"
+          }
+        }
+      },
+      "fees": {
+        "note": "僅報價之服務請求將單獨追蹤，在定價前不計入發票總額。"
+      },
+      "review": {
+        "declaration": {
+          "content": "我確認所有提供的資訊皆真實完整，且擬開展之業務均屬合法。"
         }
       }
     },
-    "cr": {
-      "title": "哥斯大黎加公司成立",
+    "foundation": {
+      "title": "瑞士財團/基金會設立",
       "confirmation": {
-        "title": "哥斯大黎加申請流程",
-        "message": "我們已收集您的詳細資料，您的哥斯大黎加公司成立申請正由國家登記處處理中。通常需要 2-4 個工作週。若需要任何進一步資訊，我們的團隊將與您聯繫。",
+        "title": "瑞士財團/基金會申請已提交",
+        "message": "我們已收到您的瑞士財團/基金會設立請求。我們的團隊將驗證合規詳情並執行申報工作流程。",
         "steps": {
-          "kycAmlVerification": {
-            "title": "KYC 與 AML 驗證",
-            "description": "我們的合規團隊將驗證所有股東及董事的身份證明文件。"
+          "complianceReview": {
+            "title": "合規審核",
+            "description": "在申報前完成 KYC/CDD 及制裁名單核查。"
           },
-          "notaryPublicFiling": {
-            "title": "公證人申報",
-            "description": "擬定公司章程並向國家登記處 (Registro Nacional) 提交申請。"
+          "foundationFilingPreparation": {
+            "title": "財團申報準備",
+            "description": "擬定申報文件包以供監管機構及登記處審核。"
           },
-          "registrationApproval": {
-            "title": "註冊核准",
-            "description": "等待登記處核發公司識別號 (Cédula Jurídica)。"
+          "registrationTaxSetup": {
+            "title": "註冊及稅務設置",
+            "description": "完成商業登記處申報及稅務機關註冊。"
           },
-          "postRegistration": {
-            "title": "註冊後續作業",
-            "description": "取得稅務識別號並完成代名 (Nominee) 協議（如有選擇）。"
+          "postFilingServices": {
+            "title": "申報後服務",
+            "description": "根據您的選擇協調董事會、辦公室、會計及申報支援。"
           }
         }
       },
       "steps": {
         "applicant": {
-          "description": "提供您的個人資訊及公司名稱選擇"
+          "description": "必須由董事或授權代表填寫。"
         },
         "compliance": {
-          "description": "關於合規與制裁的相關問題"
+          "description": "業務意圖、制裁及合規聲明。"
         },
         "company": {
-          "description": "業務詳情、資本及成員資訊"
+          "description": "業務簡介、註冊詳情及資本要求確認。"
+        },
+        "accounting": {
+          "description": "提供會計年度結算日及稅務支援偏好。"
         },
         "services": {
-          "description": "選擇代名支援 (Nominee support) 的服務選項。"
+          "description": "標準方案包含本地董事會支援、註冊郵政信箱地址及銀行開戶協助。您可以根據需求進行調整。"
         },
-        "parties": {
-          "description": "邀請股東、董事及指定聯絡人進行 KYC 驗證。"
+        "invoice": {
+          "description": "付款前審核最終費用明細。"
+        },
+        "payment": {
+          "description": "完成卡片支付或上傳銀行轉帳證明。"
         }
       },
       "applicant": {
         "fields": {
-          "relationshipToCrCorporation": {
-            "label": "與哥斯大黎加公司的關係"
-          },
-          "address": {
-            "label": "居住地"
+          "authorRelationship": {
+            "label": "與瑞士財團的關係"
           }
-        }
-      },
-      "compliance": {
-        "annualRenewalConsent": {
-          "label": "您是否同意年度合規續期及 AML/KYC 程序？"
-        },
-        "sanctionsExposureDeclaration": {
-          "label": "是否涉及任何受制裁個人或實體？"
-        },
-        "legalAndEthicalConcern": {
-          "label": "是否有任何法律或倫理疑慮（洗錢、逃稅、詐騙等）？"
-        },
-        "qCountry": {
-          "label": "目前或計劃在受制裁國家/地區開展任何業務活動嗎？"
-        },
-        "crimeaSevastapolPresence": {
-          "label": "目前或計劃在克里米亞/塞凡堡地區開展任何業務嗎？"
-        },
-        "russianEnergyPresence": {
-          "label": "在能源/石油/天然氣、軍事或國防領域是否涉及俄羅斯？"
-        },
-        "criminalHistory": {
-          "label": "是否有任何金融犯罪記錄？"
-        }
-      },
-      "company": {
-        "fields": {
-          "selectedIndustry": {
-            "label": "行業類型"
-          },
-          "productDescription": {
-            "label": "商品/服務描述"
-          },
-          "establishmentPurpose": {
-            "label": "成立目的"
-          },
-          "listCountry": {
-            "label": "業務交易國家"
-          },
-          "sourceFunding": {
-            "label": "資金來源"
-          },
-          "businessAddress": {
-            "label": "註冊營業地址"
-          },
-          "otherBusinessAddress": {
-            "label": "其他營業地址（請註明）"
-          },
-          "currency": {
-            "label": "貨幣"
-          },
-          "capAmount": {
-            "label": "資本金額"
-          },
-          "capOther": {
-            "label": "資本金額（其他）"
-          },
-          "shareCount": {
-            "label": "股份數量"
-          },
-          "shareOther": {
-            "label": "股份數量（其他）"
-          }
-        }
-      },
-      "options": {
-        "industry": {
-          "trade": "貿易",
-          "retailDistribution": "零售/批發分銷",
-          "consulting": "諮詢",
-          "manufacturing": "製造",
-          "financeAdvisory": "金融/投資/顧問",
-          "ecommerce": "在線服務（電子商務）",
-          "onlineProxy": "在線直購/代運代理",
-          "itSoftware": "IT 及軟體開發",
-          "crypto": "加密貨幣相關"
-        },
-        "establishmentPurpose": {
-          "expansion": "業務擴張至美洲及歐洲",
-          "assetManagement": "資產管理",
-          "holdingCompany": "控股公司",
-          "investorSuggestion": "投資者建議",
-          "internationalTransactions": "國際交易",
-          "businessDiversification": "業務多元化",
-          "taxEfficiency": "稅務效率",
-          "noCapitalGainsTax": "無資本利得稅"
-        },
-        "sourceFunding": {
-          "earnedIncome": "工資收入",
-          "savings": "儲蓄",
-          "investmentIncome": "投資收益",
-          "loan": "貸款",
-          "companySale": "出售公司所得",
-          "businessIncome": "營業收入",
-          "inheritance": "遺產"
-        },
-        "businessAddress": {
-          "mirrAsia": "使用 MirrAsia 註冊地址",
-          "ownAddress": "使用位於哥斯大黎加的自有地址"
-        },
-        "currency": {
-          "usd": "USD - 美元",
-          "eur": "EUR - 歐元",
-          "crc": "CRC - 哥斯大黎加科朗"
-        }
-      },
-      "services": {
-        "fields": {
-          "directorNominee": {
-            "label": "代名董事 (Nominee Director)"
-          },
-          "shareholderNominee": {
-            "label": "代名股東 (Nominee Shareholder)"
-          }
-        },
-        "items": {
-          "base": {
-            "label": "公司成立規費"
-          },
-          "directorNominee": {
-            "label": "代名董事服務"
-          },
-          "shareholderNominee": {
-            "label": "代名股東服務"
-          }
-        }
-      },
-      "accounting": {
-        "fields": {
-          "accountingAddress": {
-            "label": "會計數據存儲地址"
-          },
-          "xero": {
-            "label": "您是否使用 Xero 或其他會計軟體？"
-          },
-          "softNote": {
-            "label": "額外備註"
-          }
-        },
-        "options": {
-          "xero": {
-            "recommendationRequired": "需要推薦"
-          }
-        }
-      }
-    },
-    "ch": {
-      "ag": {
-        "title": "瑞士股份有限公司 (AG) 設立",
-        "confirmation": {
-          "title": "瑞士股份有限公司 (AG) 申請已提交"
-        }
-      },
-      "gmbh": {
-        "title": "瑞士有限公司 (GmbH; LLC) 設立",
-        "confirmation": {
-          "title": "瑞士有限公司 (GmbH; LLC) 申請已提交"
         }
       },
       "options": {
         "relationship": {
-          "directorOfSwissEntity": "瑞士實體董事",
-          "delegate": "經董事授權之人士",
-          "directOrIndirectShareholder": "直接/間接股東",
-          "expert": "專家（律師、會計師等）"
+          "director": "瑞士財團董事"
         },
-        "industry": {
-          "cryptoRelated": "加密貨幣相關",
-          "itBlockchain": "IT / 區塊鏈開發",
-          "financeInvestment": "金融 / 投資",
-          "tradeWholesale": "貿易 / 批發",
-          "manufacturing": "製造業",
-          "ecommerce": "電子商務",
-          "consulting": "諮詢"
-        },
-        "purpose": {
-          "euExpansion": "業務擴張至歐洲市場",
-          "regulatoryDiversification": "監管環境多元化",
-          "advisorRecommendation": "投資者 / 顧問建議",
-          "holdingAssetManagement": "控股及資產管理",
-          "internationalStructuring": "國際交易架構化",
-          "optimization": "營運 / 稅務優化"
-        },
-        "quoteOnly": {
-          "annualAccountingTax": "年度會計 / 稅務服務（需報價）",
-          "emiOpening": "EMI 帳戶代開戶服務（需報價）",
-          "legalOpinionSwiss": "法律意見書（瑞士本地）（審核白皮書後報價）",
-          "legalOpinionExchange": "法律意見書（國內交易所上市用）（審核白皮書後報價）",
-          "consulting": "諮詢（可行性 / 監管）（需報價）"
+        "capitalRequirementChoice": {
+          "acknowledged": "已確認最低 50,000 瑞士法郎資本要求",
+          "otherArrangement": "其他安排（請說明）"
         }
       },
-      "common": {
-        "options": {
-          "considerLegalAdvice": "考慮法律建議"
-        },
-        "steps": {
-          "parties": {
-            "description": "邀請所有必要的相關方，並指派一名指定的聯繫人。"
-          }
-        },
-        "compliance": {
-          "ethicalLegalConfirmation": {
-            "label": "業務目的是否涉及法律/倫理問題（洗錢、賭博、逃稅等）？"
+      "company": {
+        "fields": {
+          "foundationNameFirstChoice": {
+            "label": "理想財團名稱（第一志願）"
           },
-          "annualRenewalAgreement": {
-            "label": "您是否同意年度續約及產生的相關固定成本？"
-          },
-          "sanctionedCountriesBusiness": {
-            "label": "您是否在受制裁國家或地區開展業務？"
-          },
-          "sanctionedPersonsInvolved": {
-            "label": "相關人員中是否有居住在受制裁地區的人士？"
-          },
-          "restrictedSectors": {
-            "label": "您是否從事石油、天然氣、軍事或國防領域？"
-          }
-        },
-        "services": {
-          "fields": {
-            "registeredOfficeMode": {
-              "label": "註冊辦公室服務"
-            },
-            "registeredOfficeClientAddress": {
-              "label": "客戶提供的瑞士註冊地址"
-            },
-            "bankOpeningMode": {
-              "label": "瑞士銀行開戶服務"
-            }
-          },
-          "options": {
-            "registeredOfficeMode": {
-              "pobox": "郵政信箱 (PO Box)（每年 3,000 美元）",
-              "flexidesk": "彈性辦公桌 (Flexi Desk)（每年 6,800 美元）",
-              "clientAddress": "客戶使用其自有的瑞士地址"
-            },
-            "bankOpeningMode": {
-              "mirrOpening": "使用 Mirr Asia 銀行代開戶服務",
-              "selfArranged": "客戶將自行安排銀行開戶"
-            }
-          }
-        }
-      },
-      "corporate": {
-        "confirmation": {
-          "message": "我們已收到您的瑞士公司設立請求。我們的團隊將在正式提交申報前審核合規性、架構及所選服務。",
-          "steps": {
-            "complianceReview": {
-              "title": "合規審核",
-              "description": "在申報前完成 KYC/CDD 及制裁名單核查。"
-            },
-            "registrationPreparation": {
-              "title": "註冊準備",
-              "description": "驗證公司架構及入駐文件。"
-            },
-            "filingAndSupport": {
-              "title": "申報及後續支援",
-              "description": "協調實體申報、營運設置及其他可選服務。"
-            }
-          }
-        },
-        "steps": {
-          "applicant": {
-            "description": "此申請的作者及聯繫詳情。"
-          },
-          "compliance": {
-            "description": "制裁及法律風險聲明。"
-          },
-          "company": {
-            "description": "業務、註冊及資本詳情。"
-          },
-          "services": {
-            "description": "選擇計費服務並追蹤僅需報價的請求項目。"
-          },
-          "invoice": {
-            "description": "付款前審核計費服務。"
-          },
-          "payment": {
-            "description": "進行卡片支付或上傳銀行轉帳憑證。"
-          }
-        },
-        "applicant": {
-          "notice": {
-            "label": "申請須知",
-            "content": "此表單應由董事或授權代表填寫。請提供準確資料以便進行合規審核及入駐程序。"
-          },
-          "fields": {
-            "authorRelationship": {
-              "label": "與瑞士實體的關係"
-            }
-          }
-        },
-        "company": {
-          "context": {
-            "label": "瑞士公司設立背景",
-            "contentAg": "您選擇了瑞士股份有限公司 (AG)。董事會成員的過半數必須為瑞士居民。",
-            "contentGmbh": "您選擇了瑞士有限公司 (GmbH / LLC)。至少一名執行官必須為瑞士居民。"
-          },
-          "fields": {
-            "purposeOfEstablishment": {
-              "label": "設立此瑞士實體之目的及預期效果"
-            },
-            "tokenIssuancePlanned": {
-              "label": "該實體是否計劃發行或分發代幣？"
-            },
-            "tokenUtilityAtIssuance": {
-              "label": "若發行代幣，在發行時是否已具備功能性 (Utility)？"
-            },
-            "tokenRightsFeatures": {
-              "label": "代幣是否包含分紅/利潤分配/投票權？"
-            },
-            "sroMembershipPlan": {
-              "label": "若作為金融中介機構，您是否瞭解並計劃申請 SRO 會員資格？"
-            },
-            "totalCapital": {
-              "ag": {
-                "label": "總繳付資本（最低 100,000 瑞士法郎）"
-              },
-              "gmbh": {
-                "label": "總繳付資本（GmbH 通常最低為 20,000 瑞士法郎）"
-              }
-            },
-            "addressServiceChoice": {
-              "label": "本地公司地址選擇"
-            },
-            "addressServiceOwnAddress": {
-              "label": "提供獨立地址詳情"
-            }
-          }
-        },
-        "options": {
-          "totalCapital": {
-            "agDefault": "100,000 瑞士法郎",
-            "gmbhDefault": "20,000 瑞士法郎"
-          },
-          "addressServiceChoice": {
-            "mirr": "使用 Mirr Asia 註冊地址服務",
-            "own": "擁有獨立地址"
-          },
-          "swissResidencyStatus": {
-            "swissResident": "瑞士居民",
-            "nonSwissResident": "非瑞士居民"
-          }
-        },
-        "parties": {
-          "fields": {
-            "swissResidencyStatus": {
-              "label": "瑞士居住狀態"
-            }
-          }
-        },
-        "coverage": {
-          "swissResidency": {
-            "label": "瑞士居民身分覆蓋",
-            "swissResidentRequired": "至少需一名瑞士居民"
-          }
-        },
-        "services": {
-          "fields": {
-            "boardServiceMode": {
-              "ag": {
-                "label": "本地董事支援服務選擇"
-              },
-              "gmbh": {
-                "label": "本地執行官 / 董事支援服務選擇"
-              }
-            },
-            "quoteOnlyServices": {
-              "label": "僅需報價之服務請求（追蹤用，不計入發票總額）"
-            },
-            "quoteOnlyServicesOther": {
-              "label": "其他報價請求詳情"
-            }
-          },
-          "options": {
-            "boardServiceMode": {
-              "mirrProvided": "使用 Mirr Asia 本地支援服務",
-              "clientProvided": "客戶提供其自有的合規本地高管"
-            }
-          },
-          "items": {
-            "setupMaintenance": {
-              "label": "瑞士公司設立 + 1 年維護",
-              "info": "包含設立及首年核心維護服務。"
-            },
-            "localSupport": {
-              "ag": {
-                "label": "註冊 2 名本地董事（1 年）",
-                "info": "AG 通常需要具備瑞士居民身分的董事。此方案涵蓋本地董事支援。"
-              },
-              "gmbh": {
-                "label": "本地執行官 / 董事支援方案（1 年）",
-                "info": "GmbH 通常需要至少一名瑞士居民執行官。此方案涵蓋本地支援。"
-              }
-            },
-            "registeredOfficePobox": {
-              "label": "營業地址：郵政信箱（1 年）",
-              "info": "瑞士本地註冊辦公室郵政信箱地址服務。"
-            },
-            "registeredOfficeFlexidesk": {
-              "label": "營業地址：彈性辦公桌（1 年）",
-              "info": "包含租賃支援、會議室使用權及瑞士電話號碼。"
-            },
-            "bankOpening": {
-              "label": "資本金及銀行開戶代辦",
-              "info": "支援資本金帳戶及營運銀行帳戶開立。"
-            },
-            "emiListProvision": {
-              "label": "提供 EMI 服務商清單",
-              "info": "免費提供的 EMI 服務商資訊清單。"
-            }
-          }
-        },
-        "fees": {
-          "note": "僅報價之服務請求將單獨追蹤，在定價前不計入發票總額。"
-        },
-        "review": {
-          "declaration": {
-            "content": "我確認所有提供的資訊皆真實完整，且擬開展之業務均屬合法。"
-          }
-        }
-      },
-      "foundation": {
-        "title": "瑞士財團/基金會設立",
-        "confirmation": {
-          "title": "瑞士財團/基金會申請已提交",
-          "message": "我們已收到您的瑞士財團/基金會設立請求。我們的團隊將驗證合規詳情並執行申報工作流程。",
-          "steps": {
-            "complianceReview": {
-              "title": "合規審核",
-              "description": "在申報前完成 KYC/CDD 及制裁名單核查。"
-            },
-            "foundationFilingPreparation": {
-              "title": "財團申報準備",
-              "description": "擬定申報文件包以供監管機構及登記處審核。"
-            },
-            "registrationTaxSetup": {
-              "title": "註冊及稅務設置",
-              "description": "完成商業登記處申報及稅務機關註冊。"
-            },
-            "postFilingServices": {
-              "title": "申報後服務",
-              "description": "根據您的選擇協調董事會、辦公室、會計及申報支援。"
-            }
-          }
-        },
-        "steps": {
-          "applicant": {
-            "description": "必須由董事或授權代表填寫。"
-          },
-          "compliance": {
-            "description": "業務意圖、制裁及合規聲明。"
-          },
-          "company": {
-            "description": "業務簡介、註冊詳情及資本要求確認。"
-          },
-          "accounting": {
-            "description": "提供會計年度結算日及稅務支援偏好。"
-          },
-          "services": {
-            "description": "標準方案包含本地董事會支援、註冊郵政信箱地址及銀行開戶協助。您可以根據需求進行調整。"
-          },
-          "invoice": {
-            "description": "付款前審核最終費用明細。"
-          },
-          "payment": {
-            "description": "完成卡片支付或上傳銀行轉帳證明。"
-          }
-        },
-        "applicant": {
-          "fields": {
-            "authorRelationship": {
-              "label": "與瑞士財團的關係"
-            }
-          }
-        },
-        "options": {
-          "relationship": {
-            "director": "瑞士財團董事"
+          "foundationNameSecondChoice": {
+            "label": "理想財團名稱（第二志願）"
           },
           "capitalRequirementChoice": {
-            "acknowledged": "已確認最低 50,000 瑞士法郎資本要求",
-            "otherArrangement": "其他安排（請說明）"
-          }
-        },
-        "company": {
-          "fields": {
-            "foundationNameFirstChoice": {
-              "label": "理想財團名稱（第一志願）"
-            },
-            "foundationNameSecondChoice": {
-              "label": "理想財團名稱（第二志願）"
-            },
-            "capitalRequirementChoice": {
-              "label": "財團實繳資本要求"
-            },
-            "capitalRequirementOther": {
-              "label": "資本要求說明"
-            }
-          }
-        },
-        "services": {
-          "fields": {
-            "boardServiceMode": {
-              "label": "本地董事會成員服務"
-            }
+            "label": "財團實繳資本要求"
           },
-          "options": {
-            "boardServiceMode": {
-              "mirrProvided": "使用 Mirr Asia 本地董事會成員服務",
-              "clientProvided": "客戶將自行安排合規的本地董事會"
-            }
-          },
-          "items": {
-            "foundationSetup": {
-              "label": "瑞士財團設立",
-              "info": "包含所有與設立相關的成本。"
-            },
-            "localBoardMember": {
-              "label": "本地董事會成員服務（1 年）",
-              "info": "瑞士財團必須委任至少一名居住於瑞士的董事會成員。"
-            },
-            "registeredOfficePobox": {
-              "label": "註冊辦公室 - 郵政信箱（1 年）",
-              "info": "年度瑞士郵政信箱地址服務。"
-            },
-            "registeredOfficeFlexidesk": {
-              "label": "註冊辦公室 - 彈性辦公桌（1 年）",
-              "info": "包含租賃協議、會議室使用權及瑞士電話號碼。"
-            },
-            "bankOpening": {
-              "label": "瑞士銀行開戶（資本金 + 營運）",
-              "info": "非面簽開戶支援服務。"
-            },
-            "accountingTaxAnnual": {
-              "label": "會計及稅務服務（年度，最多 300 筆交易）",
-              "info": "包含簿記、社會保險/增值稅註冊、增值稅申報、年度報表及稅務申報。"
-            },
-            "annualFoundationReport": {
-              "label": "年度財團報告擬定及提交（預估）",
-              "info": "預估金額，在合規審核後可能進行調整。"
-            }
+          "capitalRequirementOther": {
+            "label": "資本要求說明"
+          }
+        }
+      },
+      "services": {
+        "fields": {
+          "boardServiceMode": {
+            "label": "本地董事會成員服務"
           }
         },
-        "fees": {
-          "note": "資本要求資訊僅用於合規收集，不計入發票總額。"
+        "options": {
+          "boardServiceMode": {
+            "mirrProvided": "使用 Mirr Asia 本地董事會成員服務",
+            "clientProvided": "客戶將自行安排合規的本地董事會"
+          }
         },
-        "review": {
-          "declaration": {
-            "content": "我同意所有提供的資訊均屬真實完整，且是為了合法的商業目的而提交。"
+        "items": {
+          "foundationSetup": {
+            "label": "瑞士財團設立",
+            "info": "包含所有與設立相關的成本。"
+          },
+          "localBoardMember": {
+            "label": "本地董事會成員服務（1 年）",
+            "info": "瑞士財團必須委任至少一名居住於瑞士的董事會成員。"
+          },
+          "registeredOfficePobox": {
+            "label": "註冊辦公室 - 郵政信箱（1 年）",
+            "info": "年度瑞士郵政信箱地址服務。"
+          },
+          "registeredOfficeFlexidesk": {
+            "label": "註冊辦公室 - 彈性辦公桌（1 年）",
+            "info": "包含租賃協議、會議室使用權及瑞士電話號碼。"
+          },
+          "bankOpening": {
+            "label": "瑞士銀行開戶（資本金 + 營運）",
+            "info": "非面簽開戶支援服務。"
+          },
+          "accountingTaxAnnual": {
+            "label": "會計及稅務服務（年度，最多 300 筆交易）",
+            "info": "包含簿記、社會保險/增值稅註冊、增值稅申報、年度報表及稅務申報。"
+          },
+          "annualFoundationReport": {
+            "label": "年度財團報告擬定及提交（預估）",
+            "info": "預估金額，在合規審核後可能進行調整。"
+          }
+        }
+      },
+      "fees": {
+        "note": "資本要求資訊僅用於合規收集，不計入發票總額。"
+      },
+      "review": {
+        "declaration": {
+          "content": "我同意所有提供的資訊均屬真實完整，且是為了合法的商業目的而提交。"
         }
       }
     }
   },
   "appUpdate": {
-      "totalToPay": "待支付總額：",
-      "cancel": "取消",
-      "pay": "支付 {{amount}}",
-      "success": "付款成功！",
-      "successDesc": "您的付款已處理並通過驗證。我們的財務團隊已收到通知。",
-      "paymentId": "付款編號",
-      "amountPaid": "實付金額",
-      "status": "狀態",
-      "paid": "已付款",
-      "rejected": "已拒絕",
-      "pendingReview": "待審核",
-      "adminApproved": "管理員已核准",
-      "stripeStatus": "Stripe 狀態",
-      "receipt": "收據",
-      "viewReceipt": "查看收據",
-      "refreshStatus": "整理狀態",
-      "continue": "繼續下一步",
-      "proofSubmitted": "憑證已提交",
-      "proofSubmittedDesc": "您的銀行轉帳憑證已上傳。我們的財務團隊將在 24 小時內驗證付款並更新狀態。",
-      "reference": "參考編號",
-      "amountDue": "應付金額",
-      "proofDocument": "憑證文件",
-      "viewProof": "查看憑證",
-      "proofDenied": "您之前的憑證已被拒絕。請上傳新的收據。",
-      "proofDeniedShort": "您的憑證已被拒絕。請刪除並重新上傳新的收據。",
-      "proofDeleteNote": "如果您的憑證被拒絕，您可以在下方將其刪除並重新上傳。",
-      "deleteReupload": "刪除並重新上傳",
-      "waitingApproval": "正在等待管理員核准。核准後即可繼續。",
-      "selectMethod": "選擇付款方式",
-      "cardPayment": "信用卡/簽帳卡支付",
-      "cardPaymentDesc": "透過 Stripe 進行安全付款",
-      "bankTransfer": "銀行轉帳",
-      "bankTransferDesc": "電匯至我們的帳戶",
-      "details": "付款詳情",
-      "cardRedirectNote": "您將被引導至安全付款視窗，使用信用卡或簽帳卡完成購買。",
-      "originalUsd": "原始金額（{{currency}}）",
-      "exchangeRate": "匯率",
-      "subtotal": "小計",
-      "cardFee": "卡片處理費",
-      "totalAmount": "總金額",
-      "proceedToPay": "前往付款",
-      "totalToTransfer": "轉帳總金額",
-      "noCardFeeNote": "銀行轉帳不收取卡片處理費。",
-      "refNumber": "參考編號（選填）",
-      "refPlaceholder": "例如：REF-123456",
-      "uploadProof": "上傳收據/憑證",
-      "supportedFormats": "支援格式：PDF, JPG, PNG。",
-      "submitProof": "提交憑證",
-      "errors": {
-        "confirmFailed": "確認付款失敗。",
-        "deleteFailed": "刪除憑證失敗。",
-        "fetchFailed": "獲取付款狀態失敗。",
-        "paymentFailed": "付款失敗。請再試一次。",
-        "serverSyncFailed": "付款已確認，但與伺服器通訊失敗。",
-        "unexpected": "發生預期外的錯誤。",
-        "generic": "錯誤",
-        "notSaved": "申請資料未儲存。",
-        "stripeInitFailed": "無法初始化 Stripe。",
-        "networkError": "初始化付款時發生網路錯誤。",
-        "uploadFailed": "上傳失敗。",
-        "uploadException": "上傳異常。"
+     "title": "有新版本可用",
+    "description": "請重新整理頁面以使用最新版本。",
+    "refreshNow": "重新整理",
+    "totalToPay": "待支付總額：",
+    "cancel": "取消",
+    "pay": "支付 {{amount}}",
+    "success": "付款成功！",
+    "successDesc": "您的付款已處理並通過驗證。我們的財務團隊已收到通知。",
+    "paymentId": "付款編號",
+    "amountPaid": "實付金額",
+    "status": "狀態",
+    "paid": "已付款",
+    "rejected": "已拒絕",
+    "pendingReview": "待審核",
+    "adminApproved": "管理員已核准",
+    "stripeStatus": "Stripe 狀態",
+    "receipt": "收據",
+    "viewReceipt": "查看收據",
+    "refreshStatus": "整理狀態",
+    "continue": "繼續下一步",
+    "proofSubmitted": "憑證已提交",
+    "proofSubmittedDesc": "您的銀行轉帳憑證已上傳。我們的財務團隊將在 24 小時內驗證付款並更新狀態。",
+    "reference": "參考編號",
+    "amountDue": "應付金額",
+    "proofDocument": "憑證文件",
+    "viewProof": "查看憑證",
+    "proofDenied": "您之前的憑證已被拒絕。請上傳新的收據。",
+    "proofDeniedShort": "您的憑證已被拒絕。請刪除並重新上傳新的收據。",
+    "proofDeleteNote": "如果您的憑證被拒絕，您可以在下方將其刪除並重新上傳。",
+    "deleteReupload": "刪除並重新上傳",
+    "waitingApproval": "正在等待管理員核准。核准後即可繼續。",
+    "selectMethod": "選擇付款方式",
+    "cardPayment": "信用卡/簽帳卡支付",
+    "cardPaymentDesc": "透過 Stripe 進行安全付款",
+    "bankTransfer": "銀行轉帳",
+    "bankTransferDesc": "電匯至我們的帳戶",
+    "details": "付款詳情",
+    "cardRedirectNote": "您將被引導至安全付款視窗，使用信用卡或簽帳卡完成購買。",
+    "originalUsd": "原始金額（{{currency}}）",
+    "exchangeRate": "匯率",
+    "subtotal": "小計",
+    "cardFee": "卡片處理費",
+    "totalAmount": "總金額",
+    "proceedToPay": "前往付款",
+    "totalToTransfer": "轉帳總金額",
+    "noCardFeeNote": "銀行轉帳不收取卡片處理費。",
+    "refNumber": "參考編號（選填）",
+    "refPlaceholder": "例如：REF-123456",
+    "uploadProof": "上傳收據/憑證",
+    "supportedFormats": "支援格式：PDF, JPG, PNG。",
+    "submitProof": "提交憑證",
+    "errors": {
+      "confirmFailed": "確認付款失敗。",
+      "deleteFailed": "刪除憑證失敗。",
+      "fetchFailed": "獲取付款狀態失敗。",
+      "paymentFailed": "付款失敗。請再試一次。",
+      "serverSyncFailed": "付款已確認，但與伺服器通訊失敗。",
+      "unexpected": "發生預期外的錯誤。",
+      "generic": "錯誤",
+      "notSaved": "申請資料未儲存。",
+      "stripeInitFailed": "無法初始化 Stripe。",
+      "networkError": "初始化付款時發生網路錯誤。",
+      "uploadFailed": "上傳失敗。",
+      "uploadException": "上傳異常。"
+    },
+    "messages": {
+      "success": "成功",
+      "proofUploaded": "憑證上傳成功。",
+      "updated": "已更新",
+      "statusRefreshed": "付款狀態已更新。",
+      "deleted": "已刪除",
+      "proofRemoved": "憑證已移除。請上傳新檔案。"
+    }
+  },
+  "ee": {
+    "auto": {
+      "k001": "負責人",
+      "k002": "授權代理人",
+      "k003": "主要股東",
+      "k004": "專業顧問",
+      "k005": "愛沙尼亞 OÜ 公司設立與初步維護",
+      "k006": "電子貨幣機構 (EMI) 名單",
+      "k007": "EMI 帳戶開立",
+      "k008": "銀行帳戶開立",
+      "k009": "法律意見書（愛沙尼亞）",
+      "k010": "法律意見書（國內上市用）",
+      "k011": "法律意見書（其他國家）",
+      "k012": "業務諮詢",
+      "k013": "IT / 軟體 / 區塊鏈開發",
+      "k014": "電子商務 / 零售 / 批發",
+      "k015": "貿易",
+      "k016": "管理 / IT 諮詢",
+      "k017": "製造業",
+      "k018": "虛擬貨幣交易所 / 錢包",
+      "k019": "虛擬貨幣投資 / DeFi",
+      "k020": "外匯 / 金融 / 投資",
+      "k021": "區塊鏈遊戲 / Web3",
+      "k022": "製造業",
+      "k023": "電子商務",
+      "k024": "海外直購",
+      "k025": "國際業務擴展 / 跨境貿易",
+      "k026": "服務提供 / 諮詢 / IT 服務",
+      "k027": "控股公司 (企業架構)",
+      "k028": "投資 / 財富管理",
+      "k029": "專案 / 合資企業工具 (JV)",
+      "k030": "知識產權 (IP) 持有",
+      "k031": "低稅率帶動交易增長",
+      "k032": "無資本利得稅",
+      "k033": "EMI 帳戶開立諮詢",
+      "k034": "銀行帳戶開立諮詢",
+      "k035": "其他報價請求",
+      "k036": "愛沙尼亞 OÜ 公司設立服務",
+      "k037": "設立準備、文件檢查及申報支援。",
+      "k038": "愛沙尼亞政府規費",
+      "k039": "法定規費。",
+      "k040": "愛沙尼亞辦公室註冊地址服務（一年）",
+      "k041": "法定年度本地辦公地址服務。",
+      "k042": "專業管理及個案後續跟進",
+      "k043": "設立諮詢與案件處理支援。",
+      "k044": "愛沙尼亞法定聯繫人服務 (1 年)",
+      "k045": "若客戶可自行提供指定的聯繫人安排，可移除此項。",
+      "k046": "授權委託書 (POA) 編製",
+      "k047": "EMI 名單",
+      "k048": "僅針對 Mirr Asia 的合作 EMI 提供協助。最終批准與否由提供商根據其內部合規要求自行決定。",
+      "k049": "僅限報價的服務請求將被追蹤，在定價前不計入發票總額。價格源自歐元報價結構，目前透過美元/港幣渠道結算。",
+      "k050": "申請須知",
+      "k051": "本申請表必須由董事、股東或獲授權代表填寫。為確保合規審查及申報流程順利進行，請務必確保所提供的所有資料均準確無誤。重要提示：所有欄位必須僅以英文填寫。",
+      "k052": "填寫人姓名",
+      "k053": "與愛沙尼亞公司的關係",
+      "k054": "電話號碼",
+      "k055": "電子郵件",
+      "k056": "通訊軟體 ID (SNS)",
+      "k057": "1. 擬設立之愛沙尼亞實體是否為了、涉及或關聯於任何包含洗錢、非法賭博、逃稅、資產隱匿、欺詐或其他非法活動之目的？",
+      "k058": "其他 / 尋求法律建議",
+      "k059": "2. 您是否知悉並同意在公司成立後，該實體將承擔定期產生的合規費用及法律義務，包括年度續約？",
+      "k060": "可由內部自行處理。",
+      "k061": "否，若有固定的年度費用，我將不繼續辦理。",
+      "k062": "在確認之前，我需要進一步的專業諮詢。",
+      "k063": "B 部分：制裁與司法管轄區風險\n3. 擬設立之愛沙尼亞實體（包括任何母公司、子公司或關聯集團公司）是否在以下司法管轄區營運或計劃營運？（伊朗、北韓、俄羅斯、白俄羅스、敘利亞、古巴、緬甸、阿富汗、委內瑞拉、烏克蘭非政府控制地區包括克里米亞、頓內茨克及盧甘斯克，或其他受國際制裁之司法管轄區）",
+      "k064": "4. 該實體之任何高級職員、董事或實質控制人是否居住在受聯合國 (UN)、歐盟 (EU)、美國海外資產控制辦公室 (OFAC) 或當地政府制裁的國家或地區？",
+      "k065": "5. 擬設立之愛沙尼亞實體是否由任何受制裁的個人、團體、組織或政府機構所擁有、控制，或代表其行事？",
+      "k066": "6. 擬設立之愛沙尼亞實體或任何關聯公司目前是否在、或計劃在以下高風險行業營運？（石油、天然氣、能源、軍事/國防、金融科技，或虛擬資產/加密貨幣相關服務）",
+      "k067": "目前或計畫在石油、瓦斯、軍事或能源領域開展業務？",
+      "k068": "行業選擇",
+      "k069": "其他行業詳情",
+      "k070": "業務描述",
+      "k071": "官方網站",
+      "k072": "https://",
+      "k073": "設立目的",
+      "k074": "其他目的詳情",
+      "k075": "擬定公司名稱（優先順位 1）",
+      "k076": "擬定公司名稱（優先順位 2）",
+      "k077": "擬定公司名稱（優先順位 3）",
+      "k078": "總資本額 (EUR)",
+      "totalCapitalTooltip": "在以最低資本設立實體的情況下，尤其是由我們代您先行墊付資本以協助完成設立時，我們建議將初始股本設定為 1 歐元。（在愛沙尼亞，若以預先繳足資本並存入指定銀行帳戶的方式設立公司，通常會大幅拉長處理時間。因此，若您重視更快速的設立流程，我們建議採用 1 歐元方案。）但是，如果您受韓國《外國匯兌交易法》等法規約束，且該法規要求在匯出資本前先完成海外直接投資（ODI）申報，我們則建議設定較高的資本額（例如 1,000 歐元）。在此情況下，您應先向當地銀行辦理 ODI 申報，之後再匯出所設定的資本。",
+      "k079": "1 歐元",
+      "k080": "2,500 歐元",
+      "k081": "25,000 歐元",
+      "k082": "總資本額（其他金額，單位：歐元）",
+      "k083": "管理層構成",
+      "k084": "單一個人結構（獨資董事及 100% 股東）",
+      "k084Info": "（由一名自然人同時擔任管理層職務並持有所有股份。）",
+      "k085": "多位個人結構（僅限自然人）",
+      "k085Info": "（由兩名或以上自然人擔任董事及/或股東，不涉及法人實體。）",
+      "k086": "法人關聯結構（包含法人實體股東）",
+      "k086Info": "（一名或多名股東為公司或組織。請注意：董事必須由自然人擔任。）",
+      "k087": "其他管理層構成詳情",
+      "k088": "註冊地址選項",
+      "k089": "我將使用由 Mirr Asia 提供之愛沙尼亞地址（已包含在標準方案中）",
+      "k090": "我將提供自己在愛沙尼亞的註冊地址（需經合規審查；標準方案費用仍將照常收取）",
+      "k091": "自有註冊地址詳情",
+      "k092": "預計年度交易量",
+      "k093": "需要諮詢",
+      "k094": "服務設定須知",
+      "k095": "此套裝中愛沙尼亞註冊地址服務為強制項目。若客戶提供指定的聯繫人安排，可移除聯繫人服務。",
+      "k096": "聯繫人服務模式",
+      "k097": "使用 Mirr Asia 聯繫人服務（400 美元/年）",
+      "k098": "客戶自行提供 DCP 聯繫人安排（無服務費）",
+      "k099": "申請服務項目",
+      "k100": "其他申請服務詳情",
+      "k101": "僅限報價服務請求（追蹤中，不計入發票總額）",
+      "k102": "其他僅限報價請求詳情",
+      "k103": "愛沙尼亞 OÜ 公司設立",
+      "k104": "愛沙尼亞 OÜ 申請已提交",
+      "k105": "已收到您的愛沙尼亞公司設立請求。在文件與合規檢查完成後，通常需要 3 至 5 個工作日處理。",
+      "k106": "準備與 KYC 審核",
+      "k107": "準備工作、文件檢查及 KYC 確認通常在 2 至 3 個工作日內完成。",
+      "k108": "公司設立申報",
+      "k109": "完成準備後，申報與設立程序通常在 1 至 2 個工作日內完成。",
+      "k110": "申報後支援",
+      "k111": "地址/聯繫人服務設定及後續支援將根據所選服務進行協調。",
+      "k112": "請提供填寫此申請表的個人詳細資料，以及其與擬設立之愛沙尼亞公司的關係。",
+      "k113": "反洗錢 (AML) / 客戶盡職調查 (CDD)",
+      "k114": "業務意圖、制裁篩查及年度續約同意。",
+      "k115": "業務概況與註冊詳情。",
+      "k116": "邀請相關方並指定聯繫人。",
+      "k117": "服務自訂",
+      "k118": "查看強制性套裝項目與選購附加項目。",
+      "k119": "付款前核對最終應付費用。",
+      "k120": "付款處理",
+      "k121": "進行卡片支付或上傳銀行轉帳憑證。",
+      "k122": "審閱與聲明",
+      "k123": "我同意本申請的條款與聲明。",
+      "k124": "我確認所有提交的資訊均真實準確。",
+      "k125": "我了解若發現違反法律或合規之情形，服務可能會被暫停。"
+    }
+  },
+  "lt": {
+    "auto": {
+      "k001": "擬設立之立陶宛公司董事",
+      "k002": "擬設立之立陶宛法人實體執行長",
+      "k003": "由董事委任之授權人員",
+      "k004": "主要股東",
+      "k005": "專業顧問（律師、會計師、稅務顧問等）",
+      "k006": "加密貨幣相關",
+      "k007": "IT / 區塊鏈 / 軟體開發",
+      "k008": "加密貨幣投資",
+      "k009": "加密貨幣遊戲",
+      "k010": "外匯交易",
+      "k011": "金融 / 投資 / 諮詢",
+      "k012": "貿易",
+      "k013": "批發 / 零售",
+      "k014": "顧問服務",
+      "k015": "製造業",
+      "k016": "線上服務（電子商務）",
+      "k017": "海外直購 / 物流 / 代理",
+      "k018": "業務多元化",
+      "k019": "顧問 / 投資者 / 合作夥伴推薦",
+      "k020": "國際擴張",
+      "k021": "資產管理",
+      "k022": "控股公司策略",
+      "k023": "透過金融政策獲得競爭優勢",
+      "k024": "稅收效率帶動交易增長",
+      "k025": "立陶宛法律意見書",
+      "k026": "國內交易所上市法律意見書",
+      "k027": "其他國家法律意見書",
+      "k028": "業務與監管諮詢",
+      "k029": "EMI Level 10 營運支援（另行報價）",
+      "k030": "其他僅限報價之請求",
+      "k031": "立陶宛公司設立服務",
+      "k032": "公證費",
+      "k033": "設立登記",
+      "k034": "一年公司地址服務",
+      "k035": "銀行帳戶開立支援",
+      "k036": "參考價格目前設定為 400 歐元，稍後可調整。",
+      "k037": "現成 VASP 標準套裝（僅文件/牌照證明）",
+      "k038": "標準套裝定價依報價而定。此版本不含完整基礎設施組件。",
+      "k039": "現成 VASP 完整套裝",
+      "k040": "包含轉讓程序、VASP 基礎設施設定、註冊地址/本地聯繫人、AML 整合支援及相關套裝範圍。",
+      "k041": "立陶宛 EMI 牌照項目 (Level 1-9)",
+      "k042": "立陶宛中央銀行政府規費",
+      "k043": "反洗錢主管 (AML Officer)（年度，基礎級）",
+      "k044": "參考年費從每月 1,000 歐元起（適用最短合約期）。",
+      "k045": "反洗錢主管 (AML Officer)（年度，資深級）",
+      "k046": "參考年費從每月 2,000 歐元起（適用最短合約期）。",
+      "k047": "會計套裝（每月最多 50 張發票，年計）",
+      "k048": "會計套裝（每月最多 100 張發票，年計）",
+      "k049": "會計套裝（每月最多 200 張發票，年計）",
+      "k050": "會計套裝（每月最多 500 張發票，年計）",
+      "k051": "會計套裝（高交易量 / 客製化報價）",
+      "k052": "此會計等級之定價依報價而定。",
+      "k053": "EMI 虛擬帳戶開戶費（第三方預估）",
+      "k054": "根據供應商開戶結果，通常在 500 至 2,000 歐元之間。",
+      "k055": "本地辦公室租金與水電（年度預估）",
+      "k056": "參考預估每月 150 至 250 歐元。",
+      "k057": "KYC/KYT 使用費預估",
+      "k058": "根據預計 KYC/KYT 數量，按每人 2 歐元計算。",
+      "k059": "法定利息（若未繳足全部資本）",
+      "k060": "適用於未繳足法定資本之情形。此部分反映為公司收入，可用於支出。",
+      "k061": "歐元報價參考已納入統一的美元/港幣支付渠道。資本要求僅用於合規記錄，不計入應付總額。",
+      "k062": "申請人須知",
+      "k063": "請作為申請人、董事或授權代表填寫此表格。請確保所有詳情與身份證明文件一致。",
+      "k064": "與立陶宛實體的關係",
+      "k065": "所需文件",
+      "k066": "我確認可以提供所有要求的文件。",
+      "k067": "偏好的身分驗證方式",
+      "k068": "護照與人臉同時清晰可見的照片",
+      "k069": "親自親臨 Mirr Asia 辦公室（香港或首爾瑞草區）",
+      "k070": "提交經戶政機關認證之護照副本",
+      "k071": "於鄰近公證處進行護照公證",
+      "k072": "設立目的是否涉及法律或道德疑慮（洗錢、賭博、逃稅、隱匿、詐騙）？",
+      "k073": "需要法律諮詢",
+      "k074": "其他法律/道德問題詳情",
+      "k075": "設立後，將產生年度續約及經常性合規費用。您是否同意？",
+      "k076": "可由內部處理",
+      "k077": "若產生固定年度費用則不予進行",
+      "k078": "決策前需要諮詢",
+      "k079": "目前是否或計畫在受制裁國家/地區開展業務？",
+      "k080": "相關人員是否居住在受制裁司法管轄區（UN/EU/UK/HKMA/OFAC 範圍）？",
+      "k081": "目前或計畫在克里米亞或塞凡堡開展任何業務？",
+      "k082": "目前或計畫在石油、瓦斯、能源、軍事或國防領域開展業務？",
+      "k083": "立陶宛設立要求",
+      "k084": "標準設立之最低資本為 2,500 歐元，且須列出至少一名股東/董事/經理。銀行開戶作業時間通常在審核後 3 至 5 週。",
+      "k085": "行業選擇",
+      "k086": "其他行業詳情",
+      "k087": "產品/服務描述",
+      "k088": "業務摘要（3 至 4 句話）",
+      "k089": "https://",
+      "k090": "設立目的及預期效果",
+      "k091": "其他目的詳情",
+      "k092": "擬繳足總資本額 (EUR)",
+      "k093": "2,500 歐元（標準最低金額）",
+      "k094": "125,000 歐元（現成 VASP 背景）",
+      "k095": "350,000 歐元（EMI 牌照背景）",
+      "k096": "其他金額",
+      "k097": "其他資本額（單位：歐元）",
+      "k098": "立陶宛註冊地址",
+      "k099": "使用 Mirr Asia 公司地址服務",
+      "k100": "使用客戶提供之立陶宛營業地址",
+      "k101": "客戶提供之地址詳情",
+      "k102": "我了解資本要求必須在設立前存入資本帳戶，且不計入發票總額。",
+      "k103": "偏好的簿記週期",
+      "k104": "半年計",
+      "k105": "年計",
+      "k106": "預計每月發票數量",
+      "k107": "50 張以下",
+      "k108": "51 至 100 張",
+      "k109": "101 至 200 張",
+      "k110": "201 至 500 張",
+      "k111": "500 張以上",
+      "k112": "預計員工人數",
+      "k113": "0 至 3 人",
+      "k114": "4 至 5 人",
+      "k115": "6 至 7 人",
+      "k116": "7 人以上",
+      "k117": "您是否需要 VAT 與稅務申報支援？",
+      "k118": "需要先諮詢",
+      "k119": "會計與報告須知",
+      "k120": "服務與定價設定",
+      "k121": "請先選擇立陶宛方案，隨後配置維護範圍及第三方預估費用。第三方預估可顯示在發票中以利規劃。",
+      "k122": "立陶宛服務方案",
+      "k123": "立陶宛設立指南套裝（參考價 2,200 歐元）",
+      "k124": "現成 VASP - 標準套裝（依報價）",
+      "k125": "現現 VASP - 完整套裝（25,000 歐元）",
+      "k126": "EMI 牌照項目 (Level 1-9, 60,000 歐元 + 政府規費)",
+      "k127": "反洗錢主管 (AML Officer) 計畫",
+      "k128": "未選擇 AML Officer 計畫",
+      "k129": "基礎級 AML Officer 年度計畫（12,000 歐元）",
+      "k130": "資深級 AML Officer 年度計畫（24,000 歐元）",
+      "k131": "會計套裝",
+      "k132": "未選擇會計套裝",
+      "k133": "每月最多 50 張發票（年計 4,800 歐元）",
+      "k134": "每月最多 100 張發票（年計 6,120 歐元）",
+      "k135": "每月最多 200 張發票（年計 9,240 歐元）",
+      "k136": "每月最多 500 張發票（年計 13,560 歐元）",
+      "k137": "500 張以上 / 客製化（依報價）",
+      "k138": "EMI 虛擬帳戶開戶費預估",
+      "k139": "不包含",
+      "k140": "500 歐元",
+      "k141": "1,000 歐元",
+      "k142": "1,500 歐元",
+      "k143": "2,000 歐元",
+      "k144": "自定義金額",
+      "k145": "自定義 EMI 開戶預估 (EUR)",
+      "k146": "本地辦公室租金 + 水電預估（年度）",
+      "k147": "1,800 歐元",
+      "k148": "2,400 歐元",
+      "k149": "3,000 歐元",
+      "k150": "自定義辦公室租金 + 水電預估 (EUR)",
+      "k151": "預計 KYC/KYT 檢查次數（每人 2 歐元）",
+      "k152": "若未繳足 VASP 資本，包含法定利息項目 (4,900 歐元)",
+      "k153": "僅限報價之服務請求",
+      "k154": "其他僅限報價請求詳情",
+      "k155": "資本提示",
+      "k156": "資本要求（依方案為 2,500 / 125,000 / 350,000 歐元）為合規前提，不計入發票總額。",
+      "k157": "立陶宛設立與牌照申請",
+      "k158": "立陶宛申請已提交",
+      "k159": "已收到您的立陶宛服務請求。我們的團隊將根據所選方案完成範圍確認、合規審核及申報協調。",
+      "k160": "準備與 KYC",
+      "k161": "優先完成文件準備、KYC/CDD 檢查及套裝確認。",
+      "k162": "方案執行",
+      "k163": "標準設立在所需文件備齊後，通常需要約 2 至 3 週。",
+      "k164": "銀行 / 營運",
+      "k165": "銀行開戶時間因行業而異；規劃期通常為 3 至 5 週。",
+      "k166": "牌照特定後續追蹤",
+      "k167": "現成 VASP 和 EMI 方案包含額外的營運與監管追蹤階段。",
+      "k168": "填寫人詳情及開戶準備就緒度。",
+      "k169": "反洗錢 (AML) / 客戶盡職調查 (CDD)",
+      "k170": "業務意圖、制裁檢查及合規聲明。",
+      "k171": "業務概況、註冊詳情及資本聲明。",
+      "k172": "邀請相關方並分配指定聯繫人範圍。",
+      "k173": "服務自訂",
+      "k174": "選擇方案、維護範圍及第三方預估項目。",
+      "k175": "付款前核對計費項目與預估項目。",
+      "k176": "付款處理",
+      "k177": "進行卡片支付或銀行轉帳流程。",
+      "k178": "審閱與聲明",
+      "k179": "我確認所有提交的資訊均真實準確。",
+      "k180": "我了解若發現法律/合規疑慮，服務可能會被暫停或拒絕。",
+      "k181": "我了解法定資本為非計費的設立前提，不屬於發票總額的一部分。"
+    }
+  },
+  "hu": {
+    "title": "匈牙利 Kft (有限公司) 註冊",
+    "confirmation": {
+      "title": "匈牙利公司註冊申請已提交",
+      "message": "我們已收到您的匈牙利公司註冊申請。我們的團隊將在正式提交前審核合規性、結構及所選服務。",
+      "steps": {
+        "documentReview": {
+          "title": "文件審核",
+          "description": "我們會在提交前核實所選結構、佐證文件及服務範圍。"
+        },
+        "incorporation": {
+          "title": "公司註冊及增值稅 (VAT) 登記",
+          "description": "在收到所有所需文件後，標準註冊及增值稅登記通常在 5 至 10 個工作天內完成。"
+        },
+        "postFiling": {
+          "title": "註冊後協調",
+          "description": "我們將協調註冊後事項，如銀行帳戶準備及（如選購）居留許可相關服務。"
+        }
+      }
+    },
+    "reviewSummary": {
+      "relationship": "關係"
+    },
+    "applicant": {
+      "description": "申請人詳情、與公司的關係以及主要聯繫方式設定。",
+      "notice": {
+        "title": "申請人須知",
+        "content": "請以英文填寫所有詳情。海牙認證 (Apostille)、翻譯、使館認證及類似的外部程序時間應與 5 至 10 個工作天的註冊時間分開估算。"
       },
-      "messages": {
-        "success": "成功",
-        "proofUploaded": "憑證上傳成功。",
-        "updated": "已更新",
-        "statusRefreshed": "付款狀態已更新。",
-        "deleted": "已刪除",
-        "proofRemoved": "憑證已移除。請上傳新檔案。"
+      "changedName": "您是否曾更改過姓名？",
+      "previousNameEnglish": "若是，請提供您之前的英文姓名。",
+      "changedNameOther": "其他更名詳情",
+      "dateOfBirth": "出生日期",
+      "placeOfBirth": "出生地",
+      "nationality": "國籍",
+      "passportNumber": "護照號碼",
+      "residentialAddress": "居住地址",
+      "mailingAddress": "郵寄地址",
+      "mailingAddressDetails": "若與居住地址不同，請提供您的郵寄地址。",
+      "mailingOptions": {
+        "same": "與居住地址相同",
+        "different": "不同的郵寄地址"
+      },
+      "relationshipToCompany": "與匈牙利公司的關係",
+      "relationshipOptions": {
+        "shareholder": "股東",
+        "keyController": "最終受益人 / 主要控制人 (持股 25% 或以上)",
+        "director": "董事 (至少需 1 名)",
+        "generalManager": "總經理 (至少需 1 名，可由董事兼任)",
+        "dcp": "指定聯繫人 (可由董事兼任)",
+        "officialPartner": "Mirr Asia 註冊官方合作夥伴",
+        "other": "其他"
+      },
+      "designatedContactResponsibilities": "指定聯繫人 (DCP) 將負責：",
+      "designatedContactItems": {
+        "communication": "就公司事務與服務提供商溝通。",
+        "inquiries": "處理業務諮詢及進度更新。",
+        "documents": "接收官方文件及往來書信。",
+        "access": "查閱公司信息及文件。"
       }
     },
-    "ee": {
-      "auto": {
-        "k001": "負責人",
-        "k002": "授權代理人",
-        "k003": "主要股東",
-        "k004": "專業顧問",
-        "k005": "愛沙尼亞 OÜ 公司設立與初步維護",
-        "k006": "電子貨幣機構 (EMI) 名單",
-        "k007": "EMI 帳戶開立",
-        "k008": "銀行帳戶開立",
-        "k009": "法律意見書（愛沙尼亞）",
-        "k010": "法律意見書（國內上市用）",
-        "k011": "法律意見書（其他國家）",
-        "k012": "業務諮詢",
-        "k013": "IT / 軟體 / 區塊鏈開發",
-        "k014": "電子商務 / 零售 / 批發",
-        "k015": "貿易",
-        "k016": "管理 / IT 諮詢",
-        "k017": "製造業",
-        "k018": "虛擬貨幣交易所 / 錢包",
-        "k019": "虛擬貨幣投資 / DeFi",
-        "k020": "外匯 / 金融 / 投資",
-        "k021": "區塊鏈遊戲 / Web3",
-        "k022": "製造業",
-        "k023": "電子商務",
-        "k024": "海外直購",
-        "k025": "國際業務擴展 / 跨境貿易",
-        "k026": "服務提供 / 諮詢 / IT 服務",
-        "k027": "控股公司 (企業架構)",
-        "k028": "投資 / 財富管理",
-        "k029": "專案 / 合資企業工具 (JV)",
-        "k030": "知識產權 (IP) 持有",
-        "k031": "低稅率帶動交易增長",
-        "k032": "無資本利得稅",
-        "k033": "EMI 帳戶開立諮詢",
-        "k034": "銀行帳戶開立諮詢",
-        "k035": "其他報價請求",
-        "k036": "愛沙尼亞 OÜ 公司設立服務",
-        "k037": "設立準備、文件檢查及申報支援。",
-        "k038": "愛沙尼亞政府規費",
-        "k039": "法定規費。",
-        "k040": "愛沙尼亞辦公室註冊地址服務（一年）",
-        "k041": "法定年度本地辦公地址服務。",
-        "k042": "專業管理及個案後續跟進",
-        "k043": "設立諮詢與案件處理支援。",
-        "k044": "愛沙尼亞法定聯繫人服務 (1 年)",
-        "k045": "若客戶可自行提供指定的聯繫人安排，可移除此項。",
-        "k046": "授權委託書 (POA) 編製",
-        "k047": "EMI 名單",
-        "k048": "僅針對 Mirr Asia 的合作 EMI 提供協助。最終批准與否由提供商根據其內部合規要求自行決定。",
-        "k049": "僅限報價的服務請求將被追蹤，在定價前不計入發票總額。價格源自歐元報價結構，目前透過美元/港幣渠道結算。",
-        "k050": "申請須知",
-        "k051": "本申請表必須由董事、股東或獲授權代表填寫。為確保合規審查及申報流程順利進行，請務必確保所提供的所有資料均準確無誤。重要提示：所有欄位必須僅以英文填寫。",
-        "k052": "填寫人姓名",
-        "k053": "與愛沙尼亞公司的關係",
-        "k054": "電話號碼",
-        "k055": "電子郵件",
-        "k056": "通訊軟體 ID (SNS)",
-        "k057": "1. 擬設立之愛沙尼亞實體是否為了、涉及或關聯於任何包含洗錢、非法賭博、逃稅、資產隱匿、欺詐或其他非法活動之目的？",
-        "k058": "其他 / 尋求法律建議",
-        "k059": "2. 您是否知悉並同意在公司成立後，該實體將承擔定期產生的合規費用及法律義務，包括年度續約？",
-        "k060": "可由內部自行處理。",
-        "k061": "否，若有固定的年度費用，我將不繼續辦理。",
-        "k062": "在確認之前，我需要進一步的專業諮詢。",
-        "k063": "B 部分：制裁與司法管轄區風險\n3. 擬設立之愛沙尼亞實體（包括任何母公司、子公司或關聯集團公司）是否在以下司法管轄區營運或計劃營運？（伊朗、北韓、俄羅斯、白俄羅스、敘利亞、古巴、緬甸、阿富汗、委內瑞拉、烏克蘭非政府控制地區包括克里米亞、頓內茨克及盧甘斯克，或其他受國際制裁之司法管轄區）",
-        "k064": "4. 該實體之任何高級職員、董事或實質控制人是否居住在受聯合國 (UN)、歐盟 (EU)、美國海外資產控制辦公室 (OFAC) 或當地政府制裁的國家或地區？",
-        "k065": "5. 擬設立之愛沙尼亞實體是否由任何受制裁的個人、團體、組織或政府機構所擁有、控制，或代表其行事？",
-        "k066": "6. 擬設立之愛沙尼亞實體或任何關聯公司目前是否在、或計劃在以下高風險行業營運？（石油、天然氣、能源、軍事/國防、金融科技，或虛擬資產/加密貨幣相關服務）",
-        "k067": "目前或計畫在石油、瓦斯、軍事或能源領域開展業務？",
-        "k068": "行業選擇",
-        "k069": "其他行業詳情",
-        "k070": "業務描述",
-        "k071": "官方網站",
-        "k072": "https://",
-        "k073": "設立目的",
-        "k074": "其他目的詳情",
-        "k075": "擬定公司名稱（優先順位 1）",
-        "k076": "擬定公司名稱（優先順位 2）",
-        "k077": "擬定公司名稱（優先順位 3）",
-        "k078": "總資本額 (EUR)",
-        "totalCapitalTooltip": "在以最低資本設立實體的情況下，尤其是由我們代您先行墊付資本以協助完成設立時，我們建議將初始股本設定為 1 歐元。（在愛沙尼亞，若以預先繳足資本並存入指定銀行帳戶的方式設立公司，通常會大幅拉長處理時間。因此，若您重視更快速的設立流程，我們建議採用 1 歐元方案。）但是，如果您受韓國《外國匯兌交易法》等法規約束，且該法規要求在匯出資本前先完成海外直接投資（ODI）申報，我們則建議設定較高的資本額（例如 1,000 歐元）。在此情況下，您應先向當地銀行辦理 ODI 申報，之後再匯出所設定的資本。",
-        "k079": "1 歐元",
-        "k080": "2,500 歐元",
-        "k081": "25,000 歐元",
-        "k082": "總資本額（其他金額，單位：歐元）",
-        "k083": "管理層構成",
-        "k084": "單一個人結構（獨資董事及 100% 股東）",
-        "k084Info": "（由一名自然人同時擔任管理層職務並持有所有股份。）",
-        "k085": "多位個人結構（僅限自然人）",
-        "k085Info": "（由兩名或以上自然人擔任董事及/或股東，不涉及法人實體。）",
-        "k086": "法人關聯結構（包含法人實體股東）",
-        "k086Info": "（一名或多名股東為公司或組織。請注意：董事必須由自然人擔任。）",
-        "k087": "其他管理層構成詳情",
-        "k088": "註冊地址選項",
-        "k089": "我將使用由 Mirr Asia 提供之愛沙尼亞地址（已包含在標準方案中）",
-        "k090": "我將提供自己在愛沙尼亞的註冊地址（需經合規審查；標準方案費用仍將照常收取）",
-        "k091": "自有註冊地址詳情",
-        "k092": "預計年度交易量",
-        "k093": "需要諮詢",
-        "k094": "服務設定須知",
-        "k095": "此套裝中愛沙尼亞註冊地址服務為強制項目。若客戶提供指定的聯繫人安排，可移除聯繫人服務。",
-        "k096": "聯繫人服務模式",
-        "k097": "使用 Mirr Asia 聯繫人服務（400 美元/年）",
-        "k098": "客戶自行提供 DCP 聯繫人安排（無服務費）",
-        "k099": "申請服務項目",
-        "k100": "其他申請服務詳情",
-        "k101": "僅限報價服務請求（追蹤中，不計入發票總額）",
-        "k102": "其他僅限報價請求詳情",
-        "k103": "愛沙尼亞 OÜ 公司設立",
-        "k104": "愛沙尼亞 OÜ 申請已提交",
-        "k105": "已收到您的愛沙尼亞公司設立請求。在文件與合規檢查完成後，通常需要 3 至 5 個工作日處理。",
-        "k106": "準備與 KYC 審核",
-        "k107": "準備工作、文件檢查及 KYC 確認通常在 2 至 3 個工作日內完成。",
-        "k108": "公司設立申報",
-        "k109": "完成準備後，申報與設立程序通常在 1 至 2 個工作日內完成。",
-        "k110": "申報後支援",
-        "k111": "地址/聯繫人服務設定及後續支援將根據所選服務進行協調。",
-        "k112": "請提供填寫此申請表的個人詳細資料，以及其與擬設立之愛沙尼亞公司的關係。",
-        "k113": "反洗錢 (AML) / 客戶盡職調查 (CDD)",
-        "k114": "業務意圖、制裁篩查及年度續約同意。",
-        "k115": "業務概況與註冊詳情。",
-        "k116": "邀請相關方並指定聯繫人。",
-        "k117": "服務自訂",
-        "k118": "查看強制性套裝項目與選購附加項目。",
-        "k119": "付款前核對最終應付費用。",
-        "k120": "付款處理",
-        "k121": "進行卡片支付或上傳銀行轉帳憑證。",
-        "k122": "審閱與聲明",
-        "k123": "我同意本申請的條款與聲明。",
-        "k124": "我確認所有提交的資訊均真實準確。",
-        "k125": "我了解若發現違反法律或合規之情形，服務可能會被暫停。"
+    "compliance": {
+      "description": "業務意圖、制裁篩查及持續義務確認。",
+      "legalEthicsIssues": "成立目的是否涉及法律或倫理疑慮，例如洗錢、博彩、逃稅、資產隱匿或欺詐？",
+      "needLegalAdvice": "需要法律建議",
+      "legalEthicsIssuesOther": "其他法律或倫理問題詳情",
+      "annualRenewalAgreement": "公司成立後，將產生年度續期義務及相關費用。您是否同意這些義務？",
+      "annualRenewalOptions": {
+        "internalAfterIncorporation": "成立後可自行內部處理",
+        "noIfAnnualCostsApply": "若產生年度費用則不希望註冊",
+        "consultationRequired": "需要諮詢"
+      },
+      "options": {
+        "notSure": "不確定"
+      },
+      "sanctionedCountriesBusiness": "該匈牙利公司（或其母公司、集團或關聯公司）是否會與制裁國家（如伊朗、蘇丹、北韓、敘利亞、古巴、白俄羅斯、辛巴威、俄羅斯或政府控制外的烏克蘭地區）開展業務？",
+      "sanctionedPersonsResidence": "是否有任何股東、董事或關聯人士為制裁國家的居民？",
+      "sanctionedOwnershipControl": "該匈牙利公司是否由任何受制裁的人士、實體、組織或政府擁有、控制或代表其行事？",
+      "crimeaSevastopolBusiness": "是否有任何關聯人士目前在克里米亞或塞凡堡開展業務？",
+      "restrictedSectors": "公司或關聯實體是否涉及石油、天然氣、能源、軍事或國防等行業？"
+    },
+    "company": {
+      "description": "業務簡介、註冊地址設定及資本確認。",
+      "notesLabel": "重要備註",
+      "notes": {
+        "vat": "匈牙利是歐盟國家，增值稅 (VAT) 號碼通常在註冊時自動核發。",
+        "bank": "公司銀行帳戶應在註冊後 8 天內申請開立，但審核流程可能需要 1 至 2 個月。若嚴重延誤，可能會觸發約 70 歐元的罰款。",
+        "emi": "在某些情況下可遠端開立 EMI 帳戶，但交易手續費通常高於傳統銀行帳戶。",
+        "apostille": "若股東為韓國法人，公司文件通常需要海牙認證及匈牙利公證翻譯。",
+        "documents": "所有文件準備好後，請先寄至韓國辦公室核實，然後再轉寄至匈牙利。"
+      },
+      "industrySelection": "行業選擇",
+      "industrySelectionOther": "其他行業詳情",
+      "productServiceDescription": "產品或服務描述",
+      "businessDescription": "請用 3 至 4 句話描述業務內容",
+      "industryOptions": {
+        "cryptoRelated": "加密貨幣相關",
+        "itBlockchainSoftware": "IT / 區塊鏈 / 軟體開發",
+        "cryptoInvestment": "加密貨幣投資",
+        "cryptoGames": "加密貨幣遊戲",
+        "forexTrading": "外匯交易 (Forex)",
+        "financeInvestmentConsulting": "金融 / 投資 / 諮詢",
+        "trade": "貿易",
+        "wholesaleRetail": "批發 / 零售",
+        "consulting": "諮詢",
+        "manufacturing": "製造業",
+        "ecommerce": "線上服務 (電子商務)",
+        "onlineDirectPurchase": "線上直購 / 配送 / 代購"
+      },
+      "purposeOfEstablishment": "成立公司的目的或預期效益（可多選）",
+      "purposeOfEstablishmentOther": "其他目的詳情",
+      "purposeOptions": {
+        "businessDiversification": "因法規放寬而產生的業務多元化",
+        "advisorPartnerSuggestion": "法律顧問、投資者或業務夥伴的建議",
+        "internationalExpansion": "擴展至國際市場",
+        "assetManagement": "投資房地產或金融資產",
+        "holdingCompany": "作為子公司的控股公司",
+        "financialPolicyAdvantage": "透過有利的金融政策獲得競爭優勢",
+        "taxEfficiency": "較低的稅率或某些交易免徵增值稅"
+      },
+      "registeredCapitalHuf": "預計繳納的註冊資本 (HUF)",
+      "registeredAddressOption": "匈牙利註冊地址",
+      "registeredAddressOptions": {
+        "mirr": "使用 Mirr Asia 的註冊地址安排",
+        "client": "使用客戶提供的匈牙利地址"
+      },
+      "registeredAddressDetails": "客戶提供的註冊地址詳情",
+      "capitalRequirementAcknowledged": "我明白 3,000,000 HUF 的法定資本要求是合規前提，且不包含在發票總額中。"
+    },
+    "parties": {
+      "description": "邀請股東/董事並指派一名指定聯繫人。",
+      "roleOptions": {
+        "shareholder": "股東",
+        "keyController": "最終受益人 / 主要控制人 (持股 25% 或以上)",
+        "director": "董事",
+        "generalManager": "總經理",
+        "dcp": "指定聯繫人 (DCP)",
+        "officialPartner": "Mirr Asia 註冊官方合作夥伴",
+        "other": "其他"
+      },
+      "coverage": {
+        "generalManager": "總經理配置",
+        "generalManagerAtLeastOne": "至少需要一名總經理"
+      },
+      "roleTooltips": {
+        "dcp": "指定聯繫人 (Designated Contact Person)\n\n請指派負責與服務提供商溝通的人員。\n職責包括：\n處理公司相關諮詢\n監控程序進度\n接收官方往來文件"
       }
     },
-    "lt": {
-      "auto": {
-        "k001": "擬設立之立陶宛公司董事",
-        "k002": "擬設立之立陶宛法人實體執行長",
-        "k003": "由董事委任之授權人員",
-        "k004": "主要股東",
-        "k005": "專業顧問（律師、會計師、稅務顧問等）",
-        "k006": "加密貨幣相關",
-        "k007": "IT / 區塊鏈 / 軟體開發",
-        "k008": "加密貨幣投資",
-        "k009": "加密貨幣遊戲",
-        "k010": "外匯交易",
-        "k011": "金融 / 投資 / 諮詢",
-        "k012": "貿易",
-        "k013": "批發 / 零售",
-        "k014": "顧問服務",
-        "k015": "製造業",
-        "k016": "線上服務（電子商務）",
-        "k017": "海外直購 / 物流 / 代理",
-        "k018": "業務多元化",
-        "k019": "顧問 / 投資者 / 合作夥伴推薦",
-        "k020": "國際擴張",
-        "k021": "資產管理",
-        "k022": "控股公司策略",
-        "k023": "透過金融政策獲得競爭優勢",
-        "k024": "稅收效率帶動交易增長",
-        "k025": "立陶宛法律意見書",
-        "k026": "國內交易所上市法律意見書",
-        "k027": "其他國家法律意見書",
-        "k028": "業務與監管諮詢",
-        "k029": "EMI Level 10 營運支援（另行報價）",
-        "k030": "其他僅限報價之請求",
-        "k031": "立陶宛公司設立服務",
-        "k032": "公證費",
-        "k033": "設立登記",
-        "k034": "一年公司地址服務",
-        "k035": "銀行帳戶開立支援",
-        "k036": "參考價格目前設定為 400 歐元，稍後可調整。",
-        "k037": "現成 VASP 標準套裝（僅文件/牌照證明）",
-        "k038": "標準套裝定價依報價而定。此版本不含完整基礎設施組件。",
-        "k039": "現成 VASP 完整套裝",
-        "k040": "包含轉讓程序、VASP 基礎設施設定、註冊地址/本地聯繫人、AML 整合支援及相關套裝範圍。",
-        "k041": "立陶宛 EMI 牌照項目 (Level 1-9)",
-        "k042": "立陶宛中央銀行政府規費",
-        "k043": "反洗錢主管 (AML Officer)（年度，基礎級）",
-        "k044": "參考年費從每月 1,000 歐元起（適用最短合約期）。",
-        "k045": "反洗錢主管 (AML Officer)（年度，資深級）",
-        "k046": "參考年費從每月 2,000 歐元起（適用最短合約期）。",
-        "k047": "會計套裝（每月最多 50 張發票，年計）",
-        "k048": "會計套裝（每月最多 100 張發票，年計）",
-        "k049": "會計套裝（每月最多 200 張發票，年計）",
-        "k050": "會計套裝（每月最多 500 張發票，年計）",
-        "k051": "會計套裝（高交易量 / 客製化報價）",
-        "k052": "此會計等級之定價依報價而定。",
-        "k053": "EMI 虛擬帳戶開戶費（第三方預估）",
-        "k054": "根據供應商開戶結果，通常在 500 至 2,000 歐元之間。",
-        "k055": "本地辦公室租金與水電（年度預估）",
-        "k056": "參考預估每月 150 至 250 歐元。",
-        "k057": "KYC/KYT 使用費預估",
-        "k058": "根據預計 KYC/KYT 數量，按每人 2 歐元計算。",
-        "k059": "法定利息（若未繳足全部資本）",
-        "k060": "適用於未繳足法定資本之情形。此部分反映為公司收入，可用於支出。",
-        "k061": "歐元報價參考已納入統一的美元/港幣支付渠道。資本要求僅用於合規記錄，不計入應付總額。",
-        "k062": "申請人須知",
-        "k063": "請作為申請人、董事或授權代表填寫此表格。請確保所有詳情與身份證明文件一致。",
-        "k064": "與立陶宛實體的關係",
-        "k065": "所需文件",
-        "k066": "我確認可以提供所有要求的文件。",
-        "k067": "偏好的身分驗證方式",
-        "k068": "護照與人臉同時清晰可見的照片",
-        "k069": "親自親臨 Mirr Asia 辦公室（香港或首爾瑞草區）",
-        "k070": "提交經戶政機關認證之護照副本",
-        "k071": "於鄰近公證處進行護照公證",
-        "k072": "設立目的是否涉及法律或道德疑慮（洗錢、賭博、逃稅、隱匿、詐騙）？",
-        "k073": "需要法律諮詢",
-        "k074": "其他法律/道德問題詳情",
-        "k075": "設立後，將產生年度續約及經常性合規費用。您是否同意？",
-        "k076": "可由內部處理",
-        "k077": "若產生固定年度費用則不予進行",
-        "k078": "決策前需要諮詢",
-        "k079": "目前是否或計畫在受制裁國家/地區開展業務？",
-        "k080": "相關人員是否居住在受制裁司法管轄區（UN/EU/UK/HKMA/OFAC 範圍）？",
-        "k081": "目前或計畫在克里米亞或塞凡堡開展任何業務？",
-        "k082": "目前或計畫在石油、瓦斯、能源、軍事或國防領域開展業務？",
-        "k083": "立陶宛設立要求",
-        "k084": "標準設立之最低資本為 2,500 歐元，且須列出至少一名股東/董事/經理。銀行開戶作業時間通常在審核後 3 至 5 週。",
-        "k085": "行業選擇",
-        "k086": "其他行業詳情",
-        "k087": "產品/服務描述",
-        "k088": "業務摘要（3 至 4 句話）",
-        "k089": "https://",
-        "k090": "設立目的及預期效果",
-        "k091": "其他目的詳情",
-        "k092": "擬繳足總資本額 (EUR)",
-        "k093": "2,500 歐元（標準最低金額）",
-        "k094": "125,000 歐元（現成 VASP 背景）",
-        "k095": "350,000 歐元（EMI 牌照背景）",
-        "k096": "其他金額",
-        "k097": "其他資本額（單位：歐元）",
-        "k098": "立陶宛註冊地址",
-        "k099": "使用 Mirr Asia 公司地址服務",
-        "k100": "使用客戶提供之立陶宛營業地址",
-        "k101": "客戶提供之地址詳情",
-        "k102": "我了解資本要求必須在設立前存入資本帳戶，且不計入發票總額。",
-        "k103": "偏好的簿記週期",
-        "k104": "半年計",
-        "k105": "年計",
-        "k106": "預計每月發票數量",
-        "k107": "50 張以下",
-        "k108": "51 至 100 張",
-        "k109": "101 至 200 張",
-        "k110": "201 至 500 張",
-        "k111": "500 張以上",
-        "k112": "預計員工人數",
-        "k113": "0 至 3 人",
-        "k114": "4 至 5 人",
-        "k115": "6 至 7 人",
-        "k116": "7 人以上",
-        "k117": "您是否需要 VAT 與稅務申報支援？",
-        "k118": "需要先諮詢",
-        "k119": "會計與報告須知",
-        "k120": "服務與定價設定",
-        "k121": "請先選擇立陶宛方案，隨後配置維護範圍及第三方預估費用。第三方預估可顯示在發票中以利規劃。",
-        "k122": "立陶宛服務方案",
-        "k123": "立陶宛設立指南套裝（參考價 2,200 歐元）",
-        "k124": "現成 VASP - 標準套裝（依報價）",
-        "k125": "現現 VASP - 完整套裝（25,000 歐元）",
-        "k126": "EMI 牌照項目 (Level 1-9, 60,000 歐元 + 政府規費)",
-        "k127": "反洗錢主管 (AML Officer) 計畫",
-        "k128": "未選擇 AML Officer 計畫",
-        "k129": "基礎級 AML Officer 年度計畫（12,000 歐元）",
-        "k130": "資深級 AML Officer 年度計畫（24,000 歐元）",
-        "k131": "會計套裝",
-        "k132": "未選擇會計套裝",
-        "k133": "每月最多 50 張發票（年計 4,800 歐元）",
-        "k134": "每月最多 100 張發票（年計 6,120 歐元）",
-        "k135": "每月最多 200 張發票（年計 9,240 歐元）",
-        "k136": "每月最多 500 張發票（年計 13,560 歐元）",
-        "k137": "500 張以上 / 客製化（依報價）",
-        "k138": "EMI 虛擬帳戶開戶費預估",
-        "k139": "不包含",
-        "k140": "500 歐元",
-        "k141": "1,000 歐元",
-        "k142": "1,500 歐元",
-        "k143": "2,000 歐元",
-        "k144": "自定義金額",
-        "k145": "自定義 EMI 開戶預估 (EUR)",
-        "k146": "本地辦公室租金 + 水電預估（年度）",
-        "k147": "1,800 歐元",
-        "k148": "2,400 歐元",
-        "k149": "3,000 歐元",
-        "k150": "自定義辦公室租金 + 水電預估 (EUR)",
-        "k151": "預計 KYC/KYT 檢查次數（每人 2 歐元）",
-        "k152": "若未繳足 VASP 資本，包含法定利息項目 (4,900 歐元)",
-        "k153": "僅限報價之服務請求",
-        "k154": "其他僅限報價請求詳情",
-        "k155": "資本提示",
-        "k156": "資本要求（依方案為 2,500 / 125,000 / 350,000 歐元）為合規前提，不計入發票總額。",
-        "k157": "立陶宛設立與牌照申請",
-        "k158": "立陶宛申請已提交",
-        "k159": "已收到您的立陶宛服務請求。我們的團隊將根據所選方案完成範圍確認、合規審核及申報協調。",
-        "k160": "準備與 KYC",
-        "k161": "優先完成文件準備、KYC/CDD 檢查及套裝確認。",
-        "k162": "方案執行",
-        "k163": "標準設立在所需文件備齊後，通常需要約 2 至 3 週。",
-        "k164": "銀行 / 營運",
-        "k165": "銀行開戶時間因行業而異；規劃期通常為 3 至 5 週。",
-        "k166": "牌照特定後續追蹤",
-        "k167": "現成 VASP 和 EMI 方案包含額外的營運與監管追蹤階段。",
-        "k168": "填寫人詳情及開戶準備就緒度。",
-        "k169": "反洗錢 (AML) / 客戶盡職調查 (CDD)",
-        "k170": "業務意圖、制裁檢查及合規聲明。",
-        "k171": "業務概況、註冊詳情及資本聲明。",
-        "k172": "邀請相關方並分配指定聯繫人範圍。",
-        "k173": "服務自訂",
-        "k174": "選擇方案、維護範圍及第三方預估項目。",
-        "k175": "付款前核對計費項目與預估項目。",
-        "k176": "付款處理",
-        "k177": "進行卡片支付或銀行轉帳流程。",
-        "k178": "審閱與聲明",
-        "k179": "我確認所有提交的資訊均真實準確。",
-        "k180": "我了解若發現法律/合規疑慮，服務可能會被暫停或拒絕。",
-        "k181": "我了解法定資本為非計費的設立前提，不屬於發票總額的一部分。"
-      }
+    "accounting": {
+      "description": "簿記範圍、人員配置及增值稅/稅務支援需求。",
+      "expectedMonthlyInvoices": "預計每月發票數量",
+      "invoiceVolume": {
+        "upTo50": "50 張以內",
+        "from51To100": "51 至 100 張",
+        "from101To200": "101 至 200 張",
+        "from201To500": "201 至 500 張",
+        "moreThan500": "超過 500 張"
+      },
+      "expectedEmployees": "預計員工人數",
+      "employeeCount": {
+        "zeroToThree": "0 至 3 人",
+        "fourToFive": "4 至 5 人",
+        "sixToSeven": "6 至 7 人",
+        "moreThanSeven": "超過 7 人"
+      },
+      "needAdvisory": "決定前需要諮詢",
+      "notes": "會計與報告備註"
     },
-    "hu": {
-      "title": "匈牙利 Kft (有限公司) 註冊",
-      "confirmation": {
-        "title": "匈牙利公司註冊申請已提交",
-        "message": "我們已收到您的匈牙利公司註冊申請。我們的團隊將在正式提交前審核合規性、結構及所選服務。",
-        "steps": {
-          "documentReview": {
-            "title": "文件審核",
-            "description": "我們會在提交前核實所選結構、佐證文件及服務範圍。"
-          },
-          "incorporation": {
-            "title": "公司註冊及增值稅 (VAT) 登記",
-            "description": "在收到所有所需文件後，標準註冊及增值稅登記通常在 5 至 10 個工作天內完成。"
-          },
-          "postFiling": {
-            "title": "註冊後協調",
-            "description": "我們將協調註冊後事項，如銀行帳戶準備及（如選購）居留許可相關服務。"
-          }
+    "services": {
+      "description": "請選擇您希望收到的服務，並在付款前核對定價項目與僅限報價項目。",
+      "notice": {
+        "title": "請選擇您希望收到的服務：",
+        "content": "僅限報價的服務在發出單獨報價單前，發票金額將保持為 0 歐元。若需家庭成員居留許可，請在下方輸入成員人數。"
+      },
+      "items": {
+        "basePackage": {
+          "label": "匈牙利 LLC 註冊 + 公證 + 首年公司維護",
+          "info": "包含註冊、公證及首年公司維護。在收到所有所需文件後，標準提交及增值稅登記通常需要 5 至 10 個工作天。"
+        },
+        "bankAccountOpening": {
+          "label": "匈牙利公司銀行開戶",
+          "info": "價格將在銀行合規審查及開戶路徑評估後單獨確認。"
+        },
+        "accounting": {
+          "label": "匈牙利會計服務 (6 個月)",
+          "info": "起價為 6 個月 1,000 歐元。若需要會計服務請提前申請。"
+        },
+        "representativeResidencePermit": {
+          "label": "公司代表人居留許可申請",
+          "info": "若代表人需要居留許可服務，請提前申請。"
+        },
+        "legalOpinionWhitepaperReview": {
+          "label": "匈牙利法律意見書 (白皮書審核後報價)",
+          "info": "僅限報價項目。將在審核白皮書後提供定價。"
+        },
+        "legalOpinionDomesticExchange": {
+          "label": "國內交易所上市法律意見書",
+          "info": "僅限報價項目。價格將單獨確認。"
+        },
+        "businessRegulatoryConsulting": {
+          "label": "業務監管審查、可行性分析、文件準備、營運諮詢",
+          "info": "單獨報價。"
+        },
+        "entityShareholderKyc": {
+          "label": "法人股東額外 KYC",
+          "info": "註冊時針對每個具備法人實體身份的股東方收取。"
         }
       },
-      "reviewSummary": {
-        "relationship": "關係"
+      "familyResidencePermit": {
+        "label": "直系親屬居留許可申請",
+        "info": "每 2 人一組方案收費 2,000 歐元。總方案數根據人數進位計算。",
+        "selectedLabel": "直系親屬居留許可申請",
+        "personCountLabel": "家庭成員人數",
+        "personCountHelpTitle": "定價規則",
+        "personCountHelp": "每 2 名家庭成員收費 2,000 歐元。發票將根據輸入的人數進位至最接近的組數計算。"
       },
+      "managed": {
+        "partyDriven": "根據法人股東方數量計算",
+        "familyInput": "根據家庭成員人數計算"
+      },
+      "units": {
+        "entityShareholder": "法人股東",
+        "twoPersonPack": "2 人方案"
+      },
+      "note": "匈牙利價格以歐元 (EUR) 為準。僅限報價的服務選擇將保持零值，直至發出單獨報價單。3,000,000 HUF 的最低資本僅供合規追蹤，不包含在可計費總額中。"
+    },
+    "invoice": {
+      "description": "請在付款前核對最終費用明細。"
+    },
+    "payment": {
+      "description": "請進行信用卡付款或上傳銀行轉帳證明。"
+    },
+    "review": {
+      "capitalNonBillableAcknowledgment": "我明白 3,000,000 HUF 的法定資本不屬於發票總額的一部分。"
+    }
+  },
+  "ie": {
+    "auto": {
+      "k001": "擬設立之愛爾蘭公司董事",
+      "k002": "擬設立之愛爾蘭公司最高管理人員",
+      "k003": "由愛爾蘭公司董事委任之人員",
+      "k004": "擬設立之愛爾蘭公司主要股東",
+      "k005": "代表董事提供設立建議之專家（律師、會計師、行政代理人、稅務師等）",
+      "k006": "加密貨幣相關（發行/銷售/捐贈/ICO/交易所/錢包服務）",
+      "k007": "IT、區塊鏈、軟體等開發",
+      "k008": "加密貨幣相關投資業務",
+      "k009": "加密貨幣相關遊戲",
+      "k010": "一般線上遊戲",
+      "k011": "外匯交易",
+      "k012": "金融、投資、諮詢、貸款等",
+      "k013": "貿易行業",
+      "k014": "批發/零售分銷",
+      "k015": "顧問服務",
+      "k016": "製造業",
+      "k017": "線上服務行業（電子商務）",
+      "k018": "海外直購/物流服務/採購代理",
+      "k019": "透過放寬的法規追求業務多元化",
+      "k020": "法律顧問、投資者或合作夥伴建議設立愛爾蘭公司",
+      "k021": "將業務擴展至各個歐洲國家",
+      "k022": "透過投資房地產或金融資產進行資產管理",
+      "k023": "用於管理子公司或關聯公司的控股公司",
+      "k024": "透過自由的金融政策追求競爭優勢",
+      "k025": "受惠於歐洲低稅率而增加的交易量",
+      "k026": "包含監管審查、可行性評估、文件準備及營運諮詢在內的顧問服務（另行報價）",
+      "k027": "其他僅限報價之請求",
+      "k028": "愛爾蘭公司設立 + 第一年公司地址與秘書服務",
+      "k029": "包含設立申報/政府規費、設立文件、首屆決議與會議記錄、第一年註冊地址、公司秘書支援、稅務/VAT 註冊及相關套裝項目。",
+      "k030": "為愛爾蘭公司開立銀行帳戶",
+      "k031": "滿足非歐洲經濟區 (non-EEA) 董事替代要求的兩年保證金 (Bond)",
+      "k032": "對於 25,000 歐元的責任保證金，參考報價為 2,000 歐元。在此流程中以美元/港幣渠道顯示。",
+      "k033": "為符合愛爾蘭本地法規的一年董事註冊",
+      "k034": "額外委任一名愛爾蘭本地董事，期限一年",
+      "k035": "可強化愛爾蘭稅務居民身分、支援遠端開戶，並在適用時改善獲得條約優惠的機會。",
+      "k036": "年度公司續約套裝",
+      "k037": "包含年度申報、秘書支援、註冊地址/郵件處理及週年股東大會 (AGM) 文件準備。",
+      "k038": "顧問服務（僅限報價請求）",
+      "k039": "以歐元報價的項目將在統一的美元/港幣支付渠道中顯示。僅限報價的請求將被追蹤，且不計入應付總額。",
+      "k040": "填寫人與擬設立之愛爾蘭公司的關係",
+      "k041": "設立愛爾蘭公司的目的是否涉及法律或道德問題（洗錢、賭博、逃稅、資產隱匿、逃避法律程序、詐騙）？",
+      "k042": "考慮法律諮詢",
+      "k043": "其他法律/道德問題詳情",
+      "k044": "愛爾蘭公司設立後，需履行年度續約及經常性的文件/費用義務。您是否同意？",
+      "k045": "設立後可由內部解決",
+      "k046": "若產生固定年度費用，我將不予進行",
+      "k047": "進行前需要建議",
+      "k048": "擬定之愛爾蘭公司、控股公司、集團或關聯實體目前是否或計畫在受制裁國家或地區開展業務？",
+      "k049": "相關人員是否居住在受制裁國家/地區，或受 UN/EU/UKHMT/HKMA/OFAC 制裁之司法管轄區？",
+      "k050": "擬定之愛爾蘭實體是否由受制裁之人員/實體/政府所有或控制，或為其代理（包括透過所有權或控制權）？",
+      "k051": "關聯實體目前是否或計畫在克里米亞或塞凡堡開展業務？",
+      "k052": "集團目前是否或計畫從事石油、瓦斯、能源、軍事或國防領域？",
+      "k053": "愛爾蘭設立要求",
+      "k054": "最低資本為 0.01 歐元且至少 1 股。至少須有一名自然人擔任董事，且至少一名董事應為歐洲經濟區 (EEA) 居民（或以保證金替代）。至少須有一名秘書。必須在愛爾蘭擁有註冊地址。",
+      "k055": "選擇行業（勾選所有相關項）",
+      "k056": "其他行業詳情",
+      "k057": "產品名稱/類型/服務內容/服務類型描述",
+      "k058": "請用 3-4 句話描述業務",
+      "k059": "https://",
+      "k060": "設立愛爾蘭公司的目的及預期未來效果",
+      "k061": "其他目的詳情",
+      "k062": "總股份數",
+      "k063": "1 股",
+      "k064": "100 股",
+      "k065": "1,000 股",
+      "k066": "10,000 股",
+      "k067": "100,000 股",
+      "k068": "總股份數（其他）",
+      "k069": "擬繳足總資本額 (EUR)",
+      "k070": "0.01 歐元",
+      "k071": "1 歐元",
+      "k072": "100 歐元",
+      "k073": "1,000 歐元",
+      "k074": "10,000 歐元",
+      "k075": "100,000 歐元",
+      "k076": "擬繳足總資本額（其他，單位：歐元）",
+      "k077": "每股面值 (EUR)",
+      "k078": "您將如何滿足 EEA 居民董事或 25,000 歐元保證金的要求？",
+      "k079": "已有至少一名 EEA 居民董事",
+      "k080": "使用本地董事註冊服務",
+      "k081": "購買兩年保證金（25,000 歐元責任限額）",
+      "k082": "決策前需要建議",
+      "k083": "是否會委任至少一名自然人擔任董事？",
+      "k084": "確認前需要建議",
+      "k085": "秘書安排",
+      "k086": "董事兼任秘書",
+      "k087": "委任另一人註冊為秘書",
+      "k088": "我了解若只有一名董事，則必須委任另一人註冊為秘書。",
+      "k089": "愛爾蘭公司註冊地址",
+      "k090": "使用 Mirr Asia 的愛爾蘭公司註冊地址服務",
+      "k091": "使用自有的愛爾蘭營業地址",
+      "k092": "自有的愛爾蘭地址詳情",
+      "k093": "愛爾蘭本地董事 / 保證金規則",
+      "k094": "愛爾蘭公司應維持至少一名 EEA 居民董事。若未達此要求，通常使用 25,000 歐元保證金作為替代合規路徑。",
+      "k095": "僅限報價服務請求（追蹤中，不計入發票總額）",
+      "k096": "其他僅限報價請求詳情",
+      "k097": "愛爾蘭公司設立",
+      "k098": "愛爾蘭設立請求已提交",
+      "k099": "我們已收到您的愛爾蘭公司設立請求。我們的團隊將在進行前審核合規性、服務範圍及申報準備就緒度。",
+      "k100": "合規與範圍審查",
+      "k101": "完成 KYC/CDD 及制裁篩查，並確認服務範圍。",
+      "k102": "註冊準備",
+      "k103": "驗證公司結構、註冊詳情及董事/秘書要求。",
+      "k104": "申報與設定執行",
+      "k105": "根據最終核准執行公司設立及所選的設立後服務。",
+      "k106": "填寫人詳情及與擬設立之愛爾蘭公司的關係。",
+      "k107": "反洗錢 (AML) / 客戶盡職調查 (CDD)",
+      "k108": "業務意圖、制裁檢查及年度續約同意。",
+      "k109": "業務概況、註冊詳情及愛爾蘭設立要求。",
+      "k110": "邀請相關方並確保符合要求的角色/居住地覆蓋。",
+      "k111": "董事委任",
+      "k112": "秘書委任",
+      "k113": "董事範圍",
+      "k114": "秘書範圍",
+      "k115": "選擇計費服務項目及可選的僅限報價請求。",
+      "k116": "付款前核對費用。",
+      "k117": "付款處理",
+      "k118": "進行卡片支付或上傳銀行轉帳憑證。",
+      "k119": "審閱與聲明",
+      "k120": "同意與聲明",
+      "k121": "我同意提供所需文件與資訊，確認業務意圖合法，並聲明所有提交資訊皆真實、完整且準確。",
+      "k122": "您是否同意？",
+      "k123": "我了解若發現非法活動或意圖，服務可能會被暫停。"
+    }
+  },
+  "bvi": {
+    "title": "BVI (英屬維爾京群島) 公司註冊",
+    "confirmation": {
+      "title": "BVI 公司註冊申請已提交",
+      "message": "我們已收到您的 BVI 公司註冊申請。我們的團隊將審核合規答覆、確認服務範圍，並聯繫您告知後續步驟。",
+      "steps": {
+        "complianceReview": {
+          "title": "合規審核",
+          "description": "在程序推進前，將完成 KYC/CDD、制裁篩查及業務目的審核。"
+        },
+        "scopeConfirmation": {
+          "title": "範圍確認",
+          "description": "將連同任何報價的後續請求，一併確認所選的註冊及選購之 BVI 服務項目。"
+        },
+        "execution": {
+          "title": "執行",
+          "description": "在最終確認後，準備並協調註冊套裝及獲批的選購服務。"
+        }
+      }
+    },
+    "fees": {
+      "note": "所選服務清單僅供參考，不影響發票總額。MLRO 按投資者收費的項目，將根據服務步驟中輸入的投資者人數計費。"
+    },
+    "steps": {
       "applicant": {
-        "description": "申請人詳情、與公司的關係以及主要聯繫方式設定。",
-        "notice": {
-          "title": "申請人須知",
-          "content": "請以英文填寫所有詳情。海牙認證 (Apostille)、翻譯、使館認證及類似的外部程序時間應與 5 至 10 個工作天的註冊時間分開估算。"
-        },
-        "changedName": "您是否曾更改過姓名？",
-        "previousNameEnglish": "若是，請提供您之前的英文姓名。",
-        "changedNameOther": "其他更名詳情",
-        "dateOfBirth": "出生日期",
-        "placeOfBirth": "出生地",
-        "nationality": "國籍",
-        "passportNumber": "護照號碼",
-        "residentialAddress": "居住地址",
-        "mailingAddress": "郵寄地址",
-        "mailingAddressDetails": "若與居住地址不同，請提供您的郵寄地址。",
-        "mailingOptions": {
-          "same": "與居住地址相同",
-          "different": "不同的郵寄地址"
-        },
-        "relationshipToCompany": "與匈牙利公司的關係",
-        "relationshipOptions": {
-          "shareholder": "股東",
-          "keyController": "最終受益人 / 主要控制人 (持股 25% 或以上)",
-          "director": "董事 (至少需 1 名)",
-          "generalManager": "總經理 (至少需 1 名，可由董事兼任)",
-          "dcp": "指定聯繫人 (可由董事兼任)",
-          "officialPartner": "Mirr Asia 註冊官方合作夥伴",
-          "other": "其他"
-        },
-        "designatedContactResponsibilities": "指定聯繫人 (DCP) 將負責：",
-        "designatedContactItems": {
-          "communication": "就公司事務與服務提供商溝通。",
-          "inquiries": "處理業務諮詢及進度更新。",
-          "documents": "接收官方文件及往來書信。",
-          "access": "查閱公司信息及文件。"
-        }
+        "description": "請提供申請人詳情、公司名稱選擇及主要聯繫資訊。"
       },
       "compliance": {
-        "description": "業務意圖、制裁篩查及持續義務確認。",
-        "legalEthicsIssues": "成立目的是否涉及法律或倫理疑慮，例如洗錢、博彩、逃稅、資產隱匿或欺詐？",
-        "needLegalAdvice": "需要法律建議",
-        "legalEthicsIssuesOther": "其他法律或倫理問題詳情",
-        "annualRenewalAgreement": "公司成立後，將產生年度續期義務及相關費用。您是否同意這些義務？",
-        "annualRenewalOptions": {
-          "internalAfterIncorporation": "成立後可自行內部處理",
-          "noIfAnnualCostsApply": "若產生年度費用則不希望註冊",
-          "consultationRequired": "需要諮詢"
-        },
-        "options": {
-          "notSure": "不確定"
-        },
-        "sanctionedCountriesBusiness": "該匈牙利公司（或其母公司、集團或關聯公司）是否會與制裁國家（如伊朗、蘇丹、北韓、敘利亞、古巴、白俄羅斯、辛巴威、俄羅斯或政府控制外的烏克蘭地區）開展業務？",
-        "sanctionedPersonsResidence": "是否有任何股東、董事或關聯人士為制裁國家的居民？",
-        "sanctionedOwnershipControl": "該匈牙利公司是否由任何受制裁的人士、實體、組織或政府擁有、控制或代表其行事？",
-        "crimeaSevastopolBusiness": "是否有任何關聯人士目前在克里米亞或塞凡堡開展業務？",
-        "restrictedSectors": "公司或關聯實體是否涉及石油、天然氣、能源、軍事或國防等行業？"
+        "description": "在繼續之前，請確認法律、制裁及年度義務的答覆。"
       },
       "company": {
-        "description": "業務簡介、註冊地址設定及資本確認。",
-        "notesLabel": "重要備註",
-        "notes": {
-          "vat": "匈牙利是歐盟國家，增值稅 (VAT) 號碼通常在註冊時自動核發。",
-          "bank": "公司銀行帳戶應在註冊後 8 天內申請開立，但審核流程可能需要 1 至 2 個月。若嚴重延誤，可能會觸發約 70 歐元的罰款。",
-          "emi": "在某些情況下可遠端開立 EMI 帳戶，但交易手續費通常高於傳統銀行帳戶。",
-          "apostille": "若股東為韓國法人，公司文件通常需要海牙認證及匈牙利公證翻譯。",
-          "documents": "所有文件準備好後，請先寄至韓國辦公室核實，然後再轉寄至匈牙利。"
-        },
-        "industrySelection": "行業選擇",
-        "industrySelectionOther": "其他行業詳情",
-        "productServiceDescription": "產品或服務描述",
-        "businessDescription": "請用 3 至 4 句話描述業務內容",
-        "industryOptions": {
-          "cryptoRelated": "加密貨幣相關",
-          "itBlockchainSoftware": "IT / 區塊鏈 / 軟體開發",
-          "cryptoInvestment": "加密貨幣投資",
-          "cryptoGames": "加密貨幣遊戲",
-          "forexTrading": "外匯交易 (Forex)",
-          "financeInvestmentConsulting": "金融 / 投資 / 諮詢",
-          "trade": "貿易",
-          "wholesaleRetail": "批發 / 零售",
-          "consulting": "諮詢",
-          "manufacturing": "製造業",
-          "ecommerce": "線上服務 (電子商務)",
-          "onlineDirectPurchase": "線上直購 / 配送 / 代購"
-        },
-        "purposeOfEstablishment": "成立公司的目的或預期效益（可多選）",
-        "purposeOfEstablishmentOther": "其他目的詳情",
-        "purposeOptions": {
-          "businessDiversification": "因法規放寬而產生的業務多元化",
-          "advisorPartnerSuggestion": "法律顧問、投資者或業務夥伴的建議",
-          "internationalExpansion": "擴展至國際市場",
-          "assetManagement": "投資房地產或金融資產",
-          "holdingCompany": "作為子公司的控股公司",
-          "financialPolicyAdvantage": "透過有利的金融政策獲得競爭優勢",
-          "taxEfficiency": "較低的稅率或某些交易免徵增值稅"
-        },
-        "registeredCapitalHuf": "預計繳納的註冊資本 (HUF)",
-        "registeredAddressOption": "匈牙利註冊地址",
-        "registeredAddressOptions": {
-          "mirr": "使用 Mirr Asia 的註冊地址安排",
-          "client": "使用客戶提供的匈牙利地址"
-        },
-        "registeredAddressDetails": "客戶提供的註冊地址詳情",
-        "capitalRequirementAcknowledged": "我明白 3,000,000 HUF 的法定資本要求是合規前提，且不包含在發票總額中。"
+        "description": "請描述業務概況、成立目的及註冊辦事處偏好。"
       },
       "parties": {
-        "description": "邀請股東/董事並指派一名指定聯繫人。",
-        "roleOptions": {
-          "shareholder": "股東",
-          "keyController": "最終受益人 / 主要控制人 (持股 25% 或以上)",
-          "director": "董事",
-          "generalManager": "總經理",
-          "dcp": "指定聯繫人 (DCP)",
-          "officialPartner": "Mirr Asia 註冊官方合作夥伴",
-          "other": "其他"
-        },
-        "coverage": {
-          "generalManager": "總經理配置",
-          "generalManagerAtLeastOne": "至少需要一名總經理"
-        },
-        "roleTooltips": {
-          "dcp": "指定聯繫人 (Designated Contact Person)\n\n請指派負責與服務提供商溝通的人員。\n職責包括：\n處理公司相關諮詢\n監控程序進度\n接收官方往來文件"
-        }
+        "description": "請邀請所有董事/股東，並指派至少一名指定聯繫人。"
       },
       "accounting": {
-        "description": "簿記範圍、人員配置及增值稅/稅務支援需求。",
-        "expectedMonthlyInvoices": "預計每月發票數量",
-        "invoiceVolume": {
-          "upTo50": "50 張以內",
-          "from51To100": "51 至 100 張",
-          "from101To200": "101 至 200 張",
-          "from201To500": "201 至 500 張",
-          "moreThan500": "超過 500 張"
-        },
-        "expectedEmployees": "預計員工人數",
-        "employeeCount": {
-          "zeroToThree": "0 至 3 人",
-          "fourToFive": "4 至 5 人",
-          "sixToSeven": "6 至 7 人",
-          "moreThanSeven": "超過 7 人"
-        },
-        "needAdvisory": "決定前需要諮詢",
-        "notes": "會計與報告備註"
+        "description": "請確認會計偏好及會計紀錄的保存地點。"
       },
       "services": {
-        "description": "請選擇您希望收到的服務，並在付款前核對定價項目與僅限報價項目。",
-        "notice": {
-          "title": "請選擇您希望收到的服務：",
-          "content": "僅限報價的服務在發出單獨報價單前，發票金額將保持為 0 歐元。若需家庭成員居留許可，請在下方輸入成員人數。"
-        },
-        "items": {
-          "basePackage": {
-            "label": "匈牙利 LLC 註冊 + 公證 + 首年公司維護",
-            "info": "包含註冊、公證及首年公司維護。在收到所有所需文件後，標準提交及增值稅登記通常需要 5 至 10 個工作天。"
-          },
-          "bankAccountOpening": {
-            "label": "匈牙利公司銀行開戶",
-            "info": "價格將在銀行合規審查及開戶路徑評估後單獨確認。"
-          },
-          "accounting": {
-            "label": "匈牙利會計服務 (6 個月)",
-            "info": "起價為 6 個月 1,000 歐元。若需要會計服務請提前申請。"
-          },
-          "representativeResidencePermit": {
-            "label": "公司代表人居留許可申請",
-            "info": "若代表人需要居留許可服務，請提前申請。"
-          },
-          "legalOpinionWhitepaperReview": {
-            "label": "匈牙利法律意見書 (白皮書審核後報價)",
-            "info": "僅限報價項目。將在審核白皮書後提供定價。"
-          },
-          "legalOpinionDomesticExchange": {
-            "label": "國內交易所上市法律意見書",
-            "info": "僅限報價項目。價格將單獨確認。"
-          },
-          "businessRegulatoryConsulting": {
-            "label": "業務監管審查、可行性分析、文件準備、營運諮詢",
-            "info": "單獨報價。"
-          },
-          "entityShareholderKyc": {
-            "label": "法人股東額外 KYC",
-            "info": "註冊時針對每個具備法人實體身份的股東方收取。"
-          }
-        },
-        "familyResidencePermit": {
-          "label": "直系親屬居留許可申請",
-          "info": "每 2 人一組方案收費 2,000 歐元。總方案數根據人數進位計算。",
-          "selectedLabel": "直系親屬居留許可申請",
-          "personCountLabel": "家庭成員人數",
-          "personCountHelpTitle": "定價規則",
-          "personCountHelp": "每 2 名家庭成員收費 2,000 歐元。發票將根據輸入的人數進位至最接近的組數計算。"
-        },
-        "managed": {
-          "partyDriven": "根據法人股東方數量計算",
-          "familyInput": "根據家庭成員人數計算"
-        },
-        "units": {
-          "entityShareholder": "法人股東",
-          "twoPersonPack": "2 人方案"
-        },
-        "note": "匈牙利價格以歐元 (EUR) 為準。僅限報價的服務選擇將保持零值，直至發出單獨報價單。3,000,000 HUF 的最低資本僅供合規追蹤，不包含在可計費總額中。"
+        "description": "記錄請求的服務，並選擇需計費的 BVI 套裝項目。"
       },
       "invoice": {
-        "description": "請在付款前核對最終費用明細。"
+        "description": "請在付款前核對 BVI 費用明細。"
       },
       "payment": {
         "description": "請進行信用卡付款或上傳銀行轉帳證明。"
-      },
-      "review": {
-        "capitalNonBillableAcknowledgment": "我明白 3,000,000 HUF 的法定資本不屬於發票總額的一部分。"
       }
     },
-    "ie": {
-      "auto": {
-        "k001": "擬設立之愛爾蘭公司董事",
-        "k002": "擬設立之愛爾蘭公司最高管理人員",
-        "k003": "由愛爾蘭公司董事委任之人員",
-        "k004": "擬設立之愛爾蘭公司主要股東",
-        "k005": "代表董事提供設立建議之專家（律師、會計師、行政代理人、稅務師等）",
-        "k006": "加密貨幣相關（發行/銷售/捐贈/ICO/交易所/錢包服務）",
-        "k007": "IT、區塊鏈、軟體等開發",
-        "k008": "加密貨幣相關投資業務",
-        "k009": "加密貨幣相關遊戲",
-        "k010": "一般線上遊戲",
-        "k011": "外匯交易",
-        "k012": "金融、投資、諮詢、貸款等",
-        "k013": "貿易行業",
-        "k014": "批發/零售分銷",
-        "k015": "顧問服務",
-        "k016": "製造業",
-        "k017": "線上服務行業（電子商務）",
-        "k018": "海外直購/物流服務/採購代理",
-        "k019": "透過放寬的法規追求業務多元化",
-        "k020": "法律顧問、投資者或合作夥伴建議設立愛爾蘭公司",
-        "k021": "將業務擴展至各個歐洲國家",
-        "k022": "透過投資房地產或金融資產進行資產管理",
-        "k023": "用於管理子公司或關聯公司的控股公司",
-        "k024": "透過自由的金融政策追求競爭優勢",
-        "k025": "受惠於歐洲低稅率而增加的交易量",
-        "k026": "包含監管審查、可行性評估、文件準備及營運諮詢在內的顧問服務（另行報價）",
-        "k027": "其他僅限報價之請求",
-        "k028": "愛爾蘭公司設立 + 第一年公司地址與秘書服務",
-        "k029": "包含設立申報/政府規費、設立文件、首屆決議與會議記錄、第一年註冊地址、公司秘書支援、稅務/VAT 註冊及相關套裝項目。",
-        "k030": "為愛爾蘭公司開立銀行帳戶",
-        "k031": "滿足非歐洲經濟區 (non-EEA) 董事替代要求的兩年保證金 (Bond)",
-        "k032": "對於 25,000 歐元的責任保證金，參考報價為 2,000 歐元。在此流程中以美元/港幣渠道顯示。",
-        "k033": "為符合愛爾蘭本地法規的一年董事註冊",
-        "k034": "額外委任一名愛爾蘭本地董事，期限一年",
-        "k035": "可強化愛爾蘭稅務居民身分、支援遠端開戶，並在適用時改善獲得條約優惠的機會。",
-        "k036": "年度公司續約套裝",
-        "k037": "包含年度申報、秘書支援、註冊地址/郵件處理及週年股東大會 (AGM) 文件準備。",
-        "k038": "顧問服務（僅限報價請求）",
-        "k039": "以歐元報價的項目將在統一的美元/港幣支付渠道中顯示。僅限報價的請求將被追蹤，且不計入應付總額。",
-        "k040": "填寫人與擬設立之愛爾蘭公司的關係",
-        "k041": "設立愛爾蘭公司的目的是否涉及法律或道德問題（洗錢、賭博、逃稅、資產隱匿、逃避法律程序、詐騙）？",
-        "k042": "考慮法律諮詢",
-        "k043": "其他法律/道德問題詳情",
-        "k044": "愛爾蘭公司設立後，需履行年度續約及經常性的文件/費用義務。您是否同意？",
-        "k045": "設立後可由內部解決",
-        "k046": "若產生固定年度費用，我將不予進行",
-        "k047": "進行前需要建議",
-        "k048": "擬定之愛爾蘭公司、控股公司、集團或關聯實體目前是否或計畫在受制裁國家或地區開展業務？",
-        "k049": "相關人員是否居住在受制裁國家/地區，或受 UN/EU/UKHMT/HKMA/OFAC 制裁之司法管轄區？",
-        "k050": "擬定之愛爾蘭實體是否由受制裁之人員/實體/政府所有或控制，或為其代理（包括透過所有權或控制權）？",
-        "k051": "關聯實體目前是否或計畫在克里米亞或塞凡堡開展業務？",
-        "k052": "集團目前是否或計畫從事石油、瓦斯、能源、軍事或國防領域？",
-        "k053": "愛爾蘭設立要求",
-        "k054": "最低資本為 0.01 歐元且至少 1 股。至少須有一名自然人擔任董事，且至少一名董事應為歐洲經濟區 (EEA) 居民（或以保證金替代）。至少須有一名秘書。必須在愛爾蘭擁有註冊地址。",
-        "k055": "選擇行業（勾選所有相關項）",
-        "k056": "其他行業詳情",
-        "k057": "產品名稱/類型/服務內容/服務類型描述",
-        "k058": "請用 3-4 句話描述業務",
-        "k059": "https://",
-        "k060": "設立愛爾蘭公司的目的及預期未來效果",
-        "k061": "其他目的詳情",
-        "k062": "總股份數",
-        "k063": "1 股",
-        "k064": "100 股",
-        "k065": "1,000 股",
-        "k066": "10,000 股",
-        "k067": "100,000 股",
-        "k068": "總股份數（其他）",
-        "k069": "擬繳足總資本額 (EUR)",
-        "k070": "0.01 歐元",
-        "k071": "1 歐元",
-        "k072": "100 歐元",
-        "k073": "1,000 歐元",
-        "k074": "10,000 歐元",
-        "k075": "100,000 歐元",
-        "k076": "擬繳足總資本額（其他，單位：歐元）",
-        "k077": "每股面值 (EUR)",
-        "k078": "您將如何滿足 EEA 居民董事或 25,000 歐元保證金的要求？",
-        "k079": "已有至少一名 EEA 居民董事",
-        "k080": "使用本地董事註冊服務",
-        "k081": "購買兩年保證金（25,000 歐元責任限額）",
-        "k082": "決策前需要建議",
-        "k083": "是否會委任至少一名自然人擔任董事？",
-        "k084": "確認前需要建議",
-        "k085": "秘書安排",
-        "k086": "董事兼任秘書",
-        "k087": "委任另一人註冊為秘書",
-        "k088": "我了解若只有一名董事，則必須委任另一人註冊為秘書。",
-        "k089": "愛爾蘭公司註冊地址",
-        "k090": "使用 Mirr Asia 的愛爾蘭公司註冊地址服務",
-        "k091": "使用自有的愛爾蘭營業地址",
-        "k092": "自有的愛爾蘭地址詳情",
-        "k093": "愛爾蘭本地董事 / 保證金規則",
-        "k094": "愛爾蘭公司應維持至少一名 EEA 居民董事。若未達此要求，通常使用 25,000 歐元保證金作為替代合規路徑。",
-        "k095": "僅限報價服務請求（追蹤中，不計入發票總額）",
-        "k096": "其他僅限報價請求詳情",
-        "k097": "愛爾蘭公司設立",
-        "k098": "愛爾蘭設立請求已提交",
-        "k099": "我們已收到您的愛爾蘭公司設立請求。我們的團隊將在進行前審核合規性、服務範圍及申報準備就緒度。",
-        "k100": "合規與範圍審查",
-        "k101": "完成 KYC/CDD 及制裁篩查，並確認服務範圍。",
-        "k102": "註冊準備",
-        "k103": "驗證公司結構、註冊詳情及董事/秘書要求。",
-        "k104": "申報與設定執行",
-        "k105": "根據最終核准執行公司設立及所選的設立後服務。",
-        "k106": "填寫人詳情及與擬設立之愛爾蘭公司的關係。",
-        "k107": "反洗錢 (AML) / 客戶盡職調查 (CDD)",
-        "k108": "業務意圖、制裁檢查及年度續約同意。",
-        "k109": "業務概況、註冊詳情及愛爾蘭設立要求。",
-        "k110": "邀請相關方並確保符合要求的角色/居住地覆蓋。",
-        "k111": "董事委任",
-        "k112": "秘書委任",
-        "k113": "董事範圍",
-        "k114": "秘書範圍",
-        "k115": "選擇計費服務項目及可選的僅限報價請求。",
-        "k116": "付款前核對費用。",
-        "k117": "付款處理",
-        "k118": "進行卡片支付或上傳銀行轉帳憑證。",
-        "k119": "審閱與聲明",
-        "k120": "同意與聲明",
-        "k121": "我同意提供所需文件與資訊，確認業務意圖合法，並聲明所有提交資訊皆真實、完整且準確。",
-        "k122": "您是否同意？",
-        "k123": "我了解若發現非法活動或意圖，服務可能會被暫停。"
+    "applicant": {
+      "relationshipOptions": {
+        "director": "BVI 公司的董事",
+        "delegate": "由 BVI 公司董事委派的代表",
+        "majorityShareholder": "持有過半股份的股東"
+      },
+      "fields": {
+        "relationship": {
+          "label": "申請人與擬成立 BVI 公司之間的關係"
+        }
       }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "擬成立的 BVI 公司或其預期活動是否存在任何法律或倫理問題，例如洗錢、博彩、逃稅或欺詐？"
+      },
+      "annualRenewalConsent": {
+        "label": "您是否同意註冊後產生的年度義務及定期費用，包括續期、會計、稅務及相關文件作業？"
+      },
+      "sanctionedCountryOperations": {
+        "label": "該 BVI 公司目前或計劃在受制裁國家或地區開展業務活動嗎？"
+      },
+      "sanctionedRelatedPartyExposure": {
+        "label": "公司或關聯方是否位於受制裁國家，或受到聯合國、歐盟、英國財政部、香港金管局或美國海外資產控制辦公室 (OFAC) 的制裁？"
+      },
+      "crimeaSevastopolExposure": {
+        "label": "目前或計劃在克里米亞或塞凡堡開展業務活動嗎？"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "是否涉及俄羅斯的能源、石油與天然氣、軍事或國防領域？"
+      },
+      "options": {
+        "considerLegalAdvice": "考慮法律建議",
+        "selfHandleAfterIncorporation": "本人/我們可在註冊後獨立處理"
+      }
+    },
+    "company": {
+      "industryOptions": {
+        "cryptoRelated": "加密貨幣相關 (發行, ICO, 交易所, 錢包等)",
+        "itBlockchainSoftware": "IT / 區塊鏈 / 軟體開發",
+        "cryptoInvestment": "加密貨幣投資業務",
+        "cryptoGames": "加密貨幣遊戲",
+        "forex": "外匯交易",
+        "investmentAndAdvisory": "投資與諮詢",
+        "trade": "貿易",
+        "wholesaleRetail": "批發/零售分銷",
+        "consulting": "諮詢",
+        "manufacturing": "製造業",
+        "ecommerce": "電子商務",
+        "onlinePurchaseDeliveryAgency": "線上採購 / 貨運 / 代購"
+      },
+      "purposeOptions": {
+        "businessDiversification": "因法規放寬而產生的業務多元化",
+        "advisorSuggestion": "由顧問、投資者或客戶建議",
+        "internationalExpansion": "國際業務擴張",
+        "assetManagement": "資產管理 (房地產 / 金融資產)",
+        "holdingCompany": "作為子公司 / 關聯公司的控股公司",
+        "financialFlexibility": "透過財務靈活性獲得競爭優勢",
+        "lowTaxBenefit": "因低稅率 / 免徵增值稅而增加的交易量",
+        "noCapitalGainsTax": "無資本利得稅優惠"
+      },
+      "fields": {
+        "purposeOfEstablishment": {
+          "label": "成立目的及預期效益"
+        },
+        "registeredOfficeChoice": {
+          "label": "BVI 公司的註冊地址",
+          "options": {
+            "useMirrAsiaAddress": "使用 Mirr Asia 地址服務",
+            "useOwnAddress": "在 BVI 擁有自有的商業地址"
+          }
+        },
+        "registeredOfficeDetails": {
+          "label": "註冊地址詳情"
+        }
+      }
+    },
+    "parties": {
+      "coverage": {
+        "requiredRoles": "必備關係方角色"
+      }
+    },
+    "accounting": {
+      "financialYearEndOptions": {
+        "december31": "12 月 31 日",
+        "march31": "3 月 31 日",
+        "june30": "6 月 30 日",
+        "september30": "9 月 30 日"
+      },
+      "fields": {
+        "accountingRecordAddress": {
+          "label": "會計與財務紀錄的存放地址"
+        }
+      }
+    },
+    "services": {
+      "notice": {
+        "label": "BVI 服務指南",
+        "content": "請使用下方的核取清單記錄可能需要單獨跟進的服務。下方的價格表決定了發票的計費項目。若選擇 MLRO 服務，按投資者收費的項目將根據您輸入的人數計算。"
+      },
+      "requestedItems": {
+        "label": "所需的服務項目",
+        "options": {
+          "incorporation": "BVI 公司註冊 + 首年公司維護",
+          "emiList": "EMI 名單 (對 Mirr Asia 客戶免費)",
+          "emiAccountOpening": "EMI 開戶及諮詢",
+          "bankAccountOpening": "銀行開戶及諮詢",
+          "seychellesLegalOpinion": "塞席爾法律意見書",
+          "domesticExchangeLegalOpinion": "國內交易所上市法律意見書",
+          "consultingServices": "諮詢服務 (監管審查, 可行性, 文件準備, 營運)"
+        }
+      },
+      "fields": {
+        "mlroInvestorCount": {
+          "label": "MLRO 按投資者計費的人數",
+          "tooltip": "若選擇 MLRO 服務，請輸入按每人 500 美元計費的投資者人數。"
+        }
+      },
+      "base": {
+        "incorporation": {
+          "label": "BVI 公司註冊 (含首年維護)",
+          "info": "包含公司登記、章程文件、註冊支援、首年註冊代理人 (Registered Agent) 支援及首年註冊辦事處服務。"
+        }
+      },
+      "optional": {
+        "fscRegistrationProfessionalService": {
+          "label": "FSC 註冊專業服務",
+          "info": "FSC 註冊支援及申報協調的專業服務費。"
+        },
+        "fscFees": {
+          "label": "FSC 規費 (申請與認可)",
+          "info": "FSC 官方申請及認可規費。"
+        },
+        "authorizedLegalRepresentative": {
+          "label": "授權與法律代表 (初始)",
+          "info": "授權與法律代表服務的初始委任及設定支援。"
+        },
+        "offeringMemorandum": {
+          "label": "發售備忘錄 (Full OM)",
+          "info": "完整發售備忘錄套件的準備支援。"
+        },
+        "mlroBase": {
+          "label": "MLRO 服務 (基礎)",
+          "info": "基礎 MLRO 設定與協調服務。"
+        },
+        "mlroPerInvestor": {
+          "label": "MLRO 按投資者計費 (個人/法人)",
+          "info": "選擇 MLRO 服務時按投資者收取的費用。適用於個人及法人投資者。"
+        }
+      },
+      "managed": {
+        "mlroInvestorCount": "根據輸入的投資者人數計算"
+      },
+      "units": {
+        "investor": "投資者"
+      }
+    },
+    "review": {
+      "declaration": {
+        "content": "我同意提供準確的資訊及佐證文件，確認擬開展的活動是合法的，並明白若發現法律或合規問題，服務可能會暫停。"
+      },
+      "applicationAgreement": {
+        "label": "您是否同意提供準確資訊並遵守法律要求？"
+      },
+      "compliancePreconditionAcknowledgment": {
+        "label": "我明白若發現非法活動或合規問題，服務可能會暫停。"
+      }
+    },
+    "reviewSummary": {
+      "relationship": "關係"
     }
-  ,
-  "appUpdate": {
-    "title": "有新版本可用",
-    "description": "請重新整理頁面以使用最新版本。",
-    "refreshNow": "重新整理"
   }
 }

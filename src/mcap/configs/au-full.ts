@@ -27,22 +27,22 @@ const APPLICANT_RELATIONSHIP_OPTIONS = [
 ];
 
 const INDUSTRY_OPTIONS = [
-  { label: "mcap.au.options.industry.technology", value: "technology" },
-  { label: "mcap.au.options.industry.consulting", value: "consulting" },
-  { label: "mcap.au.options.industry.trading", value: "trading" },
-  { label: "mcap.au.options.industry.ecommerce", value: "ecommerce" },
-  { label: "mcap.au.options.industry.investment", value: "investment" },
-  { label: "mcap.au.options.industry.manufacturing", value: "manufacturing" },
-  { label: "mcap.au.options.industry.fintech", value: "fintech" },
+  { label: "au.options.industry.technology", value: "technology" },
+  { label: "au.options.industry.consulting", value: "consulting" },
+  { label: "au.options.industry.trading", value: "trading" },
+  { label: "au.options.industry.ecommerce", value: "ecommerce" },
+  { label: "au.options.industry.investment", value: "investment" },
+  { label: "au.options.industry.manufacturing", value: "manufacturing" },
+  { label: "au.options.industry.fintech", value: "fintech" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const PURPOSE_OPTIONS = [
-  { label: "mcap.au.options.purpose.marketExpansion", value: "market_expansion" },
-  { label: "mcap.au.options.purpose.regionalOperations", value: "regional_operations" },
-  { label: "mcap.au.options.purpose.assetHolding", value: "asset_holding" },
-  { label: "mcap.au.options.purpose.localCustomerSupport", value: "local_customer_support" },
-  { label: "mcap.au.options.purpose.investorRequirement", value: "investor_requirement" },
+  { label: "au.options.purpose.marketExpansion", value: "market_expansion" },
+  { label: "au.options.purpose.regionalOperations", value: "regional_operations" },
+  { label: "au.options.purpose.assetHolding", value: "asset_holding" },
+  { label: "au.options.purpose.localCustomerSupport", value: "local_customer_support" },
+  { label: "au.options.purpose.investorRequirement", value: "investor_requirement" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
@@ -76,50 +76,50 @@ export const buildAuServiceItems = (data: Record<string, any>): AuServiceItem[] 
   const items: AuServiceItem[] = [
     {
       id: "au_base_incorporation",
-      label: "mcap.au.services.items.base.label",
+      label: "au.services.items.base.label",
       amount: AU_PRICING.baseIncorporation,
       original: AU_PRICING.baseIncorporation,
       mandatory: true,
       kind: "service",
-      info: "mcap.au.services.items.base.info",
+      info: "au.services.items.base.info",
     },
     {
       id: "au_nominee_director_service",
-      label: "mcap.au.services.items.nomineeDirector.label",
+      label: "au.services.items.nomineeDirector.label",
       amount: AU_PRICING.nomineeDirectorAnnual,
       original: AU_PRICING.nomineeDirectorAnnual,
       mandatory: !hasResidentDirector,
       kind: "service",
-      info: "mcap.au.services.items.nomineeDirector.info",
+      info: "au.services.items.nomineeDirector.info",
     },
     {
       id: "au_registered_address_service",
-      label: "mcap.au.services.items.registeredAddress.label",
+      label: "au.services.items.registeredAddress.label",
       amount: AU_PRICING.registeredAddressAnnual,
       original: AU_PRICING.registeredAddressAnnual,
       mandatory: !hasOwnRegisteredAddress,
       kind: "service",
-      info: "mcap.au.services.items.registeredAddress.info",
+      info: "au.services.items.registeredAddress.info",
     },
     {
       id: "au_express_service",
-      label: "mcap.au.services.items.express.label",
+      label: "au.services.items.express.label",
       amount: AU_PRICING.expressService,
       original: AU_PRICING.expressService,
       mandatory: false,
       kind: "optional",
-      info: "mcap.au.services.items.express.info",
+      info: "au.services.items.express.info",
     },
     {
       id: "au_emi_account_assistance",
-      label: "mcap.au.services.items.emiAssistance.label",
+      label: "au.services.items.emiAssistance.label",
       amount: emiViaPartnerChannel ? 0 : AU_PRICING.emiAccountAssistance,
       original: emiViaPartnerChannel ? 0 : AU_PRICING.emiAccountAssistance,
       mandatory: false,
       kind: "optional",
       info: emiViaPartnerChannel
-        ? "mcap.au.services.items.emiAssistance.infoIncluded"
-        : "mcap.au.services.items.emiAssistance.infoConditional",
+        ? "au.services.items.emiAssistance.infoIncluded"
+        : "au.services.items.emiAssistance.infoConditional",
     },
   ];
 
@@ -158,7 +158,7 @@ export const computeAuFees = (data: Record<string, any>) => {
     cardFeeSurcharge,
     grandTotal,
     note:
-      "mcap.au.fees.note",
+      "au.fees.note",
   };
 };
 
@@ -209,7 +209,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "annualRenewalConsent",
-    label: "mcap.au.compliance.annualRenewalConsent.label",
+    label: "au.compliance.annualRenewalConsent.label",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
@@ -223,7 +223,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "legalAndEthicalConcern",
-    label: "mcap.au.compliance.legalAndEthicalConcern.label",
+    label: "au.compliance.legalAndEthicalConcern.label",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -231,7 +231,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "sanctionsExposureDeclaration",
-    label: "mcap.au.compliance.sanctionsExposureDeclaration.label",
+    label: "au.compliance.sanctionsExposureDeclaration.label",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -239,11 +239,11 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "corporateTaxAcknowledgement",
-    label: "mcap.au.compliance.corporateTaxAcknowledgement.label",
+    label: "au.compliance.corporateTaxAcknowledgement.label",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
-      { label: "mcap.au.compliance.options.needTaxAdvice", value: "need_advice" },
+      { label: "au.compliance.options.needTaxAdvice", value: "need_advice" },
       { label: "mcap.common.options.no", value: "no" },
     ],
     colSpan: 2,
@@ -253,14 +253,14 @@ const buildComplianceFields = (): McapField[] => [
 const buildCompanyFields = (): McapField[] => [
   {
     type: "info",
-    label: "mcap.au.company.requirements.label",
-    content: "mcap.au.company.requirements.content",
+    label: "au.company.requirements.label",
+    content: "au.company.requirements.content",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "selectedIndustry",
-    label: "mcap.au.company.selectedIndustry.label",
+    label: "au.company.selectedIndustry.label",
     required: true,
     options: INDUSTRY_OPTIONS,
     colSpan: 2,
@@ -276,7 +276,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "businessDescription",
-    label: "mcap.au.company.businessDescription.label",
+    label: "au.company.businessDescription.label",
     required: true,
     rows: 3,
     colSpan: 2,
@@ -291,7 +291,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "establishmentPurpose",
-    label: "mcap.au.company.establishmentPurpose.label",
+    label: "au.company.establishmentPurpose.label",
     required: true,
     options: PURPOSE_OPTIONS,
     colSpan: 2,
@@ -307,7 +307,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "auHasResidentDirector",
-    label: "mcap.au.company.auHasResidentDirector.label",
+    label: "au.company.auHasResidentDirector.label",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
@@ -318,7 +318,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "checkbox",
     name: "auNomineeDirectorAcknowledgment",
-    label: "mcap.au.company.auNomineeDirectorAcknowledgment.label",
+    label: "au.company.auNomineeDirectorAcknowledgment.label",
     condition: (f) => f.auHasResidentDirector === "no",
     required: true,
     colSpan: 2,
@@ -326,7 +326,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "auHasOwnRegisteredAddress",
-    label: "mcap.au.company.auHasOwnRegisteredAddress.label",
+    label: "au.company.auHasOwnRegisteredAddress.label",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
@@ -337,7 +337,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "auRegisteredAddressDetails",
-    label: "mcap.au.company.auRegisteredAddressDetails.label",
+    label: "au.company.auRegisteredAddressDetails.label",
     condition: (f) => f.auHasOwnRegisteredAddress === "yes",
     required: true,
     rows: 2,
@@ -346,7 +346,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "checkbox",
     name: "auNoPoBoxAcknowledgement",
-    label: "mcap.au.company.auNoPoBoxAcknowledgement.label",
+    label: "au.company.auNoPoBoxAcknowledgement.label",
     condition: (f) => f.auHasOwnRegisteredAddress === "yes",
     required: true,
     colSpan: 2,
@@ -387,7 +387,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "number",
     name: "capitalAmountOther",
-    label: "mcap.au.company.capitalAmountOther.label",
+    label: "au.company.capitalAmountOther.label",
     condition: (f) => f.capitalAmount === "other",
     required: true,
   },
@@ -463,14 +463,14 @@ const buildAccountingFields = (): McapField[] => [
 const buildServiceFields = (): McapField[] => [
   {
     type: "info",
-    label: "mcap.au.services.pricingSummary.label",
-    content: "mcap.au.services.pricingSummary.content",
+    label: "au.services.pricingSummary.label",
+    content: "au.services.pricingSummary.content",
     colSpan: 2,
   },
   {
     type: "radio-group",
     name: "auEmiViaPartnerChannel",
-    label: "mcap.au.services.auEmiViaPartnerChannel.label",
+    label: "au.services.auEmiViaPartnerChannel.label",
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
@@ -485,26 +485,26 @@ export const AU_FULL_CONFIG: McapConfig = {
   countryCode: "AU",
   countryName: "Australia",
   currency: "USD",
-  title: "mcap.au.title",
+  title: "au.title",
   confirmationDetails: {
-    title: "mcap.au.confirmation.title",
-    message: "mcap.au.confirmation.message",
+    title: "au.confirmation.title",
+    message: "au.confirmation.message",
     steps: [
       {
-        title: "mcap.au.confirmation.steps.complianceReview.title",
-        description: "mcap.au.confirmation.steps.complianceReview.description",
+        title: "au.confirmation.steps.complianceReview.title",
+        description: "au.confirmation.steps.complianceReview.description",
       },
       {
-        title: "mcap.au.confirmation.steps.structureValidation.title",
-        description: "mcap.au.confirmation.steps.structureValidation.description",
+        title: "au.confirmation.steps.structureValidation.title",
+        description: "au.confirmation.steps.structureValidation.description",
       },
       {
-        title: "mcap.au.confirmation.steps.incorporationAndAbn.title",
-        description: "mcap.au.confirmation.steps.incorporationAndAbn.description",
+        title: "au.confirmation.steps.incorporationAndAbn.title",
+        description: "au.confirmation.steps.incorporationAndAbn.description",
       },
       {
-        title: "mcap.au.confirmation.steps.postIncorporationSupport.title",
-        description: "mcap.au.confirmation.steps.postIncorporationSupport.description",
+        title: "au.confirmation.steps.postIncorporationSupport.title",
+        description: "au.confirmation.steps.postIncorporationSupport.description",
       },
     ],
   },
@@ -517,7 +517,7 @@ export const AU_FULL_CONFIG: McapConfig = {
     {
       id: "compliance",
       title: "mcap.common.steps.compliance",
-      description: "mcap.au.steps.compliance.description",
+      description: "au.steps.compliance.description",
       fields: buildComplianceFields(),
     },
     {
@@ -528,7 +528,7 @@ export const AU_FULL_CONFIG: McapConfig = {
     {
       id: "parties",
       title: "mcap.common.steps.parties",
-      description: "mcap.au.steps.parties.description",
+      description: "au.steps.parties.description",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -557,7 +557,7 @@ export const AU_FULL_CONFIG: McapConfig = {
         },
         {
           key: "auIsResidentDirector",
-          label: "mcap.au.parties.fields.auIsResidentDirector.label",
+          label: "au.parties.fields.auIsResidentDirector.label",
           type: "select",
           options: [
             { label: "mcap.common.options.yes", value: "yes" },
@@ -586,7 +586,7 @@ export const AU_FULL_CONFIG: McapConfig = {
     {
       id: "services",
       title: "mcap.common.steps.services",
-      description: "mcap.au.steps.services.description",
+      description: "au.steps.services.description",
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildAuServiceItems(data),

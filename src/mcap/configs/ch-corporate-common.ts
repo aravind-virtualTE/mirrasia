@@ -43,32 +43,32 @@ const ANNUAL_RENEWAL_OPTIONS = [
 ];
 
 const CH_INDUSTRY_OPTIONS = [
-  { label: "mcap.ch.options.industry.cryptoRelated", value: "crypto_related" },
-  { label: "mcap.ch.options.industry.itBlockchain", value: "it_blockchain" },
-  { label: "mcap.ch.options.industry.financeInvestment", value: "finance_investment" },
-  { label: "mcap.ch.options.industry.tradeWholesale", value: "trade_wholesale" },
-  { label: "mcap.ch.options.industry.manufacturing", value: "manufacturing" },
-  { label: "mcap.ch.options.industry.ecommerce", value: "ecommerce" },
-  { label: "mcap.ch.options.industry.consulting", value: "consulting" },
+  { label: "ch.options.industry.cryptoRelated", value: "crypto_related" },
+  { label: "ch.options.industry.itBlockchain", value: "it_blockchain" },
+  { label: "ch.options.industry.financeInvestment", value: "finance_investment" },
+  { label: "ch.options.industry.tradeWholesale", value: "trade_wholesale" },
+  { label: "ch.options.industry.manufacturing", value: "manufacturing" },
+  { label: "ch.options.industry.ecommerce", value: "ecommerce" },
+  { label: "ch.options.industry.consulting", value: "consulting" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const CH_PURPOSE_OPTIONS = [
-  { label: "mcap.ch.options.purpose.euExpansion", value: "eu_expansion" },
-  { label: "mcap.ch.options.purpose.regulatoryDiversification", value: "regulatory_diversification" },
-  { label: "mcap.ch.options.purpose.advisorRecommendation", value: "advisor_recommendation" },
-  { label: "mcap.ch.options.purpose.holdingAssetManagement", value: "holding_asset_management" },
-  { label: "mcap.ch.options.purpose.internationalStructuring", value: "international_structuring" },
-  { label: "mcap.ch.options.purpose.optimization", value: "optimization" },
+  { label: "ch.options.purpose.euExpansion", value: "eu_expansion" },
+  { label: "ch.options.purpose.regulatoryDiversification", value: "regulatory_diversification" },
+  { label: "ch.options.purpose.advisorRecommendation", value: "advisor_recommendation" },
+  { label: "ch.options.purpose.holdingAssetManagement", value: "holding_asset_management" },
+  { label: "ch.options.purpose.internationalStructuring", value: "international_structuring" },
+  { label: "ch.options.purpose.optimization", value: "optimization" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const CH_QUOTE_ONLY_OPTIONS = [
-  { label: "mcap.ch.options.quoteOnly.annualAccountingTax", value: "annual_accounting_tax_quote" },
-  { label: "mcap.ch.options.quoteOnly.emiOpening", value: "emi_account_opening_quote" },
-  { label: "mcap.ch.options.quoteOnly.legalOpinionSwiss", value: "legal_opinion_swiss_quote" },
-  { label: "mcap.ch.options.quoteOnly.legalOpinionExchange", value: "legal_opinion_exchange_quote" },
-  { label: "mcap.ch.options.quoteOnly.consulting", value: "consulting_quote" },
+  { label: "ch.options.quoteOnly.annualAccountingTax", value: "annual_accounting_tax_quote" },
+  { label: "ch.options.quoteOnly.emiOpening", value: "emi_account_opening_quote" },
+  { label: "ch.options.quoteOnly.legalOpinionSwiss", value: "legal_opinion_swiss_quote" },
+  { label: "ch.options.quoteOnly.legalOpinionExchange", value: "legal_opinion_exchange_quote" },
+  { label: "ch.options.quoteOnly.consulting", value: "consulting_quote" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
@@ -95,18 +95,18 @@ export const buildChCorporateServiceItems = (
 
   const localSupportKeyPrefix =
     variant === "AG"
-      ? "mcap.ch.corporate.services.items.localSupport.ag"
-      : "mcap.ch.corporate.services.items.localSupport.gmbh";
+      ? "ch.corporate.services.items.localSupport.ag"
+      : "ch.corporate.services.items.localSupport.gmbh";
 
   const items: ChCorporateServiceItem[] = [
     {
       id: "ch_setup_maintenance_1y",
-      label: "mcap.ch.corporate.services.items.setupMaintenance.label",
+      label: "ch.corporate.services.items.setupMaintenance.label",
       amount: CH_CORPORATE_PRICING.setup_and_maintenance_1y,
       original: CH_CORPORATE_PRICING.setup_and_maintenance_1y,
       mandatory: true,
       kind: "service",
-      info: "mcap.ch.corporate.services.items.setupMaintenance.info",
+      info: "ch.corporate.services.items.setupMaintenance.info",
     },
   ];
 
@@ -125,45 +125,45 @@ export const buildChCorporateServiceItems = (
   if (registeredOfficeMode === "pobox") {
     items.push({
       id: "ch_registered_office_pobox_1y",
-      label: "mcap.ch.corporate.services.items.registeredOfficePobox.label",
+      label: "ch.corporate.services.items.registeredOfficePobox.label",
       amount: CH_CORPORATE_PRICING.registered_office_pobox_1y,
       original: CH_CORPORATE_PRICING.registered_office_pobox_1y,
       mandatory: true,
       kind: "service",
-      info: "mcap.ch.corporate.services.items.registeredOfficePobox.info",
+      info: "ch.corporate.services.items.registeredOfficePobox.info",
     });
   } else if (registeredOfficeMode === "flexidesk") {
     items.push({
       id: "ch_registered_office_flexidesk_1y",
-      label: "mcap.ch.corporate.services.items.registeredOfficeFlexidesk.label",
+      label: "ch.corporate.services.items.registeredOfficeFlexidesk.label",
       amount: CH_CORPORATE_PRICING.registered_office_flexidesk_1y,
       original: CH_CORPORATE_PRICING.registered_office_flexidesk_1y,
       mandatory: true,
       kind: "service",
-      info: "mcap.ch.corporate.services.items.registeredOfficeFlexidesk.info",
+      info: "ch.corporate.services.items.registeredOfficeFlexidesk.info",
     });
   }
 
   if (bankOpeningMode === "mirr_opening") {
     items.push({
       id: "ch_bank_opening_capital_operating",
-      label: "mcap.ch.corporate.services.items.bankOpening.label",
+      label: "ch.corporate.services.items.bankOpening.label",
       amount: CH_CORPORATE_PRICING.bank_opening_capital_operating,
       original: CH_CORPORATE_PRICING.bank_opening_capital_operating,
       mandatory: true,
       kind: "service",
-      info: "mcap.ch.corporate.services.items.bankOpening.info",
+      info: "ch.corporate.services.items.bankOpening.info",
     });
   }
 
   items.push({
     id: "ch_emi_list_provision",
-    label: "mcap.ch.corporate.services.items.emiListProvision.label",
+    label: "ch.corporate.services.items.emiListProvision.label",
     amount: CH_CORPORATE_PRICING.emi_list_provision,
     original: CH_CORPORATE_PRICING.emi_list_provision,
     mandatory: false,
     kind: "optional",
-    info: "mcap.ch.corporate.services.items.emiListProvision.info",
+    info: "ch.corporate.services.items.emiListProvision.info",
   });
 
   return items;
@@ -217,28 +217,28 @@ export const computeChCorporateFees = (data: Record<string, any>, variant: ChCor
     cardFeeSurcharge,
     grandTotal,
     ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
-    note: "mcap.ch.corporate.fees.note",
+    note: "ch.corporate.fees.note",
   };
 };
 
 const buildApplicantFields = (): McapField[] => [
   {
     type: "info",
-    label: "mcap.ch.corporate.applicant.notice.label",
-    content: "mcap.ch.corporate.applicant.notice.content",
+    label: "ch.corporate.applicant.notice.label",
+    content: "ch.corporate.applicant.notice.content",
     colSpan: 2,
   },
   { type: "text", name: "applicantName", label: "mcap.common.fields.applicantName", required: true, colSpan: 2 },
   {
     type: "checkbox-group",
     name: "authorRelationship",
-    label: "mcap.ch.corporate.applicant.fields.authorRelationship.label",
+    label: "ch.corporate.applicant.fields.authorRelationship.label",
     required: true,
     options: [
-      { label: "mcap.ch.options.relationship.directorOfSwissEntity", value: "director" },
-      { label: "mcap.ch.options.relationship.delegate", value: "delegate" },
-      { label: "mcap.ch.options.relationship.directOrIndirectShareholder", value: "shareholder" },
-      { label: "mcap.ch.options.relationship.expert", value: "expert" },
+      { label: "ch.options.relationship.directorOfSwissEntity", value: "director" },
+      { label: "ch.options.relationship.delegate", value: "delegate" },
+      { label: "ch.options.relationship.directOrIndirectShareholder", value: "shareholder" },
+      { label: "ch.options.relationship.expert", value: "expert" },
       { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,
@@ -304,20 +304,20 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "ethicalLegalConfirmation",
-    label: "mcap.ch.common.compliance.ethicalLegalConfirmation.label",
+    label: "ch.common.compliance.ethicalLegalConfirmation.label",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
       { label: "mcap.common.options.doNotKnow", value: "unknown" },
-      { label: "mcap.ch.common.options.considerLegalAdvice", value: "legal_advice" },
+      { label: "ch.common.options.considerLegalAdvice", value: "legal_advice" },
     ],
     colSpan: 2,
   },
   {
     type: "radio-group",
     name: "annualRenewalAgreement",
-    label: "mcap.ch.common.compliance.annualRenewalAgreement.label",
+    label: "ch.common.compliance.annualRenewalAgreement.label",
     required: true,
     options: ANNUAL_RENEWAL_OPTIONS,
     colSpan: 2,
@@ -325,7 +325,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "sanctionedCountriesBusiness",
-    label: "mcap.ch.common.compliance.sanctionedCountriesBusiness.label",
+    label: "ch.common.compliance.sanctionedCountriesBusiness.label",
     required: true,
     options: YES_NO_DONT_KNOW_OPTIONS,
     colSpan: 2,
@@ -333,7 +333,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "sanctionedPersonsInvolved",
-    label: "mcap.ch.common.compliance.sanctionedPersonsInvolved.label",
+    label: "ch.common.compliance.sanctionedPersonsInvolved.label",
     required: true,
     options: YES_NO_DONT_KNOW_OPTIONS,
     colSpan: 2,
@@ -341,7 +341,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "restrictedSectors",
-    label: "mcap.ch.common.compliance.restrictedSectors.label",
+    label: "ch.common.compliance.restrictedSectors.label",
     required: true,
     options: YES_NO_DONT_KNOW_OPTIONS,
     colSpan: 2,
@@ -351,21 +351,21 @@ const buildComplianceFields = (): McapField[] => [
 const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
   const contextContentKey =
     variant === "AG"
-      ? "mcap.ch.corporate.company.context.contentAg"
-      : "mcap.ch.corporate.company.context.contentGmbh";
+      ? "ch.corporate.company.context.contentAg"
+      : "ch.corporate.company.context.contentGmbh";
   const totalCapitalLabelKey =
     variant === "AG"
-      ? "mcap.ch.corporate.company.fields.totalCapital.ag.label"
-      : "mcap.ch.corporate.company.fields.totalCapital.gmbh.label";
+      ? "ch.corporate.company.fields.totalCapital.ag.label"
+      : "ch.corporate.company.fields.totalCapital.gmbh.label";
   const totalCapitalDefaultKey =
     variant === "AG"
-      ? "mcap.ch.corporate.options.totalCapital.agDefault"
-      : "mcap.ch.corporate.options.totalCapital.gmbhDefault";
+      ? "ch.corporate.options.totalCapital.agDefault"
+      : "ch.corporate.options.totalCapital.gmbhDefault";
 
   return [
     {
       type: "info",
-      label: "mcap.ch.corporate.company.context.label",
+      label: "ch.corporate.company.context.label",
       content: contextContentKey,
       colSpan: 2,
     },
@@ -409,7 +409,7 @@ const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "checkbox-group",
       name: "purposeOfEstablishment",
-      label: "mcap.ch.corporate.company.fields.purposeOfEstablishment.label",
+      label: "ch.corporate.company.fields.purposeOfEstablishment.label",
       required: true,
       options: CH_PURPOSE_OPTIONS,
       colSpan: 2,
@@ -432,7 +432,7 @@ const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "radio-group",
       name: "tokenIssuancePlanned",
-      label: "mcap.ch.corporate.company.fields.tokenIssuancePlanned.label",
+      label: "ch.corporate.company.fields.tokenIssuancePlanned.label",
       required: true,
       options: YES_NO_OPTIONS,
       colSpan: 2,
@@ -440,7 +440,7 @@ const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "radio-group",
       name: "tokenUtilityAtIssuance",
-      label: "mcap.ch.corporate.company.fields.tokenUtilityAtIssuance.label",
+      label: "ch.corporate.company.fields.tokenUtilityAtIssuance.label",
       required: true,
       condition: (f) => f.tokenIssuancePlanned === "yes",
       options: YES_NO_DONT_KNOW_OPTIONS,
@@ -449,7 +449,7 @@ const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "radio-group",
       name: "tokenRightsFeatures",
-      label: "mcap.ch.corporate.company.fields.tokenRightsFeatures.label",
+      label: "ch.corporate.company.fields.tokenRightsFeatures.label",
       required: true,
       condition: (f) => f.tokenIssuancePlanned === "yes",
       options: YES_NO_DONT_KNOW_OPTIONS,
@@ -458,7 +458,7 @@ const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "radio-group",
       name: "sroMembershipPlan",
-      label: "mcap.ch.corporate.company.fields.sroMembershipPlan.label",
+      label: "ch.corporate.company.fields.sroMembershipPlan.label",
       required: true,
       options: [
         { label: "mcap.common.options.yes", value: "yes" },
@@ -489,18 +489,18 @@ const buildCompanyFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "radio-group",
       name: "addressServiceChoice",
-      label: "mcap.ch.corporate.company.fields.addressServiceChoice.label",
+      label: "ch.corporate.company.fields.addressServiceChoice.label",
       required: true,
       options: [
-        { label: "mcap.ch.corporate.options.addressServiceChoice.mirr", value: "mirr" },
-        { label: "mcap.ch.corporate.options.addressServiceChoice.own", value: "own" },
+        { label: "ch.corporate.options.addressServiceChoice.mirr", value: "mirr" },
+        { label: "ch.corporate.options.addressServiceChoice.own", value: "own" },
       ],
       colSpan: 2,
     },
     {
       type: "textarea",
       name: "addressServiceOwnAddress",
-      label: "mcap.ch.corporate.company.fields.addressServiceOwnAddress.label",
+      label: "ch.corporate.company.fields.addressServiceOwnAddress.label",
       required: true,
       condition: (f) => f.addressServiceChoice === "own",
       rows: 3,
@@ -575,8 +575,8 @@ const buildAccountingFields = (): McapField[] => [
 const buildServicesFields = (variant: ChCorporateVariant): McapField[] => {
   const boardServiceLabelKey =
     variant === "AG"
-      ? "mcap.ch.corporate.services.fields.boardServiceMode.ag.label"
-      : "mcap.ch.corporate.services.fields.boardServiceMode.gmbh.label";
+      ? "ch.corporate.services.fields.boardServiceMode.ag.label"
+      : "ch.corporate.services.fields.boardServiceMode.gmbh.label";
 
   return [
     {
@@ -586,26 +586,26 @@ const buildServicesFields = (variant: ChCorporateVariant): McapField[] => {
       required: true,
       defaultValue: "mirr_provided",
       options: [
-        { label: "mcap.ch.corporate.services.options.boardServiceMode.mirrProvided", value: "mirr_provided" },
-        { label: "mcap.ch.corporate.services.options.boardServiceMode.clientProvided", value: "client_provided" },
+        { label: "ch.corporate.services.options.boardServiceMode.mirrProvided", value: "mirr_provided" },
+        { label: "ch.corporate.services.options.boardServiceMode.clientProvided", value: "client_provided" },
       ],
     },
     {
       type: "select",
       name: "registeredOfficeMode",
-      label: "mcap.ch.common.services.fields.registeredOfficeMode.label",
+      label: "ch.common.services.fields.registeredOfficeMode.label",
       required: true,
       defaultValue: "pobox",
       options: [
-        { label: "mcap.ch.common.services.options.registeredOfficeMode.pobox", value: "pobox" },
-        { label: "mcap.ch.common.services.options.registeredOfficeMode.flexidesk", value: "flexidesk" },
-        { label: "mcap.ch.common.services.options.registeredOfficeMode.clientAddress", value: "client_address" },
+        { label: "ch.common.services.options.registeredOfficeMode.pobox", value: "pobox" },
+        { label: "ch.common.services.options.registeredOfficeMode.flexidesk", value: "flexidesk" },
+        { label: "ch.common.services.options.registeredOfficeMode.clientAddress", value: "client_address" },
       ],
     },
     {
       type: "textarea",
       name: "registeredOfficeClientAddress",
-      label: "mcap.ch.common.services.fields.registeredOfficeClientAddress.label",
+      label: "ch.common.services.fields.registeredOfficeClientAddress.label",
       required: true,
       condition: (f) => f.registeredOfficeMode === "client_address",
       rows: 3,
@@ -614,25 +614,25 @@ const buildServicesFields = (variant: ChCorporateVariant): McapField[] => {
     {
       type: "select",
       name: "bankOpeningMode",
-      label: "mcap.ch.common.services.fields.bankOpeningMode.label",
+      label: "ch.common.services.fields.bankOpeningMode.label",
       required: true,
       defaultValue: "mirr_opening",
       options: [
-        { label: "mcap.ch.common.services.options.bankOpeningMode.mirrOpening", value: "mirr_opening" },
-        { label: "mcap.ch.common.services.options.bankOpeningMode.selfArranged", value: "self_arranged" },
+        { label: "ch.common.services.options.bankOpeningMode.mirrOpening", value: "mirr_opening" },
+        { label: "ch.common.services.options.bankOpeningMode.selfArranged", value: "self_arranged" },
       ],
     },
     {
       type: "checkbox-group",
       name: "chQuoteOnlyServices",
-      label: "mcap.ch.corporate.services.fields.quoteOnlyServices.label",
+      label: "ch.corporate.services.fields.quoteOnlyServices.label",
       options: CH_QUOTE_ONLY_OPTIONS,
       colSpan: 2,
     },
     {
       type: "textarea",
       name: "chQuoteOnlyServicesOther",
-      label: "mcap.ch.corporate.services.fields.quoteOnlyServicesOther.label",
+      label: "ch.corporate.services.fields.quoteOnlyServicesOther.label",
       condition: (f) => Array.isArray(f.chQuoteOnlyServices) && f.chQuoteOnlyServices.includes("other"),
       rows: 3,
       colSpan: 2,
@@ -654,7 +654,7 @@ export const createChCorporateConfig = ({
   variant: ChCorporateVariant;
 }): McapConfig => {
   const confirmationTitle =
-    variant === "AG" ? "mcap.ch.ag.confirmation.title" : "mcap.ch.gmbh.confirmation.title";
+    variant === "AG" ? "ch.ag.confirmation.title" : "ch.gmbh.confirmation.title";
 
   return {
     id,
@@ -664,19 +664,19 @@ export const createChCorporateConfig = ({
     title,
     confirmationDetails: {
       title: confirmationTitle,
-      message: "mcap.ch.corporate.confirmation.message",
+      message: "ch.corporate.confirmation.message",
       steps: [
         {
-          title: "mcap.ch.corporate.confirmation.steps.complianceReview.title",
-          description: "mcap.ch.corporate.confirmation.steps.complianceReview.description",
+          title: "ch.corporate.confirmation.steps.complianceReview.title",
+          description: "ch.corporate.confirmation.steps.complianceReview.description",
         },
         {
-          title: "mcap.ch.corporate.confirmation.steps.registrationPreparation.title",
-          description: "mcap.ch.corporate.confirmation.steps.registrationPreparation.description",
+          title: "ch.corporate.confirmation.steps.registrationPreparation.title",
+          description: "ch.corporate.confirmation.steps.registrationPreparation.description",
         },
         {
-          title: "mcap.ch.corporate.confirmation.steps.filingAndSupport.title",
-          description: "mcap.ch.corporate.confirmation.steps.filingAndSupport.description",
+          title: "ch.corporate.confirmation.steps.filingAndSupport.title",
+          description: "ch.corporate.confirmation.steps.filingAndSupport.description",
         },
       ],
     },
@@ -684,25 +684,25 @@ export const createChCorporateConfig = ({
       {
         id: "applicant",
         title: "mcap.common.steps.applicant",
-        description: "mcap.ch.corporate.steps.applicant.description",
+        description: "ch.corporate.steps.applicant.description",
         fields: buildApplicantFields(),
       },
       {
         id: "compliance",
         title: "mcap.common.steps.compliance",
-        description: "mcap.ch.corporate.steps.compliance.description",
+        description: "ch.corporate.steps.compliance.description",
         fields: buildComplianceFields(),
       },
       {
         id: "company",
         title: "mcap.common.steps.company",
-        description: "mcap.ch.corporate.steps.company.description",
+        description: "ch.corporate.steps.company.description",
         fields: buildCompanyFields(variant),
       },
       {
         id: "parties",
         title: "mcap.common.steps.parties",
-        description: "mcap.ch.common.steps.parties.description",
+        description: "ch.common.steps.parties.description",
         widget: "PartiesManager",
         minParties: 1,
         requireDcp: true,
@@ -710,11 +710,11 @@ export const createChCorporateConfig = ({
         partyFields: [
           {
             key: "swissResidencyStatus",
-            label: "mcap.ch.corporate.parties.fields.swissResidencyStatus.label",
+            label: "ch.corporate.parties.fields.swissResidencyStatus.label",
             type: "select",
             options: [
-              { label: "mcap.ch.corporate.options.swissResidencyStatus.swissResident", value: "swiss_resident" },
-              { label: "mcap.ch.corporate.options.swissResidencyStatus.nonSwissResident", value: "non_swiss_resident" },
+              { label: "ch.corporate.options.swissResidencyStatus.swissResident", value: "swiss_resident" },
+              { label: "ch.corporate.options.swissResidencyStatus.nonSwissResident", value: "non_swiss_resident" },
             ],
             storage: "details",
           },
@@ -724,9 +724,9 @@ export const createChCorporateConfig = ({
             key: "swissResidencyStatus",
             storage: "details",
             requiredValues: ["swiss_resident"],
-            label: "mcap.ch.corporate.coverage.swissResidency.label",
+            label: "ch.corporate.coverage.swissResidency.label",
             valueLabels: {
-              swiss_resident: "mcap.ch.corporate.coverage.swissResidency.swissResidentRequired",
+              swiss_resident: "ch.corporate.coverage.swissResidency.swissResidentRequired",
             },
           },
         ],
@@ -739,7 +739,7 @@ export const createChCorporateConfig = ({
       {
         id: "services",
         title: "mcap.common.steps.services",
-        description: "mcap.ch.corporate.steps.services.description",
+        description: "ch.corporate.steps.services.description",
         widget: "ServiceSelectionWidget",
         fields: buildServicesFields(variant),
         serviceItems: (data) => buildChCorporateServiceItems(data, variant),
@@ -749,14 +749,14 @@ export const createChCorporateConfig = ({
       {
         id: "invoice",
         title: "mcap.common.steps.invoice",
-        description: "mcap.ch.corporate.steps.invoice.description",
+        description: "ch.corporate.steps.invoice.description",
         widget: "InvoiceWidget",
         computeFees: (data) => computeChCorporateFees(data, variant),
       },
       {
         id: "payment",
         title: "mcap.common.steps.payment",
-        description: "mcap.ch.corporate.steps.payment.description",
+        description: "ch.corporate.steps.payment.description",
         widget: "PaymentWidget",
         supportedCurrencies: ["USD", "HKD"],
         computeFees: (data) => computeChCorporateFees(data, variant),
@@ -768,7 +768,7 @@ export const createChCorporateConfig = ({
           {
             type: "info",
             label: "mcap.common.fields.agreementAndDeclaration",
-            content: "mcap.ch.corporate.review.declaration.content",
+            content: "ch.corporate.review.declaration.content",
             colSpan: 2,
           },
           {

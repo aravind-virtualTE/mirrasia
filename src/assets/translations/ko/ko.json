@@ -1,55 +1,4 @@
-{
-  "mcap": {
-    "admin": {
-      "coupon": {
-        "title": "쿠폰 관리",
-        "description": "클라이언트를 위한 QR 코드가 포함된 할인 쿠폰을 생성하고 관리합니다.",
-        "create": "쿠폰 생성",
-        "createTitle": "새 쿠폰 생성",
-        "createDesc": "결제 시 클라이언트가 적용할 수 있는 할인 쿠폰을 생성합니다.",
-        "code": "쿠폰 코드",
-        "generate": "생성",
-        "discountAmount": "할인 금액 (USD)",
-        "descriptionLabel": "설명 (선택 사항)",
-        "maxUses": "최대 사용 횟수 (0 = 무제한)",
-        "expiresAt": "만료일 (선택 사항)",
-        "countryCode": "적용 국가",
-        "allCountries": "모든 국가",
-        "createBtn": "쿠폰 생성",
-        "listTitle": "모든 쿠폰",
-        "listDesc": "기존 쿠폰을 관리하고 QR 코드를 확인합니다.",
-        "noCoupons": "아집 쿠폰이 없습니다. 새로 만들어 보세요.",
-        "codeCol": "코드",
-        "discountCol": "할인",
-        "usageCol": "사용 현황",
-        "expiryCol": "만료일",
-        "countryCol": "국가",
-        "statusCol": "상태",
-        "actionsCol": "작업",
-        "qrTitle": "쿠폰 QR 코드",
-        "qrDesc": "이 QR 코드를 클라이언트와 공유하세요.",
-        "copyCode": "코드 복사",
-        "downloadQr": "QR 다운로드"
-      }
-    },
-    "payment": {
-      "coupon": {
-        "haveCoupon": "쿠폰 코드가 있으신가요?",
-        "enterCode": "쿠폰 코드 입력",
-        "apply": "적용",
-        "applied": "쿠폰이 적용되었습니다!",
-        "codeApplied": "적용된 쿠폰:",
-        "discountApplied": "{{amount}} 할인이 적용되었습니다.",
-        "couponDiscount": "쿠폰 할인",
-        "invalid": "유효하지 않은 쿠폰 코드입니다.",
-        "alreadyUsed": "이미 사용된 쿠폰입니다.",
-        "expired": "만료된 쿠폰입니다.",
-        "maxReached": "사용 한도에 도달한 쿠폰입니다.",
-        "countryMismatch": "이 쿠폰은 {{country}} 법인 설립에만 유효합니다.",
-        "error": "쿠폰 검증에 실패했습니다."
-      }
-    }
-  },
+﻿{
   "userProfile": {
     "title": "프로필 설정",
     "subtitle": "계정 정보 및 보안 설정을 관리하세요",
@@ -3295,12 +3244,58 @@
     }
   },
   "mcap": {
+    "admin": {
+      "coupon": {
+        "title": "쿠폰 관리",
+        "description": "클라이언트를 위한 QR 코드 할인 쿠폰을 생성하고 관리합니다.",
+        "create": "쿠폰 생성",
+        "createTitle": "새 쿠폰 생성",
+        "createDesc": "클라이언트가 결제 시 사용할 수 있는 할인 쿠폰을 생성합니다.",
+        "code": "쿠폰 코드",
+        "generate": "자동 생성",
+        "discountAmount": "할인 금액 (USD)",
+        "descriptionLabel": "설명 (선택 사항)",
+        "maxUses": "최대 사용 횟수 (0 = 무제한)",
+        "expiresAt": "만료일 (선택 사항)",
+        "countryCode": "적용 가능 국가",
+        "allCountries": "모든 국가",
+        "createBtn": "쿠폰 생성하기",
+        "listTitle": "모든 쿠폰",
+        "listDesc": "기존 쿠폰을 관리하고 QR 코드를 확인합니다.",
+        "noCoupons": "생성된 쿠폰이 없습니다. 첫 쿠폰을 만들어 보세요.",
+        "codeCol": "코드",
+        "discountCol": "할인",
+        "usageCol": "사용량",
+        "expiryCol": "만료일",
+        "countryCol": "국가",
+        "statusCol": "상태",
+        "actionsCol": "작업",
+        "qrTitle": "쿠폰 QR 코드",
+        "qrDesc": "이 QR 코드를 클라이언트와 공유하세요.",
+        "copyCode": "코드 복사",
+        "downloadQr": "QR 다운로드"
+      }
+    },
+    "payment": {
+      "coupon": {
+        "haveCoupon": "쿠폰 코드가 있으신가요?",
+        "enterCode": "쿠폰 코드를 입력하세요",
+        "apply": "적용",
+        "codeApplied": "쿠폰 적용됨:",
+        "couponDiscount": "쿠폰 할인액",
+        "invalid": "유효하지 않은 쿠폰 코드입니다.",
+        "alreadyUsed": "이미 사용된 쿠폰입니다.",
+        "expired": "만료된 쿠폰입니다.",
+        "maxReached": "사용 한도에 도달한 쿠폰입니다.",
+        "countryMismatch": "이 쿠폰은 {{country}} 법인 설립 시에만 유효합니다."
+      }
+    },
     "common": {
       "steps": {
-        "applicant": "신청인 정보",
-        "compliance": "컴플라이언스 및 규제 선언",
-        "company": "법인 정보",
-        "parties": "당사자 및 초대",
+        "applicant": "신청자 정보",
+        "compliance": "컴플라이언스 및 규정 선언",
+        "company": "회사 정보",
+        "parties": "관계자 및 초대",
         "accounting": "회계 및 세무",
         "services": "서비스 선택",
         "invoice": "인보이스 미리보기",
@@ -3313,56 +3308,56 @@
         "doNotKnow": "모름",
         "other": "기타",
         "notSureYet": "아직 확실하지 않음",
-        "selfHandleAfterSetup": "설립 후 자체 처리 가능",
+        "selfHandleAfterSetup": "설립 후 자체적으로 처리 가능",
         "noIfFixedAnnualCosts": "고정 연간 비용 발생 시 설립 의사 없음",
         "adviceRequiredBeforeProceeding": "진행 전 상담 필요",
         "internalResolution": "내부적으로 해결 가능",
-        "upTo300": "300개 이하",
-        "from301To1000": "301 - 1000개",
-        "moreThan1000": "1000개 이상"
+        "upTo300": "300건 이하",
+        "from301To1000": "301 - 1000건",
+        "moreThan1000": "1000건 초과"
       },
       "relationship": {
-        "director": "이사",
-        "shareholder": "주주",
+        "director": "이사 (Director)",
+        "shareholder": "주주 (Shareholder)",
         "authorizedRepresentative": "권한 있는 대리인",
-        "professionalAdvisor": "전문 고문(자문)"
+        "professionalAdvisor": "전문 자문가"
       },
       "messenger": {
         "whatsApp": "WhatsApp",
         "weChat": "WeChat",
         "line": "Line",
-        "kakaoTalk": "카카오톡",
-        "telegram": "텔레그램"
+        "kakaoTalk": "KakaoTalk",
+        "telegram": "Telegram"
       },
       "currency": {
         "aud": "AUD",
         "hkd": "HKD",
         "usd": "USD",
         "eur": "EUR",
-        "gbp": "파운드"
+        "gbp": "GBP"
       },
       "fields": {
-        "applicantName": "신청인 성함",
-        "applicantEmail": "신청인 이메일",
-        "applicantPhone": "신청인 전화번호",
-        "companyNameFirstChoice": "법인명 (1순위)",
-        "companyNameSecondChoice": "법인명 (2순위)",
-        "companyNameThirdChoice": "법인명 (3순위)",
-        "relationshipToCompany": "법인과의 관계",
+        "applicantName": "신청자 성명",
+        "applicantEmail": "신청자 이메일",
+        "applicantPhone": "신청자 전화번호",
+        "companyNameFirstChoice": "회사명 (1순위)",
+        "companyNameSecondChoice": "회사명 (2순위)",
+        "companyNameThirdChoice": "회사명 (3순위)",
+        "relationshipToCompany": "회사와의 관계",
         "otherRelationshipDetails": "기타 관계 상세 정보",
         "additionalContactInfo": "추가 연락처 정보 (SNS ID 등)",
         "preferredMessenger": "선호하는 메신저",
         "messengerId": "메신저 ID",
         "selectedIndustry": "업종 선택",
-        "productServiceDescription": "거래 예정인 제품/서비스 설명",
-        "businessSummary": "사업 내용을 3-4문장으로 설명해 주세요",
-        "businessOperatingCountries": "사업이 운영될 국가",
+        "productServiceDescription": "취급 제품/서비스 설명",
+        "businessSummary": "비즈니스 요약 (3-4문장)",
+        "businessOperatingCountries": "비즈니스 수행 국가",
         "websiteAddressOptional": "웹사이트 주소 (있는 경우)",
-        "capitalCurrency": "자본금 통화",
-        "capitalCurrencyOther": "자본금 통화 (기타)",
-        "totalCapitalToBePaid": "납입 자본금 총액",
-        "totalCapitalToBePaidOther": "납입 자본금 총액 (기타)",
-        "capitalRequirementAcknowledged": "자본금 요건은 컴플라이언스 사항이며 인보이스 총액에서 제외됨을 이해합니다.",
+        "capitalCurrency": "자본 통화",
+        "capitalCurrencyOther": "자본 통화 (기타)",
+        "totalCapitalToBePaid": "총 납입 자본금",
+        "totalCapitalToBePaidOther": "총 납입 자본금 (기타)",
+        "capitalRequirementAcknowledged": "자본금 요건은 컴플라이언스 사항이며 인보이스 합계에서 제외됨을 이해합니다.",
         "totalNumberOfShares": "총 발행 주식 수",
         "totalNumberOfSharesOther": "총 발행 주식 수 (기타)",
         "shareCountOther": "주식 수 (기타)",
@@ -3373,14 +3368,14 @@
         "otherFinancialYearEnd": "기타 회계연도 종료일",
         "bookKeepingCycle": "기장 주기",
         "expectedAnnualTransactions": "예상 연간 거래량",
-        "vatRegistrationSupport": "부가가치세(VAT) 등록 지원이 필요하십니까?",
-        "vatTaxSupportNeed": "부가가치세(VAT)/세무 신고 지원이 필요하십니까?",
-        "accountingAndTaxNotes": "회계 및 세무 관련 참고 사항",
+        "vatRegistrationSupport": "VAT 등록 지원이 필요합니까?",
+        "vatTaxSupportNeed": "VAT/세무 신고 지원이 필요합니까?",
+        "accountingAndTaxNotes": "회계 및 세무 참고 사항",
         "shareType": "주식 유형",
         "directorAppointment": "이사 임명",
         "issuedShareTypeOther": "발행 주식 유형 (기타)",
         "agreementAndDeclaration": "동의 및 선언",
-        "doYouAgreeToDeclaration": "위의 선언 내용에 동의하십니까?",
+        "doYouAgreeToDeclaration": "위 선언문에 동의하십니까?",
         "truthfulnessDeclaration": "제출된 정보가 사실이며 정확함을 확인합니다.",
         "complianceSuspensionAcknowledgement": "법적/컴플라이언스 위반 사항이 발견될 경우 서비스가 중단될 수 있음을 이해합니다.",
         "electronicSignature": "전자 서명",
@@ -3390,42 +3385,58 @@
         "website": "https://"
       },
       "bookkeeping": {
-        "monthly": "매월",
-        "quarterly": "매분기",
+        "monthly": "월별",
+        "quarterly": "분기별",
         "halfYearly": "반기별",
-        "annually": "매년"
+        "annually": "연별"
       },
       "shareType": {
         "ordinary": "보통주",
         "preference": "우선주"
       },
       "coverage": {
-        "director": "이사 요건 충족",
-        "directorAtLeastOne": "최소 1인의 임명된 이사"
+        "director": "이사 배정",
+        "directorAtLeastOne": "최소 1인의 이사 임명 필요",
+        "shareholder": "주주 배정",
+        "shareholderAtLeastOne": "최소 1인의 주주 필요"
+      }
+    },
+    "review": {
+      "summary": {
+        "title": "검토 요약",
+        "applicant": "신청자",
+        "companyName": "회사명",
+        "email": "이메일",
+        "phone": "전화번호",
+        "entityType": "관계",
+        "industry": "업종",
+        "parties": "관계자",
+        "services": "선택된 서비스",
+        "value": "금액"
       }
     },
     "dashboard": {
-      "title": "법인 설립 신청",
-      "desc": "통합 법인 설립 및 온보딩 신청 현황을 추적하고 계속해서 진행하세요.",
-      "loading": "신청 내역을 불러오는 중...",
-      "empty": "아직 설립 또는 온보딩 신청 내역이 없습니다.",
+      "title": "법인 설립 신청 현황",
+      "desc": "통합 법인 설립 및 온보딩 신청 내역을 추적하고 계속 진행하세요.",
+      "loading": "신청 내역 불러오는 중...",
+      "empty": "진행 중인 법인 설립 또는 온보딩 신청이 없습니다.",
       "filters": {
-        "all": "모든 신청",
+        "all": "전체 신청",
         "pending": "대기 중인 신청",
         "paid": "결제 완료된 신청",
-        "documentCollection": "서류 수집 단계",
+        "documentCollection": "서류 수집 중",
         "currentCorporateClient": "현재 법인 고객",
         "renewalInProgress": "갱신 진행 중",
-        "renewed": "갱신 완료된 법인",
-        "rejected": "거절된 법인",
-        "showing": "필터링된 {{filtered}}개 중 {{start}}-{{end}} 표시 (총 {{total}}개)",
-        "empty": "{{filter}} 항목에 해당하는 신청 내역이 없습니다.",
-        "reset": "모든 신청 보기"
+        "renewed": "갱신 완료된 회사",
+        "rejected": "거절된 회사",
+        "showing": "필터링된 결과 {{total}}개 중 {{start}}-{{end}} 표시",
+        "empty": "{{filter}}에 해당하는 신청 내역이 없습니다.",
+        "reset": "전체 신청 보기"
       },
       "search": {
-        "placeholder": "회사명 또는 신청자 이름으로 검색",
-        "empty": "{{filter}} 필터 내에서 검색어와 일치하는 내역이 없습니다.",
-        "clear": "검색 초기화"
+        "placeholder": "회사명 또는 신청자명으로 검색",
+        "empty": "{{filter}} 내에서 검색 결과가 없습니다.",
+        "clear": "검색 지우기"
       },
       "sort": {
         "by": "정렬",
@@ -3437,8 +3448,8 @@
         "desc": "내림차순"
       },
       "pagination": {
-        "rows": "행 개수",
-        "page": "페이지 {{page}}/{{pages}}"
+        "rows": "행 수",
+        "page": "{{pages}} 중 {{page}} 페이지"
       }
     },
     "columns": {
@@ -3450,34 +3461,82 @@
       "createdAt": "생성일",
       "assignedTo": "담당자",
       "filledBy": "작성자",
-      "userLastLogin": "사용자 최근 접속",
+      "userLastLogin": "사용자 최근 로그인",
       "actions": "작업"
     },
     "actions": {
       "edit": "수정"
     },
     "values": {
-      "notAvailable": "해당 없음",
+      "notAvailable": "N/A",
       "untitled": "제목 없음",
       "draft": "임시 저장",
       "unpaid": "미결제"
     },
     "launcher": {
+      "back": "대시보드로 돌아가기",
       "hero": {
-        "description": "통합 법인 설립 또는 기존 회사 온보딩 절차를 시작할 국가를 선택하세요."
+        "eyebrow": "법인 설립 허브",
+        "description": "관할 구역을 선택하여 통합 법인 설립 또는 기존 회사 온보딩을 시작하세요."
+      },
+      "accessRestricted": {
+        "title": "접근 제한됨",
+        "description": "이 법인 설립 신청서에 접근할 권한이 없습니다."
+      },
+      "groups": {
+        "available_one": "{{count}}개의 구성 가능",
+        "available_other": "{{count}}개의 구성 가능"
+      },
+      "countries": {
+        "hk-full": "홍콩",
+        "us-full": "미국",
+        "sg-full": "싱가포르",
+        "pa-full": "파나마",
+        "ppif-full": "파나마 사익 재단",
+        "cr-full": "코스타리카",
+        "uk-full": "영국",
+        "ch-ag-full": "스위스 주식회사 (AG)",
+        "ch-gmbh-full": "스위스 유한회사 (GmbH/LLC)",
+        "ch-foundation-full": "스위스 재단",
+        "ee-full": "에스토니아 OÜ",
+        "lt-full": "리투아니아",
+        "ie-full": "아일랜드",
+        "au-full": "호주",
+        "uae-ifza": "두바이 IFZA / UAE",
+        "uae-difc": "두바이 DIFC / UAE",
+        "uae-dmcc": "두바이 DMCC / UAE",
+        "uae-dwtc": "두바이 세계 무역 센터 / UAE",
+        "uae-dic": "두바이 인터넷 시티 / UAE",
+        "uae-ifza-fzco": "두바이 IFZA FZCO / UAE"
+      },
+      "config": {
+        "fallbackTitle": "MCAP 구성"
+      },
+      "tooltip": {
+        "currency": "통화: {{currency}}",
+        "steps": "단계: {{count}}"
+      },
+      "actions": {
+        "start": "시작하기"
+      },
+      "errors": {
+        "loadTitle": "신청서를 불러올 수 없습니다",
+        "retry": "다시 시도해 주세요.",
+        "companyNotFound": "회사를 찾을 수 없습니다",
+        "unsupportedCountryConfiguration": "지원되지 않는 국가 구성입니다"
       }
     },
     "invitations": {
       "title": "내 초대 목록",
-      "desc": "나를 초대한 회사의 KYC(본인 인증)를 완료하세요.",
+      "desc": "나를 초대한 회사의 KYC 절차를 완료하세요.",
       "showing": "총 {{total}}개의 초대 중 {{start}}-{{end}} 표시",
-      "loading": "초대 목록을 불러오는 중...",
+      "loading": "초대 목록 불러오는 중...",
       "empty": "대기 중인 초대가 없습니다.",
       "columns": {
         "company": "회사",
         "country": "국가",
         "roles": "역할",
-        "kyc": "KYC 상태",
+        "kyc": "KYC",
         "expires": "만료일",
         "action": "작업"
       },
@@ -4759,6 +4818,9 @@
     }
   },
   "appUpdate": {
+    "title": "새 버전이 있습니다",
+    "description": "최신 버전을 사용하려면 페이지를 새로고침해 주세요.",
+    "refreshNow": "새로고침",
     "totalToPay": "총 결제 금액:",
     "cancel": "취소",
     "pay": "{{amount}} 결제하기",
@@ -5511,9 +5573,225 @@
       "k123": "불법적인 활동이나 의도가 발견될 경우 서비스가 중단될 수 있음을 이해합니다."
     }
   },
-  "appUpdate": {
-    "title": "새 버전이 있습니다",
-    "description": "최신 버전을 사용하려면 페이지를 새로고침해 주세요.",
-    "refreshNow": "새로고침"
+  "bvi": {
+    "title": "BVI(영국령 버진아일랜드) 법인 설립",
+    "confirmation": {
+      "title": "BVI 법인 설립 신청 접수 완료",
+      "message": "BVI 법인 설립 신청이 접수되었습니다. 당사 팀에서 컴플라이언스 답변 검토 및 서비스 범위를 확인한 후 다음 단계에 대해 안내해 드리겠습니다.",
+      "steps": {
+        "complianceReview": {
+          "title": "컴플라이언스 검토",
+          "description": "절차 진행 전 KYC/CDD, 제재 대상 스크리닝 및 사업 목적 검토를 완료합니다."
+        },
+        "scopeConfirmation": {
+          "title": "서비스 범위 확정",
+          "description": "선택하신 법인 설립 및 추가 BVI 서비스 항목을 별도 견적 요청 사항과 함께 확인합니다."
+        },
+        "execution": {
+          "title": "실행",
+          "description": "최종 확인 후 법인 설립 패키지 및 승인된 부가 서비스를 준비하고 조율합니다."
+        }
+      }
+    },
+    "fees": {
+      "note": "요청 서비스 체크리스트는 정보 제공용이며 인보이스 총액에는 영향을 주지 않습니다. MLRO 투자자당 비용은 서비스 단계에서 입력한 투자자 수에 따라 청구됩니다."
+    },
+    "steps": {
+      "applicant": {
+        "description": "신청자 상세 정보, 희망 회사명 및 기본 연락처 정보를 제공해 주세요."
+      },
+      "compliance": {
+        "description": "진행 전 법적 사항, 제재 및 연간 의무 사항에 대한 답변을 확인해 주세요."
+      },
+      "company": {
+        "description": "비즈니스 프로필, 설립 목적 및 등록 주소지 선호도를 설명해 주세요."
+      },
+      "parties": {
+        "description": "모든 이사/주주를 초대하고 최소 1명의 지정 연락 담당자를 배정해 주세요."
+      },
+      "accounting": {
+        "description": "회계 기본 설정 및 회계 기록 보관 장소를 확인해 주세요."
+      },
+      "services": {
+        "description": "요청하신 서비스를 파악하고 인보이스에 청구될 BVI 패키지 항목을 선택해 주세요."
+      },
+      "invoice": {
+        "description": "결제 전 BVI 수수료 내역을 검토해 주세요."
+      },
+      "payment": {
+        "description": "카드 결제를 진행하거나 은행 송금 증빙을 업로드해 주세요."
+      }
+    },
+    "applicant": {
+      "relationshipOptions": {
+        "director": "BVI 회사의 이사",
+        "delegate": "BVI 회사 이사로부터 위임받은 대리인",
+        "majorityShareholder": "과반수 지분을 보유한 주주"
+      },
+      "fields": {
+        "relationship": {
+          "label": "신청자와 설립 예정인 BVI 회사 간의 관계"
+        }
+      }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "설립 예정인 BVI 회사 또는 해당 사업 활동과 관련하여 자금 세탁, 도박, 탈세 또는 사기와 같은 법적 혹은 윤리적 문제가 있습니까?"
+      },
+      "annualRenewalConsent": {
+        "label": "설립 후 발생하는 갱신, 회계, 세무 및 관련 서류 작업을 포함한 연간 의무 사항과 정기 비용 발생에 동의하십니까?"
+      },
+      "sanctionedCountryOperations": {
+        "label": "BVI 회사가 제재 국가 또는 지역에서 현재 수행 중이거나 계획 중인 사업 활동이 있습니까?"
+      },
+      "sanctionedRelatedPartyExposure": {
+        "label": "회사 또는 관계자가 제재 국가에 소재하거나 UN, EU, UKHMT, HKMA 또는 OFAC의 제재 대상입니까?"
+      },
+      "crimeaSevastopolExposure": {
+        "label": "크림반도 또는 세바스토폴에서 현재 수행 중이거나 계획 중인 사업 활동이 있습니까?"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "러시아의 에너지, 석유 및 가스, 군사 또는 국방 분야와 관련된 활동이 있습니까?"
+      },
+      "options": {
+        "considerLegalAdvice": "법적 조언 고려 중",
+        "selfHandleAfterIncorporation": "설립 후 본인/당사가 독립적으로 처리 가능"
+      }
+    },
+    "company": {
+      "industryOptions": {
+        "cryptoRelated": "가상자산 관련 (발행, ICO, 거래소, 지갑 등)",
+        "itBlockchainSoftware": "IT / 블록체인 / 소프트웨어 개발",
+        "cryptoInvestment": "가상자산 투자업",
+        "cryptoGames": "가상자산 기반 게임",
+        "forex": "외환 거래",
+        "investmentAndAdvisory": "투자 및 자문",
+        "trade": "무역",
+        "wholesaleRetail": "도소매 유통",
+        "consulting": "컨설팅",
+        "manufacturing": "제조업",
+        "ecommerce": "이커머스",
+        "onlinePurchaseDeliveryAgency": "온라인 구매 / 배송 / 구매 대행"
+      },
+      "purposeOptions": {
+        "businessDiversification": "규제 완화에 따른 사업 다각화",
+        "advisorSuggestion": "자문가, 투자자 또는 고객의 권고",
+        "internationalExpansion": "국제 비즈니스 확장",
+        "assetManagement": "자산 관리 (부동산 / 금융 자산)",
+        "holdingCompany": "자회사 / 관계사 관리를 위한 지주 회사",
+        "financialFlexibility": "재무적 유연성을 통한 경쟁 우위 확보",
+        "lowTaxBenefit": "저세율 / VAT 면제에 따른 거래 증대",
+        "noCapitalGainsTax": "자본이득세 면제 혜택"
+      },
+      "fields": {
+        "purposeOfEstablishment": {
+          "label": "설립 목적 및 기대 효과"
+        },
+        "registeredOfficeChoice": {
+          "label": "BVI 회사 등록 주소지",
+          "options": {
+            "useMirrAsiaAddress": "Mirr Asia 주소지 서비스 이용",
+            "useOwnAddress": "BVI 내 자체 상업용 주소지 보유"
+          }
+        },
+        "registeredOfficeDetails": {
+          "label": "등록 주소지 상세 정보"
+        }
+      }
+    },
+    "parties": {
+      "coverage": {
+        "requiredRoles": "필수 관계자 역할"
+      }
+    },
+    "accounting": {
+      "financialYearEndOptions": {
+        "december31": "12월 31일",
+        "march31": "3월 31일",
+        "june30": "6월 30일",
+        "september30": "9월 30일"
+      },
+      "fields": {
+        "accountingRecordAddress": {
+          "label": "회계 및 재무 기록이 유지 및 보관될 주소"
+        }
+      }
+    },
+    "services": {
+      "notice": {
+        "label": "BVI 서비스 안내",
+        "content": "아래 체크리스트를 사용하여 별도 후속 조치가 필요한 요청 서비스를 파악해 주세요. 인보이스 청구 항목은 아래 가격표에 의해 결정됩니다. MLRO 서비스를 선택하는 경우, 입력하신 투자자 수에 따라 투자자당 비용이 계산됩니다."
+      },
+      "requestedItems": {
+        "label": "필요 서비스 항목",
+        "options": {
+          "incorporation": "BVI 법인 설립 + 초기 1년 법인 유지 관리",
+          "emiList": "EMI 리스트 (Mirr Asia 고객 무료)",
+          "emiAccountOpening": "EMI 계좌 개설 및 자문",
+          "bankAccountOpening": "은행 계좌 개설 및 자문",
+          "seychellesLegalOpinion": "세이셸 법률 의견서",
+          "domesticExchangeLegalOpinion": "국내 거래소 상장용 법률 의견서",
+          "consultingServices": "컨설팅 서비스 (규제 검토, 타당성, 서류 작성, 운영)"
+        }
+      },
+      "fields": {
+        "mlroInvestorCount": {
+          "label": "MLRO 투자자당 비용 청구를 위한 투자자 수",
+          "tooltip": "MLRO 서비스 선택 시 1인당 USD 500가 청구될 투자자 수를 입력해 주세요."
+        }
+      },
+      "base": {
+        "incorporation": {
+          "label": "BVI 법인 설립 (1년차 유지 관리 포함)",
+          "info": "회사 등록, 정관 서류, 설립 지원, 1년차 등록 대리인(Registered Agent) 및 등록 주소지 서비스가 포함됩니다."
+        }
+      },
+      "optional": {
+        "fscRegistrationProfessionalService": {
+          "label": "FSC 등록 전문 서비스",
+          "info": "FSC 등록 지원 및 신고 조율을 위한 전문 서비스 수수료입니다."
+        },
+        "fscFees": {
+          "label": "FSC 수수료 (신청 및 승인)",
+          "info": "FSC 공식 신청 및 승인 수수료입니다."
+        },
+        "authorizedLegalRepresentative": {
+          "label": "공인 및 법정 대리인 (초기)",
+          "info": "공인 및 법정 대리인 서비스의 초기 임명 및 설정 지원 비용입니다."
+        },
+        "offeringMemorandum": {
+          "label": "오퍼링 메모랜덤 (Full OM)",
+          "info": "전체 오퍼링 메모랜덤 패키지 작성을 지원합니다."
+        },
+        "mlroBase": {
+          "label": "MLRO 서비스 (기본)",
+          "info": "기본적인 MLRO 설정 및 조율 서비스입니다."
+        },
+        "mlroPerInvestor": {
+          "label": "MLRO 투자자당 비용 (개인/법인)",
+          "info": "MLRO 서비스 선택 시 투자자당 부과되는 비용입니다. 개인 및 법인 투자자 모두에게 적용됩니다."
+        }
+      },
+      "managed": {
+        "mlroInvestorCount": "입력된 투자자 수에 따라 계산됨"
+      },
+      "units": {
+        "investor": "투자자"
+      }
+    },
+    "review": {
+      "declaration": {
+        "content": "본인은 정확한 정보와 증빙 서류를 제공할 것에 동의하며, 제안된 사업 활동이 합법적임을 확인합니다. 또한 법적 또는 컴플라이언스 문제가 확인될 경우 서비스가 중단될 수 있음을 이해합니다."
+      },
+      "applicationAgreement": {
+        "label": "정확한 정보를 제공하고 법적 요건을 준수하는 데 동의하십니까?"
+      },
+      "compliancePreconditionAcknowledgment": {
+        "label": "불법 활동이나 컴플라이언스 문제가 확인될 경우 서비스가 중단될 수 있음을 이해합니다."
+      }
+    },
+    "reviewSummary": {
+      "relationship": "관계"
+    }
   }
 }
