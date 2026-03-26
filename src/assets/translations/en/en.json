@@ -1,4 +1,4 @@
-{
+﻿{
   "userProfile": {
     "title": "Profile Settings",
     "subtitle": "Manage your account information and security settings",
@@ -410,7 +410,7 @@
     "services": "Services",
     "supportTickets": "Support Tickets",
     "supportQueue": "Support Queue",
-    "payoneer":"Payoneer"
+    "payoneer": "Payoneer"
   },
   "supportTickets": {
     "common": {
@@ -3497,7 +3497,23 @@
       },
       "coverage": {
         "director": "Director coverage",
-        "directorAtLeastOne": "At least one appointed director"
+        "directorAtLeastOne": "At least one appointed director",
+        "shareholder": "Shareholder coverage",
+        "shareholderAtLeastOne": "At least one shareholder"
+      }
+    },
+    "review": {
+      "summary": {
+        "title": "Review Summary",
+        "applicant": "Applicant",
+        "companyName": "Company Name",
+        "email": "Email",
+        "phone": "Phone",
+        "entityType": "Relationship",
+        "industry": "Industry",
+        "parties": "Parties",
+        "services": "Services Selected",
+        "value": "Value"
       }
     },
     "dashboard": {
@@ -3535,50 +3551,6 @@
       "pagination": {
         "rows": "Rows",
         "page": "Page {{page}}/{{pages}}"
-      }
-    },
-    "payment": {
-      "coupon": {
-        "haveCoupon": "Have a coupon code?",
-        "enterCode": "Enter coupon code",
-        "apply": "Apply",
-        "applied": "Coupon Applied!",
-        "codeApplied": "Coupon applied:",
-        "discountApplied": "{{amount}} discount applied.",
-        "couponDiscount": "Coupon Discount",
-        "invalid": "Invalid coupon code.",
-        "error": "Failed to validate coupon."
-      }
-    },
-    "admin": {
-      "coupon": {
-        "title": "Coupon Management",
-        "description": "Create and manage discount coupons with QR codes for clients.",
-        "create": "Create Coupon",
-        "createTitle": "Create New Coupon",
-        "createDesc": "Create a discount coupon that clients can apply during payment.",
-        "code": "Coupon Code",
-        "generate": "Generate",
-        "discountAmount": "Discount Amount (USD)",
-        "descriptionLabel": "Description (optional)",
-        "maxUses": "Max Uses (0 = unlimited)",
-        "expiresAt": "Expires At (optional)",
-        "countryCode": "Country Code (optional, blank = all)",
-        "createBtn": "Create Coupon",
-        "listTitle": "All Coupons",
-        "listDesc": "Manage existing coupons and view their QR codes.",
-        "noCoupons": "No coupons yet. Create one to get started.",
-        "codeCol": "Code",
-        "discountCol": "Discount",
-        "usageCol": "Usage",
-        "expiryCol": "Expires",
-        "countryCol": "Country",
-        "statusCol": "Status",
-        "actionsCol": "Actions",
-        "qrTitle": "Coupon QR Code",
-        "qrDesc": "Share this QR code with clients. They can scan it to apply the discount.",
-        "copyCode": "Copy Code",
-        "downloadQr": "Download QR"
       }
     },
     "columns": {
@@ -5568,6 +5540,227 @@
     },
     "review": {
       "capitalNonBillableAcknowledgment": "I understand the HUF 3,000,000 statutory capital is not part of the invoice total."
+    }
+  },
+  "bvi": {
+    "title": "BVI Company Incorporation",
+    "confirmation": {
+      "title": "BVI Incorporation Request Submitted",
+      "message": "We have received your BVI incorporation request. Our team will review compliance answers, confirm service scope, and contact you with the next steps.",
+      "steps": {
+        "complianceReview": {
+          "title": "Compliance Review",
+          "description": "KYC/CDD, sanctions screening, and business-purpose review are completed before the file proceeds."
+        },
+        "scopeConfirmation": {
+          "title": "Scope Confirmation",
+          "description": "Selected incorporation and optional BVI service items are confirmed together with any quoted follow-up requests."
+        },
+        "execution": {
+          "title": "Execution",
+          "description": "The incorporation package and approved optional services are prepared and coordinated after final confirmation."
+        }
+      }
+    },
+    "fees": {
+      "note": "The requested-service checklist is informational only and does not affect invoice totals. MLRO per-investor charges are billed from the investor count entered in the services step."
+    },
+    "steps": {
+      "applicant": {
+        "description": "Provide applicant details, company name choices, and primary contact information."
+      },
+      "compliance": {
+        "description": "Confirm legal, sanctions, and annual-obligation answers before proceeding."
+      },
+      "company": {
+        "description": "Describe the business profile, establishment purpose, and registered-office preference."
+      },
+      "parties": {
+        "description": "Invite all directors/shareholders and assign at least one designated contact person."
+      },
+      "accounting": {
+        "description": "Confirm accounting preferences and where accounting records will be maintained."
+      },
+      "services": {
+        "description": "Capture requested services and select the billable BVI package items."
+      },
+      "invoice": {
+        "description": "Review the BVI fee breakdown before payment."
+      },
+      "payment": {
+        "description": "Proceed with card payment or upload bank transfer proof."
+      }
+    },
+    "applicant": {
+      "relationshipOptions": {
+        "director": "Director of the BVI company",
+        "delegate": "Delegated by the director of the BVI company",
+        "majorityShareholder": "Shareholder holding a majority of the shares"
+      },
+      "fields": {
+        "relationship": {
+          "label": "Relationship between the applicant and the BVI company to be established"
+        }
+      }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "Are there any legal or ethical issues related to the proposed BVI company or its intended activity, such as money laundering, gambling, tax evasion, or fraud?"
+      },
+      "annualRenewalConsent": {
+        "label": "Do you agree to the annual obligations and recurring costs that apply after incorporation, including renewals, accounting, tax, and related documentation?"
+      },
+      "sanctionedCountryOperations": {
+        "label": "Does the BVI company have any current or planned business activity in sanctioned countries or regions?"
+      },
+      "sanctionedRelatedPartyExposure": {
+        "label": "Do the company or related parties have a presence in sanctioned countries or are they subject to sanctions by the UN, EU, UKHMT, HKMA, or OFAC?"
+      },
+      "crimeaSevastopolExposure": {
+        "label": "Are there any current or planned business activities in Crimea or Sevastopol?"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "Is there any exposure to Russia in the energy, oil and gas, military, or defense sectors?"
+      },
+      "options": {
+        "considerLegalAdvice": "Consider legal advice",
+        "selfHandleAfterIncorporation": "I/We can handle independently after incorporation"
+      }
+    },
+    "company": {
+      "industryOptions": {
+        "cryptoRelated": "Cryptocurrency related (issuance, ICO, exchange, wallet, etc.)",
+        "itBlockchainSoftware": "IT / blockchain / software development",
+        "cryptoInvestment": "Cryptocurrency investment business",
+        "cryptoGames": "Cryptocurrency-based games",
+        "forex": "Foreign exchange",
+        "investmentAndAdvisory": "Investment and advisory",
+        "trade": "Trade",
+        "wholesaleRetail": "Wholesale/retail distribution",
+        "consulting": "Consulting",
+        "manufacturing": "Manufacturing",
+        "ecommerce": "E-commerce",
+        "onlinePurchaseDeliveryAgency": "Online purchase / shipping / agency"
+      },
+      "purposeOptions": {
+        "businessDiversification": "Business diversification due to relaxed regulations",
+        "advisorSuggestion": "Suggested by advisor, investor, or customer",
+        "internationalExpansion": "International business expansion",
+        "assetManagement": "Asset management (real estate / financial assets)",
+        "holdingCompany": "Holding company for subsidiaries / affiliates",
+        "financialFlexibility": "Competitive advantage via financial flexibility",
+        "lowTaxBenefit": "Increased transactions due to low tax / no VAT",
+        "noCapitalGainsTax": "No capital gains tax benefit"
+      },
+      "fields": {
+        "purposeOfEstablishment": {
+          "label": "Purpose of establishment and expected benefits"
+        },
+        "registeredOfficeChoice": {
+          "label": "Registered address of the BVI company",
+          "options": {
+            "useMirrAsiaAddress": "Use Mirr Asia address service",
+            "useOwnAddress": "Own commercial address in BVI"
+          }
+        },
+        "registeredOfficeDetails": {
+          "label": "Registered address details"
+        }
+      }
+    },
+    "parties": {
+      "coverage": {
+        "requiredRoles": "Required party roles"
+      }
+    },
+    "accounting": {
+      "financialYearEndOptions": {
+        "december31": "December 31",
+        "march31": "March 31",
+        "june30": "June 30",
+        "september30": "September 30"
+      },
+      "fields": {
+        "accountingRecordAddress": {
+          "label": "Address where accounting and financial records will be maintained"
+        }
+      }
+    },
+    "services": {
+      "notice": {
+        "label": "BVI Services Guidance",
+        "content": "Use the checklist below to capture requested services that may need separate follow-up. The pricing table below determines the billable invoice items. If MLRO service is selected, the per-investor charge is calculated from the investor count you enter."
+      },
+      "requestedItems": {
+        "label": "Service items required",
+        "options": {
+          "incorporation": "BVI company incorporation + initial 1 year corporate maintenance",
+          "emiList": "EMI list (free for Mirr Asia customers)",
+          "emiAccountOpening": "EMI account opening and advisory",
+          "bankAccountOpening": "Bank account opening and advisory",
+          "seychellesLegalOpinion": "Legal opinion in Seychelles",
+          "domesticExchangeLegalOpinion": "Legal opinion for domestic exchange listing",
+          "consultingServices": "Consulting services (regulatory review, feasibility, documentation, operations)"
+        }
+      },
+      "fields": {
+        "mlroInvestorCount": {
+          "label": "Number of investors for MLRO per-investor billing",
+          "tooltip": "Enter the number of investors to be billed at USD 500 each when MLRO service is selected."
+        }
+      },
+      "base": {
+        "incorporation": {
+          "label": "BVI company incorporation (includes first-year maintenance)",
+          "info": "Includes company registration, constitutional documents, incorporation support, first-year registered agent support, and first-year registered office coverage."
+        }
+      },
+      "optional": {
+        "fscRegistrationProfessionalService": {
+          "label": "FSC registration professional service",
+          "info": "Professional service fee for FSC registration support and filing coordination."
+        },
+        "fscFees": {
+          "label": "FSC fees (application and recognition)",
+          "info": "Official FSC application and recognition fees."
+        },
+        "authorizedLegalRepresentative": {
+          "label": "Authorized and Legal Representative (initial)",
+          "info": "Initial appointment and setup support for authorized and legal representative service."
+        },
+        "offeringMemorandum": {
+          "label": "Offering Memorandum (Full OM)",
+          "info": "Preparation support for a full offering memorandum package."
+        },
+        "mlroBase": {
+          "label": "MLRO service (base)",
+          "info": "Base MLRO setup and coordination service."
+        },
+        "mlroPerInvestor": {
+          "label": "MLRO per-investor (individual/corporate)",
+          "info": "Charged per investor when MLRO service is selected. Applies to both individual and corporate investors."
+        }
+      },
+      "managed": {
+        "mlroInvestorCount": "Calculated from entered investor count"
+      },
+      "units": {
+        "investor": "investor"
+      }
+    },
+    "review": {
+      "declaration": {
+        "content": "I agree to provide accurate information and supporting documents, confirm that the proposed activity is lawful, and understand that service may be paused if legal or compliance issues are identified."
+      },
+      "applicationAgreement": {
+        "label": "Do you agree to provide accurate information and comply with legal requirements?"
+      },
+      "compliancePreconditionAcknowledgment": {
+        "label": "I understand service may be suspended if unlawful activity or compliance issues are identified."
+      }
+    },
+    "reviewSummary": {
+      "relationship": "Relationship"
     }
   },
   "ie": {

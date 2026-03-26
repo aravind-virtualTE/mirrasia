@@ -19,51 +19,51 @@ const YES_NO_UNKNOWN = [
 ];
 
 const APPLICANT_RELATIONSHIP_OPTIONS = [
-  { label: "mcap.ie.auto.k001", value: "director" },
-  { label: "mcap.ie.auto.k002", value: "executive_manager" },
-  { label: "mcap.ie.auto.k003", value: "delegate" },
-  { label: "mcap.ie.auto.k004", value: "major_shareholder" },
+  { label: "ie.auto.k001", value: "director" },
+  { label: "ie.auto.k002", value: "executive_manager" },
+  { label: "ie.auto.k003", value: "delegate" },
+  { label: "ie.auto.k004", value: "major_shareholder" },
   {
-    label: "mcap.ie.auto.k005",
+    label: "ie.auto.k005",
     value: "professional_advisor",
   },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const INDUSTRY_OPTIONS = [
-  { label: "mcap.ie.auto.k006", value: "crypto_related" },
-  { label: "mcap.ie.auto.k007", value: "it_blockchain_software" },
-  { label: "mcap.ie.auto.k008", value: "crypto_investment" },
-  { label: "mcap.ie.auto.k009", value: "crypto_games" },
-  { label: "mcap.ie.auto.k010", value: "online_games" },
-  { label: "mcap.ie.auto.k011", value: "forex_trading" },
-  { label: "mcap.ie.auto.k012", value: "finance_investment_consulting" },
-  { label: "mcap.ie.auto.k013", value: "trade" },
-  { label: "mcap.ie.auto.k014", value: "wholesale_retail" },
-  { label: "mcap.ie.auto.k015", value: "consulting" },
-  { label: "mcap.ie.auto.k016", value: "manufacturing" },
-  { label: "mcap.ie.auto.k017", value: "ecommerce" },
-  { label: "mcap.ie.auto.k018", value: "online_purchase_delivery_agency" },
+  { label: "ie.auto.k006", value: "crypto_related" },
+  { label: "ie.auto.k007", value: "it_blockchain_software" },
+  { label: "ie.auto.k008", value: "crypto_investment" },
+  { label: "ie.auto.k009", value: "crypto_games" },
+  { label: "ie.auto.k010", value: "online_games" },
+  { label: "ie.auto.k011", value: "forex_trading" },
+  { label: "ie.auto.k012", value: "finance_investment_consulting" },
+  { label: "ie.auto.k013", value: "trade" },
+  { label: "ie.auto.k014", value: "wholesale_retail" },
+  { label: "ie.auto.k015", value: "consulting" },
+  { label: "ie.auto.k016", value: "manufacturing" },
+  { label: "ie.auto.k017", value: "ecommerce" },
+  { label: "ie.auto.k018", value: "online_purchase_delivery_agency" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const PURPOSE_OPTIONS = [
-  { label: "mcap.ie.auto.k019", value: "business_diversification" },
-  { label: "mcap.ie.auto.k020", value: "advisor_partner_suggestion" },
-  { label: "mcap.ie.auto.k021", value: "europe_expansion" },
-  { label: "mcap.ie.auto.k022", value: "asset_management" },
-  { label: "mcap.ie.auto.k023", value: "holding_company" },
-  { label: "mcap.ie.auto.k024", value: "financial_policy_advantage" },
-  { label: "mcap.ie.auto.k025", value: "tax_rate_advantage" },
+  { label: "ie.auto.k019", value: "business_diversification" },
+  { label: "ie.auto.k020", value: "advisor_partner_suggestion" },
+  { label: "ie.auto.k021", value: "europe_expansion" },
+  { label: "ie.auto.k022", value: "asset_management" },
+  { label: "ie.auto.k023", value: "holding_company" },
+  { label: "ie.auto.k024", value: "financial_policy_advantage" },
+  { label: "ie.auto.k025", value: "tax_rate_advantage" },
   { label: "mcap.common.options.other", value: "other" },
 ];
 
 const QUOTE_ONLY_OPTIONS = [
   {
-    label: "mcap.ie.auto.k026",
+    label: "ie.auto.k026",
     value: "consulting_quote",
   },
-  { label: "mcap.ie.auto.k027", value: "other" },
+  { label: "ie.auto.k027", value: "other" },
 ];
 
 const IE_PRICING = {
@@ -88,17 +88,17 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
   const items: IeServiceItem[] = [
     {
       id: "ie_incorporation_first_year_package",
-      label: "mcap.ie.auto.k028",
+      label: "ie.auto.k028",
       amount: IE_PRICING.incorporation_and_first_year_package,
       original: IE_PRICING.incorporation_and_first_year_package,
       mandatory: true,
       kind: "service",
       info:
-        "mcap.ie.auto.k029",
+        "ie.auto.k029",
     },
     {
       id: "ie_bank_account_opening",
-      label: "mcap.ie.auto.k030",
+      label: "ie.auto.k030",
       amount: IE_PRICING.bank_account_opening,
       original: IE_PRICING.bank_account_opening,
       mandatory: false,
@@ -106,17 +106,17 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
     },
     {
       id: "ie_bond_2y_eur_reference",
-      label: "mcap.ie.auto.k031",
+      label: "ie.auto.k031",
       amount: IE_PRICING.bond_2y_eur_reference,
       original: IE_PRICING.bond_2y_eur_reference,
       mandatory: false,
       kind: "other",
       info:
-        "mcap.ie.auto.k032",
+        "ie.auto.k032",
     },
     {
       id: "ie_local_director_registration_1y",
-      label: "mcap.ie.auto.k033",
+      label: "ie.auto.k033",
       amount: IE_PRICING.local_director_registration_1y,
       original: IE_PRICING.local_director_registration_1y,
       mandatory: false,
@@ -124,23 +124,23 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
     },
     {
       id: "ie_additional_local_director_1y",
-      label: "mcap.ie.auto.k034",
+      label: "ie.auto.k034",
       amount: IE_PRICING.additional_local_director_1y,
       original: IE_PRICING.additional_local_director_1y,
       mandatory: false,
       kind: "service",
       info:
-        "mcap.ie.auto.k035",
+        "ie.auto.k035",
     },
     {
       id: "ie_annual_company_renewal",
-      label: "mcap.ie.auto.k036",
+      label: "ie.auto.k036",
       amount: IE_PRICING.annual_company_renewal,
       original: IE_PRICING.annual_company_renewal,
       mandatory: false,
       kind: "service",
       info:
-        "mcap.ie.auto.k037",
+        "ie.auto.k037",
     },
   ];
 
@@ -151,7 +151,7 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
   if (quoteOnlyRequests.includes("consulting_quote")) {
     items.push({
       id: "ie_quote_only_consulting",
-      label: "mcap.ie.auto.k038",
+      label: "ie.auto.k038",
       amount: 0,
       original: 0,
       mandatory: true,
@@ -162,7 +162,7 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
   if (quoteOnlyRequests.includes("other")) {
     items.push({
       id: "ie_quote_only_other",
-      label: "mcap.ie.auto.k027",
+      label: "ie.auto.k027",
       amount: 0,
       original: 0,
       mandatory: true,
@@ -227,7 +227,7 @@ export const computeIeFees = (data: Record<string, any>) => {
     grandTotal,
     ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
     note:
-      "mcap.ie.auto.k039",
+      "ie.auto.k039",
   };
 };
 
@@ -241,7 +241,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "writerRelationship",
-    label: "mcap.ie.auto.k040",
+    label: "ie.auto.k040",
     required: true,
     options: APPLICANT_RELATIONSHIP_OPTIONS,
     colSpan: 2,
@@ -278,13 +278,13 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "legalEthicalIssues",
     label:
-      "mcap.ie.auto.k041",
+      "ie.auto.k041",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
       { label: "mcap.common.options.doNotKnow", value: "unknown" },
-      { label: "mcap.ie.auto.k042", value: "consider_legal_advice" },
+      { label: "ie.auto.k042", value: "consider_legal_advice" },
       { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,
@@ -292,7 +292,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "text",
     name: "legalEthicalIssuesOther",
-    label: "mcap.ie.auto.k043",
+    label: "ie.auto.k043",
     condition: (f) => f.legalEthicalIssues === "other",
     required: true,
     colSpan: 2,
@@ -301,14 +301,14 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "annualRenewalConsent",
     label:
-      "mcap.ie.auto.k044",
+      "ie.auto.k044",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
-      { label: "mcap.ie.auto.k045", value: "internal_after_establishment" },
-      { label: "mcap.ie.auto.k046", value: "no_if_fixed_annual_cost" },
-      { label: "mcap.ie.auto.k047", value: "advice_required" },
+      { label: "ie.auto.k045", value: "internal_after_establishment" },
+      { label: "ie.auto.k046", value: "no_if_fixed_annual_cost" },
+      { label: "ie.auto.k047", value: "advice_required" },
     ],
     colSpan: 2,
   },
@@ -316,7 +316,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedCountryBusiness",
     label:
-      "mcap.ie.auto.k048",
+      "ie.auto.k048",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -325,7 +325,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedResidenceExposure",
     label:
-      "mcap.ie.auto.k049",
+      "ie.auto.k049",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -334,7 +334,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedOwnershipOrAgency",
     label:
-      "mcap.ie.auto.k050",
+      "ie.auto.k050",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -342,7 +342,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "crimeaSevastopolExposure",
-    label: "mcap.ie.auto.k051",
+    label: "ie.auto.k051",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -351,7 +351,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "restrictedSectorExposure",
     label:
-      "mcap.ie.auto.k052",
+      "ie.auto.k052",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -361,15 +361,15 @@ const buildComplianceFields = (): McapField[] => [
 const buildCompanyFields = (): McapField[] => [
   {
     type: "info",
-    label: "mcap.ie.auto.k053",
+    label: "ie.auto.k053",
     content:
-      "mcap.ie.auto.k054",
+      "ie.auto.k054",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "industrySelection",
-    label: "mcap.ie.auto.k055",
+    label: "ie.auto.k055",
     required: true,
     options: INDUSTRY_OPTIONS,
     colSpan: 2,
@@ -377,7 +377,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "industrySelectionOther",
-    label: "mcap.ie.auto.k056",
+    label: "ie.auto.k056",
     condition: (f) => Array.isArray(f.industrySelection) && f.industrySelection.includes("other"),
     required: true,
     colSpan: 2,
@@ -385,7 +385,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "productServiceDescription",
-    label: "mcap.ie.auto.k057",
+    label: "ie.auto.k057",
     required: true,
     rows: 3,
     colSpan: 2,
@@ -393,7 +393,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "businessSummary",
-    label: "mcap.ie.auto.k058",
+    label: "ie.auto.k058",
     required: true,
     rows: 4,
     colSpan: 2,
@@ -402,13 +402,13 @@ const buildCompanyFields = (): McapField[] => [
     type: "text",
     name: "websiteAddress",
     label: "mcap.common.fields.websiteAddressOptional",
-    placeholder: "mcap.ie.auto.k059",
+    placeholder: "ie.auto.k059",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "purposeOfEstablishment",
-    label: "mcap.ie.auto.k060",
+    label: "ie.auto.k060",
     required: true,
     options: PURPOSE_OPTIONS,
     colSpan: 2,
@@ -416,7 +416,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "purposeOfEstablishmentOther",
-    label: "mcap.ie.auto.k061",
+    label: "ie.auto.k061",
     condition: (f) => Array.isArray(f.purposeOfEstablishment) && f.purposeOfEstablishment.includes("other"),
     required: true,
     colSpan: 2,
@@ -425,50 +425,50 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "select",
     name: "totalShares",
-    label: "mcap.ie.auto.k062",
+    label: "ie.auto.k062",
     required: true,
     options: [
-      { label: "mcap.ie.auto.k063", value: "1" },
-      { label: "mcap.ie.auto.k064", value: "100" },
-      { label: "mcap.ie.auto.k065", value: "1000" },
-      { label: "mcap.ie.auto.k066", value: "10000" },
-      { label: "mcap.ie.auto.k067", value: "100000" },
+      { label: "ie.auto.k063", value: "1" },
+      { label: "ie.auto.k064", value: "100" },
+      { label: "ie.auto.k065", value: "1000" },
+      { label: "ie.auto.k066", value: "10000" },
+      { label: "ie.auto.k067", value: "100000" },
       { label: "mcap.common.options.other", value: "other" },
     ],
   },
   {
     type: "text",
     name: "totalSharesOther",
-    label: "mcap.ie.auto.k068",
+    label: "ie.auto.k068",
     condition: (f) => f.totalShares === "other",
     required: true,
   },
   {
     type: "select",
     name: "paidInCapitalEur",
-    label: "mcap.ie.auto.k069",
+    label: "ie.auto.k069",
     required: true,
     options: [
-      { label: "mcap.ie.auto.k070", value: "0.01" },
-      { label: "mcap.ie.auto.k071", value: "1" },
-      { label: "mcap.ie.auto.k072", value: "100" },
-      { label: "mcap.ie.auto.k073", value: "1000" },
-      { label: "mcap.ie.auto.k074", value: "10000" },
-      { label: "mcap.ie.auto.k075", value: "100000" },
+      { label: "ie.auto.k070", value: "0.01" },
+      { label: "ie.auto.k071", value: "1" },
+      { label: "ie.auto.k072", value: "100" },
+      { label: "ie.auto.k073", value: "1000" },
+      { label: "ie.auto.k074", value: "10000" },
+      { label: "ie.auto.k075", value: "100000" },
       { label: "mcap.common.options.other", value: "other" },
     ],
   },
   {
     type: "text",
     name: "paidInCapitalEurOther",
-    label: "mcap.ie.auto.k076",
+    label: "ie.auto.k076",
     condition: (f) => f.paidInCapitalEur === "other",
     required: true,
   },
   {
     type: "derived",
     name: "parValuePerShareEur",
-    label: "mcap.ie.auto.k077",
+    label: "ie.auto.k077",
     compute: (f) => {
       const parseNumeric = (value: any) => {
         const cleaned = String(value ?? "")
@@ -497,43 +497,43 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "eeaDirectorOrBondPlan",
-    label: "mcap.ie.auto.k078",
+    label: "ie.auto.k078",
     required: true,
     options: [
-      { label: "mcap.ie.auto.k079", value: "already_has_eea_director" },
-      { label: "mcap.ie.auto.k080", value: "use_local_director_service" },
-      { label: "mcap.ie.auto.k081", value: "purchase_bond" },
-      { label: "mcap.ie.auto.k082", value: "need_advice" },
+      { label: "ie.auto.k079", value: "already_has_eea_director" },
+      { label: "ie.auto.k080", value: "use_local_director_service" },
+      { label: "ie.auto.k081", value: "purchase_bond" },
+      { label: "ie.auto.k082", value: "need_advice" },
     ],
     colSpan: 2,
   },
   // {
   //   type: "radio-group",
   //   name: "naturalPersonDirectorConfirmation",
-  //   label: "mcap.ie.auto.k083",
+  //   label: "ie.auto.k083",
   //   required: true,
   //   options: [
   //     { label: "mcap.common.options.yes", value: "yes" },
   //     { label: "mcap.common.options.no", value: "no" },
-  //     { label: "mcap.ie.auto.k084", value: "need_advice" },
+  //     { label: "ie.auto.k084", value: "need_advice" },
   //   ],
   //   colSpan: 2,
   // },
   // {
   //   type: "radio-group",
   //   name: "secretaryArrangement",
-  //   label: "mcap.ie.auto.k085",
+  //   label: "ie.auto.k085",
   //   required: true,
   //   options: [
-  //     { label: "mcap.ie.auto.k086", value: "director_also_secretary" },
-  //     { label: "mcap.ie.auto.k087", value: "separate_secretary" },
+  //     { label: "ie.auto.k086", value: "director_also_secretary" },
+  //     { label: "ie.auto.k087", value: "separate_secretary" },
   //   ],
   //   colSpan: 2,
   // },
   {
     type: "checkbox",
     name: "singleDirectorSecretaryAcknowledgment",
-    label: "mcap.ie.auto.k088",
+    label: "ie.auto.k088",
     required: true,
     condition: (f) => f.directorCountStructure === "one_director",
     colSpan: 2,
@@ -541,18 +541,18 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "registeredAddressChoice",
-    label: "mcap.ie.auto.k089",
+    label: "ie.auto.k089",
     required: true,
     options: [
-      { label: "mcap.ie.auto.k090", value: "use_mir_asia_address" },
-      { label: "mcap.ie.auto.k091", value: "use_own_address" },
+      { label: "ie.auto.k090", value: "use_mir_asia_address" },
+      { label: "ie.auto.k091", value: "use_own_address" },
     ],
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "registeredAddressOwnDetails",
-    label: "mcap.ie.auto.k092",
+    label: "ie.auto.k092",
     condition: (f) => f.registeredAddressChoice === "use_own_address",
     required: true,
     rows: 3,
@@ -597,22 +597,22 @@ const buildAccountingFields = (): McapField[] => [
 const buildServiceFields = (): McapField[] => [
   {
     type: "info",
-    label: "mcap.ie.auto.k093",
+    label: "ie.auto.k093",
     content:
-      "mcap.ie.auto.k094",
+      "ie.auto.k094",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "ieQuoteOnlyServiceRequests",
-    label: "mcap.ie.auto.k095",
+    label: "ie.auto.k095",
     options: QUOTE_ONLY_OPTIONS,
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "ieQuoteOnlyServiceRequestsOther",
-    label: "mcap.ie.auto.k096",
+    label: "ie.auto.k096",
     condition: (f) =>
       Array.isArray(f.ieQuoteOnlyServiceRequests) && f.ieQuoteOnlyServiceRequests.includes("other"),
     required: true,
@@ -626,26 +626,26 @@ export const IE_FULL_CONFIG: McapConfig = {
   countryCode: "IE",
   countryName: "Ireland",
   currency: "USD",
-  title: "mcap.ie.auto.k097",
+  title: "ie.auto.k097",
   confirmationDetails: {
-    title: "mcap.ie.auto.k098",
+    title: "ie.auto.k098",
     message:
-      "mcap.ie.auto.k099",
+      "ie.auto.k099",
     steps: [
       {
-        title: "mcap.ie.auto.k100",
+        title: "ie.auto.k100",
         description:
-          "mcap.ie.auto.k101",
+          "ie.auto.k101",
       },
       {
-        title: "mcap.ie.auto.k102",
+        title: "ie.auto.k102",
         description:
-          "mcap.ie.auto.k103",
+          "ie.auto.k103",
       },
       {
-        title: "mcap.ie.auto.k104",
+        title: "ie.auto.k104",
         description:
-          "mcap.ie.auto.k105",
+          "ie.auto.k105",
       },
     ],
   },
@@ -653,25 +653,25 @@ export const IE_FULL_CONFIG: McapConfig = {
     {
       id: "applicant",
       title: "mcap.common.steps.applicant",
-      description: "mcap.ie.auto.k106",
+      description: "ie.auto.k106",
       fields: buildApplicantFields(),
     },
     {
       id: "compliance",
-      title: "mcap.ie.auto.k107",
-      description: "mcap.ie.auto.k108",
+      title: "ie.auto.k107",
+      description: "ie.auto.k108",
       fields: buildComplianceFields(),
     },
     {
       id: "company",
       title: "mcap.common.steps.company",
-      description: "mcap.ie.auto.k109",
+      description: "ie.auto.k109",
       fields: buildCompanyFields(),
     },
     {
       id: "parties",
       title: "mcap.common.steps.parties",
-      description: "mcap.ie.auto.k110",
+      description: "ie.auto.k110",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -679,7 +679,7 @@ export const IE_FULL_CONFIG: McapConfig = {
       partyFields: [
         {
           key: "ieIsDirector",
-          label: "mcap.ie.auto.k111",
+          label: "ie.auto.k111",
           type: "select",
           options: [
             { label: "mcap.common.options.yes", value: "yes" },
@@ -689,7 +689,7 @@ export const IE_FULL_CONFIG: McapConfig = {
         },
         {
           key: "ieIsSecretary",
-          label: "mcap.ie.auto.k112",
+          label: "ie.auto.k112",
           type: "select",
           options: [
             { label: "mcap.common.options.yes", value: "yes" },
@@ -703,7 +703,7 @@ export const IE_FULL_CONFIG: McapConfig = {
           key: "ieIsDirector",
           storage: "details",
           requiredValues: ["yes"],
-          label: "mcap.ie.auto.k113",
+          label: "ie.auto.k113",
           valueLabels: {
             yes: "At least one director",
           },
@@ -712,7 +712,7 @@ export const IE_FULL_CONFIG: McapConfig = {
           key: "ieIsSecretary",
           storage: "details",
           requiredValues: ["yes"],
-          label: "mcap.ie.auto.k114",
+          label: "ie.auto.k114",
           valueLabels: {
             yes: "At least one secretary",
           },
@@ -727,7 +727,7 @@ export const IE_FULL_CONFIG: McapConfig = {
     {
       id: "services",
       title: "mcap.common.steps.services",
-      description: "mcap.ie.auto.k115",
+      description: "ie.auto.k115",
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildIeServiceItems(data),
@@ -737,33 +737,33 @@ export const IE_FULL_CONFIG: McapConfig = {
     {
       id: "invoice",
       title: "mcap.common.steps.invoice",
-      description: "mcap.ie.auto.k116",
+      description: "ie.auto.k116",
       widget: "InvoiceWidget",
       computeFees: (data) => computeIeFees(data),
     },
     {
       id: "payment",
-      title: "mcap.ie.auto.k117",
-      description: "mcap.ie.auto.k118",
+      title: "ie.auto.k117",
+      description: "ie.auto.k118",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => computeIeFees(data),
     },
     {
       id: "review",
-      title: "mcap.ie.auto.k119",
+      title: "ie.auto.k119",
       fields: [
         {
           type: "info",
-          label: "mcap.ie.auto.k120",
+          label: "ie.auto.k120",
           content:
-            "mcap.ie.auto.k121",
+            "ie.auto.k121",
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "applicationAgreement",
-          label: "mcap.ie.auto.k122",
+          label: "ie.auto.k122",
           required: true,
           options: [
             { label: "mcap.common.options.yes", value: "yes" },
@@ -781,7 +781,7 @@ export const IE_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox",
           name: "compliancePreconditionAcknowledgment",
-          label: "mcap.ie.auto.k123",
+          label: "ie.auto.k123",
           required: true,
           colSpan: 2,
         },

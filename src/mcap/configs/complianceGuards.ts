@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapStepGuard } from "./types";
 
 type ConsultationRule = {
@@ -84,6 +83,14 @@ const countryRulesByCode: Record<string, ConsultationRule[]> = {
     { field: "legalAndEthicalConcern", allow: ["no"] },
     { field: "sanctionsExposureDeclaration", allow: ["no"] },
     { field: "corporateTaxAcknowledgement", allow: ["yes"] },
+  ],
+  BVI: [
+    { field: "legalAndEthicalConcern", allow: ["no"] },
+    { field: "annualRenewalConsent", allow: ["yes", "self_handle_after_incorporation"] },
+    { field: "sanctionedCountryOperations", allow: ["no"] },
+    { field: "sanctionedRelatedPartyExposure", allow: ["no"] },
+    { field: "crimeaSevastopolExposure", allow: ["no"] },
+    { field: "oilGasMilitaryExposure", allow: ["no"] },
   ],
   UK: [
     { field: "legalAndEthicalConcern", allow: ["no"] },
