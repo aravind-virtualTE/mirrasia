@@ -575,6 +575,14 @@ const eeRelationshipRoleOptions = [
   { value: "other", label: "Other" },
 ];
 
+const bviRelationshipRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "director", label: "Director" },
+  { value: "designatedContactPerson", label: "Designated Contact Person" },
+  { value: "officialPartner", label: "Official Partner Registered with Mirr Asia" },
+  { value: "other", label: "Other" },
+];
+
 const eeContributionSourceOptions = [
   { value: "earned_income", label: "Earned income" },
   { value: "deposits_savings", label: "Deposits / savings" },
@@ -614,6 +622,15 @@ const shouldShowUkCorporateDeclarationDetails = (values: Record<string, any>) =>
     "isInvolvedInCriminal",
     "gotBankruptBefore",
     "officerBankruptBefore",
+  ].some((key) => String(values?.[key] || "").toLowerCase() === "yes");
+
+const shouldShowBviDeclarationDetails = (values: Record<string, any>) =>
+  [
+    "isCrimeConvitted",
+    "lawEnforced",
+    "isMoneyLaundered",
+    "isBankRupted",
+    "isInvolvedBankRuptedOfficer",
   ].some((key) => String(values?.[key] || "").toLowerCase() === "yes");
 
 const applyReadOnly = (fields: PartyField[], names: string[]) =>
@@ -4206,6 +4223,387 @@ const buildAuEntityConfigFromUk = (): PartyFormConfig | null => {
   };
 };
 
+const buildBviPersonConfig = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "SG_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "contact") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Name of the company applying for incorporation" };
+        }
+        if (field.name === "name") {
+          return { ...field, label: "Name of applicant" };
+        }
+        if (field.name === "previousName") {
+          return { ...field, label: "Previous full name before change" };
+        }
+        if (field.name === "birthdate") {
+          return { ...field, label: "Date of birth" };
+        }
+        if (field.name === "residenceAddress") {
+          return {
+            ...field,
+            label: "Residential address (include ZIP code and duration of stay)",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "postalAddressSame") {
+          return {
+            ...field,
+            label: "Is your mailing address the same as your residential address?",
+            options: yesNoOptions,
+            tooltip: undefined,
+            colSpan: 2,
+          };
+        }
+        if (field.name === "postalAddress") {
+          return {
+            ...field,
+            label: "Mailing address (if different from residential address)",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "phone") {
+          return { ...field, label: "Mobile number" };
+        }
+        if (field.name === "otherSNSIds") {
+          return {
+            ...field,
+            label: "Telegram, WeChat, or other SNS ID (if applicable)",
+            colSpan: 2,
+          };
+        }
+        return field;
+      });
+
+      const birthdateIndex = getFieldIndex(fields, "birthdate");
+      if (birthdateIndex >= 0 && getFieldIndex(fields, "birthPlace") === -1) {
+        fields.splice(birthdateIndex + 1, 0, {
+          name: "birthPlace",
+          label: "Place of birth",
+          type: "text",
+          required: true,
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Applicant Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "companyRelation") {
+          return {
+            ...field,
+            label: "Relationship with the BVI company",
+            options: bviRelationshipRoleOptions,
+            tooltip:
+              "Select all roles that apply for this party in the BVI company structure.",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "amountContributed") {
+          return {
+            ...field,
+            label: "Amount contributed to BVI company (USD)",
+            type: "number",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Relationship and Contribution", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "fundSource") {
+          return {
+            ...field,
+            label: "Source of funds",
+            options: ukInvestmentSourceOptions,
+            tooltip:
+              "Supporting documents proving the source of funds may be requested later.",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "originFundInvestFromCountry") {
+          return {
+            ...field,
+            label: "Countries where funds originate",
+            type: "textarea",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "fundGenerated") {
+          return {
+            ...field,
+            label: "Expected future source of funds via BVI company",
+            options: usSourceFundOptions,
+            tooltip:
+              "Supporting documents proving the future source of funds may be requested later.",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "originFundGenerateCountry") {
+          return {
+            ...field,
+            label: "Countries where future funds will flow",
+            type: "textarea",
+            colSpan: 2,
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "usTaxStatus") {
+          return {
+            ...field,
+            label: "Are you a U.S. citizen, permanent resident, or U.S. tax resident?",
+            options: ukTaxResidencyOptions,
+            tooltip: undefined,
+            colSpan: 2,
+          };
+        }
+        if (field.name === "usTIN") {
+          return {
+            ...field,
+            label: "IRS U.S. Tax Identification Number (TIN)",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "isPoliticallyProminentFig") {
+          return {
+            ...field,
+            label: "Are you or related persons politically exposed (PEP)?",
+            options: ukPepOptions,
+            tooltip:
+              "Includes politically exposed persons, immediate family members, and close associates.",
+            colSpan: 2,
+          };
+        }
+        if (field.name === "descPoliticImpRel") {
+          return {
+            ...field,
+            label: "Details of political exposure (if applicable)",
+            type: "textarea",
+            colSpan: 2,
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "U.S. Tax Residency and PEP", fields };
+    }
+
+    if (step.id === "legal") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "isCrimeConvitted") {
+          return {
+            ...field,
+            label: "Have you ever been arrested or convicted?",
+            options: ukTaxResidencyOptions,
+          };
+        }
+        if (field.name === "lawEnforced") {
+          return {
+            ...field,
+            label: "Have you been investigated by law enforcement or tax authorities?",
+            options: ukTaxResidencyOptions,
+          };
+        }
+        if (field.name === "isMoneyLaundered") {
+          return {
+            ...field,
+            label: "Any involvement in crime, money laundering, bribery, or terrorism?",
+            options: ukTaxResidencyOptions,
+            colSpan: 2,
+          };
+        }
+        if (field.name === "isBankRupted") {
+          return {
+            ...field,
+            label: "Have you been personally involved in bankruptcy or forced dissolution?",
+            options: ukTaxResidencyOptions,
+          };
+        }
+        if (field.name === "isInvolvedBankRuptedOfficer") {
+          return {
+            ...field,
+            label: "Have you been involved as an executive in a bankrupt or dissolved company?",
+            options: ukTaxResidencyOptions,
+          };
+        }
+        if (field.name === "describeIfInvolvedBankRupted") {
+          return {
+            ...field,
+            label: "Provide details if any declaration answers were 'Yes'",
+            type: "textarea",
+            condition: shouldShowBviDeclarationDetails,
+            required: true,
+            colSpan: 2,
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declarations", fields };
+    }
+
+    if (step.id === "consent") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "declarationAgreement") {
+          return {
+            ...field,
+            label: "Do you agree to provide accurate information and comply with legal requirements?",
+            options: yesNoOtherOptions,
+            tooltip: undefined,
+            colSpan: 2,
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Consent and Declaration", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "BVI_PERSON",
+    title: "BVI Party KYC",
+    countryCode: "BVI",
+    partyType: "person",
+    steps,
+  };
+};
+
+const buildBviEntityConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "company") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Name of the company applying for incorporation" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Corporate Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "relationWithUs") {
+          return {
+            ...field,
+            label: "Relationship with the BVI company",
+            options: bviRelationshipRoleOptions,
+          };
+        }
+        if (field.name === "amountInvestedAndShares") {
+          return {
+            ...field,
+            label: "Amount contributed to BVI company (USD) and number of shares, if applicable",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Relationship and Contribution", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "investmentSource") {
+          return {
+            ...field,
+            label: "Source of funds",
+            options: ukInvestmentSourceOptions,
+          };
+        }
+        if (field.name === "fundsOrigin") {
+          return { ...field, label: "Countries where funds originate (list all countries)" };
+        }
+        if (field.name === "sourceFundExpected") {
+          return {
+            ...field,
+            label: "Expected future source of funds via BVI company",
+            options: usSourceFundOptions,
+          };
+        }
+        if (field.name === "fundsOrigin2") {
+          return { ...field, label: "Countries where future funds will flow (list all countries)" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "isPoliticalFigure") {
+          return {
+            ...field,
+            label: "Are any company officials or related persons politically exposed (PEP)?",
+            options: ukPepOptions,
+          };
+        }
+        if (field.name === "describePoliticallyImp") {
+          return { ...field, label: "Details of political exposure (if applicable)" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "U.S. Tax Residency and PEP", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields: PartyField[] = step.fields.map((field): PartyField => {
+        if (field.name === "declarationDesc") {
+          return { ...field, label: "Provide details if any declaration answers were 'Yes'" };
+        }
+        if (field.name === "isAgreed") {
+          return {
+            ...field,
+            label: "Do you agree to provide accurate information and comply with legal requirements?",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declarations", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "BVI_ENTITY",
+    title: "BVI Corporate Party KYC",
+    countryCode: "BVI",
+    partyType: "entity",
+    steps,
+  };
+};
+
 const LT_PERSON_CONFIG = buildLithuaniaPersonConfig();
 const LT_ENTITY_CONFIG = buildLtEntityConfigFromUk();
 const HU_PERSON_CONFIG = buildHungaryPersonConfig();
@@ -4214,6 +4612,8 @@ const IE_PERSON_CONFIG = buildIrelandPersonConfig();
 const IE_ENTITY_CONFIG = buildIeEntityConfigFromUk();
 const AU_PERSON_CONFIG = buildAustraliaPersonConfigFromUk();
 const AU_ENTITY_CONFIG = buildAuEntityConfigFromUk();
+const BVI_PERSON_CONFIG = buildBviPersonConfig();
+const BVI_ENTITY_CONFIG = buildBviEntityConfigFromUk();
 
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
@@ -4229,6 +4629,8 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...(IE_ENTITY_CONFIG ? [IE_ENTITY_CONFIG] : []),
   ...(AU_PERSON_CONFIG ? [AU_PERSON_CONFIG] : []),
   ...(AU_ENTITY_CONFIG ? [AU_ENTITY_CONFIG] : []),
+  ...(BVI_PERSON_CONFIG ? [BVI_PERSON_CONFIG] : []),
+  ...(BVI_ENTITY_CONFIG ? [BVI_ENTITY_CONFIG] : []),
 ];
 
 export const resolvePartyKycConfig = ({
