@@ -520,31 +520,31 @@ const buildApplicantFields = (): McapField[] => [
   //   required: true,
   //   colSpan: 2,
   // },
-  {
-    type: "radio-group",
-    name: "identityVerificationMethod",
-    label: "lt.auto.k067",
-    required: true,
-    options: [
-      {
-        label: "lt.auto.k068",
-        value: "photo_with_passport",
-      },
-      {
-        label: "lt.auto.k069",
-        value: "office_visit",
-      },
-      {
-        label: "lt.auto.k070",
-        value: "ward_office_certificate",
-      },
-      {
-        label: "lt.auto.k071",
-        value: "passport_notarization",
-      },
-    ],
-    colSpan: 2,
-  },
+  // {
+  //   type: "radio-group",
+  //   name: "identityVerificationMethod",
+  //   label: "lt.auto.k067",
+  //   required: true,
+  //   options: [
+  //     {
+  //       label: "lt.auto.k068",
+  //       value: "photo_with_passport",
+  //     },
+  //     {
+  //       label: "lt.auto.k069",
+  //       value: "office_visit",
+  //     },
+  //     {
+  //       label: "lt.auto.k070",
+  //       value: "ward_office_certificate",
+  //     },
+  //     {
+  //       label: "lt.auto.k071",
+  //       value: "passport_notarization",
+  //     },
+  //   ],
+  //   colSpan: 2,
+  // },
 ];
 
 const buildComplianceFields = (): McapField[] => [
