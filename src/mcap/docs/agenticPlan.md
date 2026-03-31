@@ -77,7 +77,7 @@ After normalization, frontend journey resolution applies onboarding policy filte
 - `src/mcap/journey.ts`
 
 ### Standard flow countries (current)
-- `HK`, `US`, `SG`, `PA`, `PPIF`, `CR`, `UK`, `UAE`, `CH`, `CH_FOUNDATION`, `CH_LLC`, `EE`, `LT`, `IE`, `AU`, `HU`
+- `HK`, `US`, `SG`, `PA`, `PPIF`, `CR`, `UK`, `UAE`, `CH`, `CH_FOUNDATION`, `CH_LLC`, `EE`, `LT`, `IE`, `AU`, `HU`, `BVI`
 
 Note:
 - Swiss GmbH runtime code is `CH_LLC`.
@@ -472,6 +472,11 @@ Every core behavior update must include:
 - one extended flow config (PA/PPIF)
 
 ## 12. Changelog
+- 2026-03-30
+  - added `BVI` to standard flow countries
+  - documented `McapUserDashboard.tsx` application tracking hub
+  - documented `McapDocumentsHub.tsx` and `McapMigrationAudit.tsx`
+  - documented pre-payment summary email dispatch before capture
 - 2026-03-23
   - added global MCAP journey types `new_incorporation` and `existing_company_onboarding`
   - documented post-normalization journey filtering for onboarding mode in `src/mcap/journey.ts`

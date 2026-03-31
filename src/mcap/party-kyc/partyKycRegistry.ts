@@ -141,6 +141,7 @@ const partyRoleOptions = [
   { value: "director", label: "Director" },
   { value: "shareholder", label: "Shareholder" },
   { value: "dcp", label: "Designated Contact Person" },
+  { value: "notApplicable", label: "Not Applicable" }
 ];
 
 // --- HK options (mirrors ShrDirConstants keys for compatibility) ---
@@ -152,6 +153,8 @@ const hkSignificantControllerOptions = [
   { value: "s5", label: "shldrOptions.sigNiConS5" },
   { value: "s6", label: "shldrOptions.sigNiConS6" },
   { value: "s7", label: "shldrOptions.sigNiConS7" },
+  { value: "notApplicable", label: "Not Applicable" }
+
 ];
 
 const hkCorrespondenceAddressOptions = [
@@ -796,7 +799,7 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
           { name: "email", label: "ApplicantInfoForm.email", type: "email", required: true, readOnly: true },
           { name: "companyName", label: "hk_shldr.compName", type: "text", required: true, readOnly: true },
           { name: "fullName", label: "hk_shldr.fullName", type: "text", required: true },
-          { name: "mobileNumber", label: "hk_shldr.mobile", type: "text", required: true },
+          { name: "mobileNumber", label: "hk_shldr.mobilHlder", type: "text", required: true },
           { name: "kakaoTalkId", label: "KakaoTalk ID", type: "text" },
           { name: "weChatId", label: "WeChat ID", type: "text" },
         ],

@@ -18,6 +18,9 @@ Core characteristics:
 ## Primary Files
 - `src/mcap/UnifiedFormEngine.tsx`
 - `src/mcap/McapDashboard.tsx`
+- `src/mcap/McapUserDashboard.tsx`
+- `src/mcap/McapDocumentsHub.tsx`
+- `src/mcap/McapMigrationAudit.tsx`
 - `src/mcap/journey.ts`
 - `src/mcap/configs/registry.ts`
 - `src/mcap/configs/complianceGuards.ts`
@@ -120,9 +123,11 @@ Implementation guardrail:
 
 ## Launcher and Restore Flow
 Current launcher behavior lives in:
-- `src/mcap/McapDashboard.tsx`
+- `src/mcap/McapDashboard.tsx` (New/Resume Launcher Chooser)
+- `src/mcap/McapUserDashboard.tsx` (Application Tracking Hub)
 
 Runtime behavior:
+- `McapUserDashboard.tsx` provides full tracking, paginated filtering (pending, paid, document collection), and different layout blocks for admin vs standard user roles.
 - clicking `Start` opens a chooser dialog for:
   - `New Incorporation`
   - `Existing Company Onboarding`
@@ -185,6 +190,7 @@ Related surfaces:
 
 ### PaymentWidget
 - enforces allowed currencies via `supportedCurrencies`
+- triggers the pre-payment summary email containing application data and the generated Service Agreement PDF before final capture
 - supports Stripe card and bank transfer proof upload
 - applies card surcharge only when method is `card`
 - supports admin-review status flow for bank proofs
@@ -369,6 +375,15 @@ Implementation notes:
 - keep country-wide mappings in `complianceGuards.ts`
 - enable `saveDraftOnBlockedNext` when admin review needs the partial or blocked compliance answers even though the step does not advance
 - if a country needs a one-off behavior, define `nextGuard` directly on the step; registry will not overwrite an existing guard
+
+## Ancillary Hubs
+### McapDocumentsHub
+- centralized tracking for documents across MCAP companies
+- handles document mapping, viewing, and comments for admin/user roles
+
+### McapMigrationAudit
+- executes legacy data model migration into unified MCAP structures
+- supports `preview`, execution, and `docs-only` recovery modes with detailed error retry and reporting
 
 ## Currency Behavior
 - Supported currencies are controlled per step via `supportedCurrencies`
