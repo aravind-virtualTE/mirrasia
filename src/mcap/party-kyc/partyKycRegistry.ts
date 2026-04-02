@@ -609,6 +609,53 @@ const eeFutureSourceOptions = [
   { value: "other", label: "Other" },
 ];
 
+const geNameChangedOptions = [
+  {
+    value: "yes",
+    label: "Yes (Please write your previous English name in the Other section below.)",
+  },
+  { value: "no", label: "No" },
+  { value: "other", label: "Other" },
+];
+
+const geRelationshipRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "officer", label: "Officer" },
+  {
+    value: "major_control",
+    label: "Major Control (Applicable if you hold 25% or more of the shares directly or indirectly)",
+  },
+  {
+    value: "designated_contact_person",
+    label: "Designated Contact Person (can hold a concurrent executive position)",
+  },
+  { value: "official_partner_mir_asia", label: "Official partners registered with Mir Asia" },
+  { value: "other", label: "Other" },
+];
+
+const geContributionSourceOptions = [
+  { value: "earned_income", label: "Earned income" },
+  { value: "deposits_installment_savings", label: "Deposits / installment savings" },
+  { value: "investment_income", label: "Income from real estate, stocks, and other investment assets" },
+  { value: "loan", label: "Loan" },
+  { value: "equity_sale_proceeds", label: "Proceeds from the sale of a company or equity" },
+  { value: "business_income_dividends", label: "Business income / dividends" },
+  { value: "succession", label: "Succession" },
+  { value: "parent_company_investment", label: "The parent company invests" },
+  { value: "other", label: "Other" },
+];
+
+const geFutureSourceOptions = [
+  { value: "business_income_distribution", label: "Business income and distribution" },
+  { value: "earned_income", label: "Earned income" },
+  { value: "interest_income", label: "Interest income" },
+  { value: "investment_income", label: "Income from real estate, stocks, and other investment assets" },
+  { value: "equity_sale_proceeds", label: "Proceeds from the sale of a company or equity" },
+  { value: "inheritance_gift", label: "Inheritance / Gift" },
+  { value: "borrowing_entrustment_deposit", label: "Borrowing / Entrustment / Deposit, etc." },
+  { value: "other", label: "Other" },
+];
+
 const shouldShowUkDeclarationDetails = (values: Record<string, any>) =>
   [
     "declArrestedOrConvicted",
@@ -4607,6 +4654,358 @@ const buildBviEntityConfigFromUk = (): PartyFormConfig | null => {
   };
 };
 
+const buildGeorgiaPersonConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "identity") {
+      const fields = step.fields
+        .filter((field) => field.name !== "kakaoTalkId" && field.name !== "mailingAddressType")
+        .map((field): PartyField => {
+          if (field.name === "companyName") {
+            return { ...field, label: "Company name for which you applied for Georgia LLC (Incorporation)" };
+          }
+          if (field.name === "name") {
+            return { ...field, label: "Name" };
+          }
+          if (field.name === "hasChangedName") {
+            return {
+              ...field,
+              label: "Have you ever changed your name?",
+              options: geNameChangedOptions,
+            };
+          }
+          if (field.name === "formerNameInEnglish") {
+            return { ...field, label: "Please provide your previous English name (if applicable)." };
+          }
+          if (field.name === "birthdate") {
+            return { ...field, label: "Birth date" };
+          }
+          if (field.name === "birthPlace") {
+            return { ...field, label: "Birthplace" };
+          }
+          if (field.name === "nationality") {
+            return { ...field, label: "Nationality" };
+          }
+          if (field.name === "passportNumber") {
+            return { ...field, label: "Passport number" };
+          }
+          if (field.name === "residentialAddress") {
+            return {
+              ...field,
+              label: "Residential address",
+              tooltip:
+                "Please also include your zip code and the duration of your stay in your country of residence.",
+            };
+          }
+          if (field.name === "mailingAddress") {
+            return {
+              ...field,
+              label: "Mailing address (please indicate if different from your residential address)",
+              condition: undefined,
+              required: false,
+            };
+          }
+          if (field.name === "mobileNumber") {
+            return { ...field, label: "Contactable mobile phone number" };
+          }
+          if (field.name === "otherSnsId") {
+            return {
+              ...field,
+              label: "KakaoTalk ID (if available), Telegram, WeChat, or other social media IDs (if applicable)",
+              colSpan: 2,
+            };
+          }
+          return field;
+        });
+
+      return { ...step, title: "Applicant Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields
+        .filter((field) => field.name !== "relationshipWithUkEntity")
+        .map((field): PartyField => {
+          if (field.name === "ukEntityRelationshipRoles") {
+            return {
+              ...field,
+              label: "Relationship with the Georgia LLC (corporation) to be established",
+              type: "radio",
+              options: geRelationshipRoleOptions,
+              tooltip:
+                "[Explanation of Designated Contact Person] You must delegate one designated contact person responsible for company communications. One designated contact person is free; for two or more, an annual fee of USD 250 per person applies.",
+            };
+          }
+          if (field.name === "ukEntityRelationshipRolesOther") {
+            return {
+              ...field,
+              label: "Other relationship details",
+              condition: (values) => String(values?.ukEntityRelationshipRoles || "").toLowerCase() === "other",
+            };
+          }
+          if (field.name === "shareholdingPercentage") {
+            return {
+              ...field,
+              label:
+                "Equity percentage (%) you will hold in the Georgia LLC (corporation) you will establish",
+              type: "number",
+            };
+          }
+          return field;
+        });
+
+      return { ...step, title: "Relationship", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "investmentFundSource") {
+          return {
+            ...field,
+            label:
+              "Source of funds to be contributed (or lent) to the Georgia LLC (corporation) to be established (multiple selections possible)",
+            options: geContributionSourceOptions,
+            tooltip:
+              "Proof of the source of funds may be required in the future, so please select all applicable items.",
+          };
+        }
+        if (field.name === "investmentFundSourceOther") {
+          return { ...field, label: "Other source details (contribution/loan funds)" };
+        }
+        if (field.name === "investmentFundInflowCountries") {
+          return { ...field, label: "Countries of capital inflow for the above items (list all relevant countries)" };
+        }
+        if (field.name === "futureFundSource") {
+          return {
+            ...field,
+            label:
+              "Sources of funds expected to be generated or flowed into the Georgia LLC (corporation) in the future (multiple selections possible)",
+            options: geFutureSourceOptions,
+            tooltip:
+              "Proof of the source of funds may be required in the future, so please select all applicable items.",
+          };
+        }
+        if (field.name === "futureFundSourceOther") {
+          return { ...field, label: "Other source details (future funds)" };
+        }
+        if (field.name === "futureFundInflowCountries") {
+          return { ...field, label: "Countries of capital inflow for the above items (list all relevant countries)" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "usTaxResidency") {
+          return {
+            ...field,
+            label: "Are you a U.S. citizen or permanent resident, or a resident of the U.S. for tax purposes?",
+          };
+        }
+        if (field.name === "irsTin") {
+          return {
+            ...field,
+            label:
+              "If you are a U.S. citizen, permanent resident, or a resident of the United States for tax purposes, please provide your IRS Tax Identification Number (TIN).",
+          };
+        }
+        if (field.name === "pepStatus") {
+          return {
+            ...field,
+            label:
+              "Are you a political key figure, or do your immediate family members or close acquaintances qualify as political key figures?",
+          };
+        }
+        if (field.name === "pepDetails") {
+          return { ...field, label: "Please provide details of political exposure, if applicable." };
+        }
+        return field;
+      });
+
+      return { ...step, title: "U.S. Tax Residency and PEP", fields };
+    }
+
+    if (step.id === "documents") {
+      const fields = step.fields
+        .filter((field) => field.name !== "driverLicenseFrontBack")
+        .map((field): PartyField => {
+          if (field.name === "passportCopyCertificate") {
+            return { ...field, label: "Certificate of Passport Copy" };
+          }
+          if (field.name === "proofOfAddress") {
+            return { ...field, label: "Upload proof of address documents" };
+          }
+          return field;
+        });
+
+      return { ...step, title: "Document Upload", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "declArrestedOrConvicted") {
+          return { ...field, label: "Have you ever been arrested or convicted of a crime against the law?" };
+        }
+        if (field.name === "declInvestigatedByAuthority") {
+          return { ...field, label: "Have you ever been investigated by law enforcement agencies or tax authorities?" };
+        }
+        if (field.name === "declIllegalFundsOrCrime") {
+          return {
+            ...field,
+            label:
+              "Are you involved in criminal activities, money laundering, bribery, terrorist activities, or funds derived from other illegal activities?",
+          };
+        }
+        if (field.name === "declPersonalBankruptcy") {
+          return { ...field, label: "Have you ever been personally involved in or implicated in bankruptcy or liquidation?" };
+        }
+        if (field.name === "declExecutiveBankruptcy") {
+          return {
+            ...field,
+            label:
+              "Have you ever been involved in or implicated in bankruptcy or liquidation as an executive of a company?",
+          };
+        }
+        if (field.name === "declarationYesDetails") {
+          return { ...field, label: "Details for items answered 'Yes'" };
+        }
+        if (field.name === "applicationAgreement") {
+          return {
+            ...field,
+            label:
+              "Do you agree that all documents and information provided are true, complete, accurate, and for lawful business purposes?",
+          };
+        }
+        if (field.name === "applicationAgreementOther") {
+          return { ...field, label: "Other agreement details" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declaration and Consent", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "GE_PERSON",
+    title: "Georgia Member Registration KYC",
+    countryCode: "GE",
+    partyType: "person",
+    steps,
+  };
+};
+
+const buildGeEntityConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "company") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Company name for which you applied for Georgia LLC (Incorporation)" };
+        }
+        return field;
+      });
+      return { ...step, title: "Corporate Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "relationWithUs") {
+          return {
+            ...field,
+            label: "Relationship with the Georgia LLC (corporation) to be established",
+            options: geRelationshipRoleOptions,
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "Relationship", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "investmentSource") {
+          return {
+            ...field,
+            label:
+              "Source of funds to be contributed (or lent) to the Georgia LLC (corporation) to be established (multiple selections possible)",
+            options: geContributionSourceOptions,
+          };
+        }
+        if (field.name === "sourceFundExpected") {
+          return {
+            ...field,
+            label:
+              "Sources of funds expected to be generated or flowed into the Georgia LLC (corporation) in the future (multiple selections possible)",
+            options: geFutureSourceOptions,
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "isUsLegalEntity") {
+          return {
+            ...field,
+            label:
+              "Is your company a U.S. legal entity, or a resident of the U.S. for tax purposes?",
+          };
+        }
+        if (field.name === "isPoliticalFigure") {
+          return {
+            ...field,
+            label:
+              "Are any company officials, immediate family members, or close associates politically exposed persons (PEP)?",
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "U.S. Tax Residency and PEP", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field): PartyField => {
+        if (field.name === "isAgreed") {
+          return {
+            ...field,
+            label:
+              "Do you agree that all documents and information provided are true, complete, accurate, and for lawful business purposes?",
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "Declaration and Consent", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "GE_ENTITY",
+    title: "Georgia Corporate Member Registration KYC",
+    countryCode: "GE",
+    partyType: "entity",
+    steps,
+  };
+};
+
 const LT_PERSON_CONFIG = buildLithuaniaPersonConfig();
 const LT_ENTITY_CONFIG = buildLtEntityConfigFromUk();
 const HU_PERSON_CONFIG = buildHungaryPersonConfig();
@@ -4617,6 +5016,8 @@ const AU_PERSON_CONFIG = buildAustraliaPersonConfigFromUk();
 const AU_ENTITY_CONFIG = buildAuEntityConfigFromUk();
 const BVI_PERSON_CONFIG = buildBviPersonConfig();
 const BVI_ENTITY_CONFIG = buildBviEntityConfigFromUk();
+const GE_PERSON_CONFIG = buildGeorgiaPersonConfigFromUk();
+const GE_ENTITY_CONFIG = buildGeEntityConfigFromUk();
 
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
@@ -4634,6 +5035,8 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...(AU_ENTITY_CONFIG ? [AU_ENTITY_CONFIG] : []),
   ...(BVI_PERSON_CONFIG ? [BVI_PERSON_CONFIG] : []),
   ...(BVI_ENTITY_CONFIG ? [BVI_ENTITY_CONFIG] : []),
+  ...(GE_PERSON_CONFIG ? [GE_PERSON_CONFIG] : []),
+  ...(GE_ENTITY_CONFIG ? [GE_ENTITY_CONFIG] : []),
 ];
 
 export const resolvePartyKycConfig = ({

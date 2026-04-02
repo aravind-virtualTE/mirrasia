@@ -149,6 +149,7 @@ When `journeyType === "existing_company_onboarding"`:
 Related surfaces:
 - `McapCompanyDetail.tsx` surfaces onboarding `BRN No.` and `Incorporation Date` in the top company summary and suppresses duplicate rendering in the lower questionnaire cards
 - `McapCompanyDetail.tsx` resolves the same journey-filtered config so onboarding records hide pricing/payment detail cards and dialogs
+- `McapCompanyDetail.tsx` also renders applied coupon codes and discount summaries in the Invoice Breakdown accordion for admin reference
 - backend admin notifications and status emails branch on `journeyType`
 
 ## Widget Responsibilities
@@ -187,6 +188,7 @@ Related surfaces:
 - renders subtotal, card fee line, and total due
 - renders FX metadata when present
 - translates item `info` keys before rendering tooltips/details
+- supports entering, validating, and displaying discount coupons dynamically via `POST /api/mcap/coupons/validate`
 
 ### PaymentWidget
 - enforces allowed currencies via `supportedCurrencies`
@@ -194,8 +196,8 @@ Related surfaces:
 - supports Stripe card and bank transfer proof upload
 - applies card surcharge only when method is `card`
 - supports admin-review status flow for bank proofs
-- supports client-facing discount coupons via `POST /api/mcap/coupons/validate`
-- applied coupons deduct a fixed USD amount from the final `amountToPay` calculation
+- supports client-facing discount coupons via `POST /api/mcap/coupons/validate` (working in tandem with `InvoiceWidget`)
+- applied coupons deduct a fixed amount from the final subtotal before recalculating card processing surcharges and `amountToPay`
 - successful coupon applications log `- $X.00` discount line items in the payment summary
 - passed `couponCode` is recorded on Stripe intent creation to apply discount server-side
 
@@ -224,7 +226,7 @@ Recommended flow:
 4. invoice and payment steps reuse same `computeFees`
 5. `UnifiedFormEngine` wraps invoice/payment fee output with the same additional-executive helper
 6. payment method toggles card surcharge behavior
-7. `PaymentWidget` optionally applies client-provided discount coupons by subtracting `couponDiscount` from the `grandTotal` (card/bank)
+7. `InvoiceWidget` and `PaymentWidget` optionally apply client-provided discount coupons by dynamically subtracting `couponDiscount` from the subtotal before recalculating `grandTotal` (card/bank)
 
 ### Additional executive KYC contract
 Shared implementation:

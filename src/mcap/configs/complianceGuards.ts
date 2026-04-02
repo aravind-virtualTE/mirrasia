@@ -84,6 +84,15 @@ const countryRulesByCode: Record<string, ConsultationRule[]> = {
     { field: "sanctionsExposureDeclaration", allow: ["no"] },
     { field: "corporateTaxAcknowledgement", allow: ["yes"] },
   ],
+  GE: [
+    { field: "legalAndEthicalConcern", allow: ["no"] },
+    { field: "annualRenewalConsent", allow: ["yes", "self_handle"] },
+    { field: "sanctionedCountryOperations", allow: ["no"] },
+    { field: "sanctionedResidenceExposure", allow: ["no"] },
+    { field: "sanctionedOwnershipOrAgency", allow: ["no"] },
+    { field: "crimeaSevastopolExposure", allow: ["no"] },
+    { field: "oilGasMilitaryExposure", allow: ["no"] },
+  ],
   BVI: [
     { field: "legalAndEthicalConcern", allow: ["no"] },
     { field: "annualRenewalConsent", allow: ["yes", "self_handle_after_incorporation"] },
