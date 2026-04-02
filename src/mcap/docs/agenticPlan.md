@@ -107,11 +107,11 @@ This keeps totals consistent across sections.
 - `UnifiedFormEngine` resolves step fees from `computeFees`.
 - For `InvoiceWidget`/`PaymentWidget`, engine recomputes fresh fees and falls back to cached converted `formData.computedFees` only if step output is missing requested converted FX metadata.
 - `UnifiedFormEngine` also wraps fee output with `applyAdditionalExecutiveFeesToFees(...)` so invoice/payment stay aligned with the services-step toggle and current party list.
-3. `payment` step (Coupon Application):
-- Coupons are applied *after* core fee computation within `PaymentWidget.tsx`.
-- They do not mutate `formData.computedFees` or the invoice line items. This keeps the core fee source-of-truth clean.
-- When applied, the widget subtracts the `couponDiscount` from the final calculated `amountToPay` (which includes card surcharges).
-- The reduced amount and `couponCode` are passed to `createPaymentIntent` to generate the correct Stripe payload.
+3. `invoice` and `payment` steps (Coupon Application):
+- Coupons can now be applied and validated *after* core fee computation within both `InvoiceWidget.tsx` and `PaymentWidget.tsx`.
+- They do not mutate `formData.computedFees` or the core invoice line items. This keeps the core fee source-of-truth clean.
+- When valid, the widget dynamically subtracts `couponDiscount` to update the `finalSubtotal` and adjusts card fee recalculations before summing the final `amountToPay`/`grandTotal`.
+- The reduced amount and `couponCode` are passed to `createPaymentIntent` in the payment step to generate the correct Stripe payload.
 
 ### Party-driven additional executive KYC
 Current implementation lives in:
@@ -472,6 +472,9 @@ Every core behavior update must include:
 - one extended flow config (PA/PPIF)
 
 ## 12. Changelog
+- 2026-04-02
+  - documented that `InvoiceWidget.tsx` now supports matching coupon validation and dynamic UI deductions identically to `PaymentWidget.tsx`
+  - documented that `McapCompanyDetail.tsx` surfaces historical coupon applications and deductions in the admin invoice summary
 - 2026-03-30
   - added `BVI` to standard flow countries
   - documented `McapUserDashboard.tsx` application tracking hub

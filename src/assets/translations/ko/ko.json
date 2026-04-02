@@ -5793,5 +5793,180 @@
     "reviewSummary": {
       "relationship": "관계"
     }
+  },
+  "ge": {
+    "title": "조지아 LLC 법인 설립",
+    "confirmation": {
+      "title": "조지아 법인 설립 신청 접수 완료",
+      "message": "조지아 법인 설립 신청이 접수되었습니다. 당사 팀에서 컴플라이언스 검토 및 서류 확인 후 설립 등기 절차를 진행하겠습니다.",
+      "steps": {
+        "complianceReview": {
+          "title": "컴플라이언스 검토",
+          "description": "등기 신청 전 KYC/CDD 확인 및 제재 대상 스크리닝을 완료합니다."
+        },
+        "companySetup": {
+          "title": "회사 설정 및 등록",
+          "description": "위임장(POA) 작성, 번역, 공증, 등기 신청 및 현지 당국 등록 절차를 완료합니다."
+        },
+        "postSetup": {
+          "title": "설립 후 지원",
+          "description": "선택하신 패키지에 따라 세무 등록, 등록 주소지 서비스 및 선택된 은행 업무 지원을 조율합니다."
+        }
+      }
+    },
+    "fees": {
+      "note": "조지아 LLC 패키지에는 핵심 설립 서비스가 포함되어 있습니다. 은행 업무 지원은 선택 시에만 비용이 청구됩니다."
+    },
+    "applicant": {
+      "guidance": {
+        "label": "조지아 법인 설립 안내",
+        "content": "신청자 상세 정보 및 설립 예정인 조지아 법인과의 관계를 입력해 주세요."
+      },
+      "relationship": {
+        "label": "신청자와 설립 예정인 조지아 법인 간의 관계",
+        "other": "기타 관계 상세 내용",
+        "options": {
+          "officer": "조지아 법인의 임원 (설립 예정)",
+          "authorized": "조지아 법인 임원으로부터 권한을 부여받은 대리인 (설립 예정)",
+          "member": "조지아 법인의 구성원/주주 (설립 예정)",
+          "professional": "조지아 법인 임원을 대신하여 설립 자문을 제공하는 전문가 (변호사, 회계사, 관리자, 세무 자문가 등)"
+        }
+      }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "설립 목적이 자금 세탁, 도박, 탈세, 자산 은닉, 불법 사업을 위한 법망 회피 또는 사기와 같은 법적/윤리적 문제와 관련이 있습니까?"
+      },
+      "annualRenewalConsent": {
+        "label": "설립 후 연간 갱신 및 지속적인 컴플라이언스 의무가 적용될 수 있음을 인지하십니까?"
+      },
+      "sanctionedCountryOperations": {
+        "label": "설립 예정인 조지아 법인, 지주 회사, 그룹 또는 관계사가 제재 국가 또는 제한 지역에서 운영 중이거나 운영할 계획이 있습니까?"
+      },
+      "sanctionedResidenceExposure": {
+        "label": "관련 개인 중 제재 국가 또는 제한 지역에 거주하는 자가 있습니까?"
+      },
+      "sanctionedOwnershipOrAgency": {
+        "label": "설립 예정인 조지아 법인이 제재 대상인 개인, 실체, 조직 또는 정부에 의해 소유/통제되거나 이들을 대신하여 활동하게 됩니까?"
+      },
+      "crimeaSevastopolExposure": {
+        "label": "관련 개인이나 실체가 현재 크림반도 또는 세바스토폴에서 활동 중이거나 활동할 계획이 있습니까?"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "설립 예정인 조지아 법인, 지주 회사, 그룹 또는 관계사가 석유, 가스, 에너지, 군사 또는 국방 분야에서 사업을 수행할 예정입니까?",
+        "tooltip": "고위험 물품 및 섹터는 강화된 컴플라이언스 검토 대상이 될 수 있습니다."
+      },
+      "options": {
+        "considerLegalAdvice": "진행 전 법적 자문 고려 중"
+      }
+    },
+    "company": {
+      "requirements": {
+        "label": "조지아 법인 설립 요건",
+        "content": "조지아 LLC 설립(올인원 패키지)은 USD 2,950부터 시작하며 핵심 등록 지원이 포함됩니다. 표준 설립 소요 기간은 통상 영업일 기준 최소 14일입니다."
+      },
+      "industrySelection": {
+        "label": "업종 선택 (해당하는 항목 모두 선택)"
+      },
+      "industryOptions": {
+        "crypto": "가상자산 관련 (발행, 판매, 증여, ICO, 거래소, 지갑 서비스 등)",
+        "it": "IT, 블록체인, 소프트웨어 개발 등",
+        "cryptoInvestment": "가상자산 기반 투자업",
+        "cryptoGames": "가상자산 기반 게임",
+        "forex": "외환 거래 (Forex)",
+        "finance": "금융, 투자, 자문 및 대출업",
+        "trading": "무역업",
+        "wholesaleRetail": "도소매 유통업",
+        "consulting": "컨설팅",
+        "manufacturing": "제조업",
+        "ecommerce": "온라인 서비스업 (이커머스)",
+        "onlinePurchase": "온라인 해외 직구 / 배송 대행 / 구매 대행"
+      },
+      "purposeOfEstablishment": {
+        "label": "조지아 법인 설립 목적 및 기대 효과"
+      },
+      "purposeOptions": {
+        "relaxedRegulation": "비교적 완화된 규제에 따른 사업 다각화 추구",
+        "advisorSuggestion": "법률 자문가, 투자자 또는 비즈니스 파트너의 권고",
+        "internationalExpansion": "다국적 사업 확장 (국제 비즈니스)",
+        "assetManagement": "부동산 또는 금융 자산 투자를 통한 자산 관리",
+        "holding": "자회사 또는 관계사 투자 및 관리를 위한 지주 회사 목적",
+        "financialPolicy": "유연한 재무 정책을 통한 경쟁 우위 확보",
+        "lowTax": "저세율 및 VAT 면제 거래 이점을 통한 거래 규모 확대",
+        "capitalGains": "유리한 자본이득세 처분을 통한 투자 수익 추구"
+      },
+      "totalCapitalGel": {
+        "label": "총 납입 자본금 (GEL 기준)",
+        "tooltip": "최소 자본금은 1 GEL입니다. 다수의 주주가 있거나 향후 지분 양도가 예상되는 경우, 희망 소유 비율을 지원할 수 있는 실질적인 금액으로 설정하세요."
+      },
+      "totalCapitalGelOther": {
+        "label": "총 납입 자본금 (기타)"
+      },
+      "registeredAddressChoice": {
+        "label": "조지아 법인 등록 주소지",
+        "options": {
+          "mirrAddress": "조지아 내 Mirr Asia 등록 사업장 주소지 서비스 이용",
+          "ownAddress": "조지아 내 자체 사업장 주소지 보유"
+        }
+      },
+      "registeredAddressDetails": {
+        "label": "조지아 내 등록 주소지 상세 정보 제공"
+      }
+    },
+    "services": {
+      "packageOverview": {
+        "label": "조지아 서비스 선택",
+        "content": "기본 서비스에는 위임장(POA) 준비, 번역/공증 지원, 등기 신청, 등록부 등본 발급, 세무 등록, 1년차 등록 사업장 주소지 서비스 및 회사 인증 서류가 포함된 조지아 LLC 설립 지원이 포함됩니다."
+      },
+      "items": {
+        "base": {
+          "label": "조지아 LLC 설립 (원격 법인 설립)",
+          "info": "모든 핵심 서비스가 포함된 법인 설립 패키지입니다."
+        },
+        "bankOpening": {
+          "label": "조지아 법인 은행 계좌 개설 (위임장을 통한 원격 개설)",
+          "info": "위임장을 활용한 비대면 은행 계좌 개설 지원 서비스입니다."
+        },
+        "sekerbankAlternative": {
+          "label": "역외 은행 대안 (Sekerbank 사이프러스)",
+          "info": "비대면 역외 은행 계좌 개설 대안 서비스입니다."
+        }
+      },
+      "bankingChoice": {
+        "label": "은행 서비스 옵션 선택",
+        "options": {
+          "georgiaRemoteBankOpening": "조지아 법인 은행 계좌 개설 (USD 2,500)",
+          "sekerbankOffshoreAlternative": "역외 은행 대안 - Sekerbank 사이프러스 (USD 400)"
+        }
+      }
+    },
+    "review": {
+      "declarationAgreement": {
+        "label": "본인은 필요한 서류와 정보를 제공할 것에 동의하며, 적법하고 정당한 사업 목적을 확인하고, 제출된 모든 정보가 사실이며 완전하고 정확함을 선언합니다."
+      }
+    },
+    "steps": {
+      "applicant": {
+        "description": "신청자 정보 및 조지아 법인과의 관계를 제공해 주세요."
+      },
+      "compliance": {
+        "description": "진행 전 법적 사항, AML 및 제재 관련 선언을 완료해 주세요."
+      },
+      "company": {
+        "description": "비즈니스 프로필, 업종, 목적, 자본금 및 등록 주소지 정보를 제공해 주세요."
+      },
+      "parties": {
+        "description": "관계자를 초대하고 지정 연락 담당자를 배정해 주세요."
+      },
+      "services": {
+        "description": "기본 패키지를 검토하고 필요 시 은행 옵션을 선택해 주세요."
+      },
+      "invoice": {
+        "description": "결제 전 수수료를 검토해 주세요."
+      },
+      "payment": {
+        "description": "카드 결제를 진행하거나 은행 송금 증빙을 업로드해 주세요."
+      }
+    }
   }
 }

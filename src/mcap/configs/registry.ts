@@ -19,6 +19,7 @@ import { HU_FULL_CONFIG } from "./hu-full";
 import { IE_FULL_CONFIG } from "./ie-full";
 import { AU_FULL_CONFIG } from "./au-full";
 import { BVI_FULL_CONFIG } from "./bvi-full";
+import { GE_FULL_CONFIG } from "./ge-full";
 import { getComplianceGuardForCountryCode } from "./complianceGuards";
 
 export const STANDARD_FLOW_COUNTRIES = new Set([
@@ -38,6 +39,7 @@ export const STANDARD_FLOW_COUNTRIES = new Set([
   "HU",
   "IE",
   "AU",
+  "GE",
   "BVI",
 ]);
 
@@ -236,6 +238,7 @@ export const MCAP_CONFIGS: McapConfig[] = [
   HU_FULL_CONFIG,
   IE_FULL_CONFIG,
   AU_FULL_CONFIG,
+  GE_FULL_CONFIG,
   BVI_FULL_CONFIG,
   UAE_IFZA_CONFIG,
   ...UAE_FREEZONE_CONFIGS,

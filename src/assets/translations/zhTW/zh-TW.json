@@ -5794,5 +5794,180 @@
     "reviewSummary": {
       "relationship": "關係"
     }
+  },
+  "ge": {
+    "title": "喬治亞 LLC 公司註冊",
+    "confirmation": {
+      "title": "喬治亞公司註冊申請已提交",
+      "message": "我們已收到您的喬治亞公司註冊申請。我們的團隊將審核合規性、驗證文件並進行申報程序。",
+      "steps": {
+        "complianceReview": {
+          "title": "合規審核",
+          "description": "在申報前，將完成 KYC/CDD 核查及制裁篩查。"
+        },
+        "companySetup": {
+          "title": "公司設立與登記",
+          "description": "完成授權書 (POA) 準備、翻譯、公證、申報及當地當局的登記手續。"
+        },
+        "postSetup": {
+          "title": "設立後支援",
+          "description": "根據您選擇的方案，協調稅務登記、註冊地址服務及所選的銀行開戶支援。"
+        }
+      }
+    },
+    "fees": {
+      "note": "喬治亞 LLC 套裝包含核心註冊服務。銀行開戶支援僅在選擇時收費。"
+    },
+    "applicant": {
+      "guidance": {
+        "label": "喬治亞註冊指南",
+        "content": "請提供申請人詳情以及與擬成立喬治亞公司的關係。"
+      },
+      "relationship": {
+        "label": "申請人與擬成立喬治亞公司之間的關係",
+        "other": "其他關係詳情",
+        "options": {
+          "officer": "喬治亞公司的管理人員（擬任）",
+          "authorized": "經喬治亞公司管理人員授權的人士（擬任）",
+          "member": "喬治亞公司的成員/股東（擬任）",
+          "professional": "代表喬治亞公司管理人員提供註冊建議的專業人士（律師、會計師、行政人員、稅務顧問等）"
+        }
+      }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "註冊目的是否涉及洗錢、博彩、逃稅、資產隱匿、為非法業務規避法律或欺詐等法律或倫理疑慮？"
+      },
+      "annualRenewalConsent": {
+        "label": "您是否知悉註冊後可能需要履行年度續期及持續的合規義務？"
+      },
+      "sanctionedCountryOperations": {
+        "label": "擬成立的喬治亞公司、控股公司、集團或關聯公司是否正在或計劃在受制裁國家或受限地區開展業務？"
+      },
+      "sanctionedResidenceExposure": {
+        "label": "是否有任何關聯個人居住在受制裁國家或受限地區？"
+      },
+      "sanctionedOwnershipOrAgency": {
+        "label": "擬成立的喬治亞公司是否由受制裁的個人、實體、組織或政府擁有、控制，或代表其行事？"
+      },
+      "crimeaSevastopolExposure": {
+        "label": "是否有任何關聯個人或實體目前在克里米亞或塞凡堡開展業務，或計劃這樣做？"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "擬成立的喬治亞公司、控股公司、集團 or 關聯公司是否將從事石油、瓦斯、能源、軍事或國防領域的業務？",
+        "tooltip": "高風險商品與行業可能會觸發更嚴格的合規審核。"
+      },
+      "options": {
+        "considerLegalAdvice": "在繼續前考慮法律建議"
+      }
+    },
+    "company": {
+      "requirements": {
+        "label": "喬治亞註冊要求",
+        "content": "喬治亞 LLC 成立（全包方案）起價為 2,950 美元，包含核心登記支援。標準註冊處理時間通常至少為 14 個工作日。"
+      },
+      "industrySelection": {
+        "label": "選擇行業（勾選所有相關項目）"
+      },
+      "industryOptions": {
+        "crypto": "加密貨幣相關（發行、銷售、贈與、ICO、交易所、錢包服務等）",
+        "it": "IT、區塊鏈、軟體開發等",
+        "cryptoInvestment": "加密貨幣投資業務",
+        "cryptoGames": "加密貨幣遊戲",
+        "forex": "外匯交易",
+        "finance": "金融、投資、諮詢及借貸業務",
+        "trading": "貿易業務",
+        "wholesaleRetail": "批發與零售分銷業務",
+        "consulting": "諮詢",
+        "manufacturing": "製造業",
+        "ecommerce": "線上服務業（電子商務）",
+        "onlinePurchase": "線上海外直購 / 貨運代理 / 採購代理"
+      },
+      "purposeOfEstablishment": {
+        "label": "成立喬治亞公司的目的及預期未來效益"
+      },
+      "purposeOptions": {
+        "relaxedRegulation": "因法規相對放寬而追求業務多元化",
+        "advisorSuggestion": "法律顧問、投資者或業務夥伴建議成立喬治亞公司",
+        "internationalExpansion": "將業務擴展至各國（國際業務）",
+        "assetManagement": "透過房地產或金融資產投資進行資產管理",
+        "holding": "作為投資及管理子公司或關聯公司的控股公司",
+        "financialPolicy": "透過靈活的財務政策追求競爭優勢",
+        "lowTax": "透過低稅率及免徵增值稅的交易優勢擴大貿易量",
+        "capitalGains": "透過有利的資本利得稅待遇追求投資回報"
+      },
+      "totalCapitalGel": {
+        "label": "總繳付資本（GEL 標準）",
+        "tooltip": "最低資本為 1 GEL。若預計有多位股東或未來有股權轉讓，請設定實際金額以支持您的預期持股比例。"
+      },
+      "totalCapitalGelOther": {
+        "label": "總繳付資本（其他）"
+      },
+      "registeredAddressChoice": {
+        "label": "喬治亞公司的註冊地址",
+        "options": {
+          "mirrAddress": "使用 Mirr Asia 在喬治亞的註冊商業地址服務",
+          "ownAddress": "使用我們在喬治亞自有的商業地址"
+        }
+      },
+      "registeredAddressDetails": {
+        "label": "提供在喬治亞的註冊地址詳情"
+      }
+    },
+    "services": {
+      "packageOverview": {
+        "label": "喬治亞服務選擇",
+        "content": "基礎服務包含喬治亞 LLC 成立支援：授權書 (POA) 準備、翻譯/公證支援、申報、登記冊摘錄、稅務登記、首年註冊商業地址服務及公司證明文件。"
+      },
+      "items": {
+        "base": {
+          "label": "喬治亞 LLC 成立（遠端公司成立）",
+          "info": "全包式核心註冊方案。"
+        },
+        "bankOpening": {
+          "label": "喬治亞公司銀行開戶（透過授權書遠端開戶）",
+          "info": "透過授權書提供的遠端銀行開戶支援。"
+        },
+        "sekerbankAlternative": {
+          "label": "離岸銀行替代方案 (Sekerbank Cyprus)",
+          "info": "非面對面離岸替代服務。"
+        }
+      },
+      "bankingChoice": {
+        "label": "選擇銀行服務選項",
+        "options": {
+          "georgiaRemoteBankOpening": "喬治亞公司銀行開戶 (2,500 美元)",
+          "sekerbankOffshoreAlternative": "離岸銀行替代方案 - Sekerbank Cyprus (400 美元)"
+        }
+      }
+    },
+    "review": {
+      "declarationAgreement": {
+        "label": "我同意提供所需文件和資訊，確認業務目的合法正當，並聲明所有提交的資訊均真實、完整且準確。"
+      }
+    },
+    "steps": {
+      "applicant": {
+        "description": "提供申請人詳情以及與喬治亞公司的關係。"
+      },
+      "compliance": {
+        "description": "在繼續前完成法律、洗錢防制 (AML) 及制裁聲明。"
+      },
+      "company": {
+        "description": "提供業務概況、行業、目的、資本及註冊地址詳情。"
+      },
+      "parties": {
+        "description": "邀請關係方並分配指定聯繫人範圍。"
+      },
+      "services": {
+        "description": "審核基礎方案並根據需要選擇銀行選項。"
+      },
+      "invoice": {
+        "description": "在付款前審核費用。"
+      },
+      "payment": {
+        "description": "進行信用卡付款或上傳銀行轉帳證明。"
+      }
+    }
   }
 }

@@ -3603,6 +3603,7 @@
         "lt-full": "Lithuania",
         "ie-full": "Ireland",
         "au-full": "Australia",
+        "ge-full": "Georgia",
         "uae-ifza": "Dubai IFZA / UAE",
         "uae-difc": "Dubai DIFC / UAE",
         "uae-dmcc": "Dubai DMCC / UAE",
@@ -5888,6 +5889,181 @@
       "k121": "I agree to provide required documents and information, confirm lawful business intent, and declare all submitted information is true, complete, and accurate.",
       "k122": "Do you agree?",
       "k123": "I understand service may be suspended if unlawful activity or intent is identified."
+    }
+  },
+  "ge": {
+    "title": "Georgia LLC Incorporation",
+    "confirmation": {
+      "title": "Georgia Incorporation Request Submitted",
+      "message": "We have received your Georgia incorporation request. Our team will review compliance, validate documentation, and proceed with filing.",
+      "steps": {
+        "complianceReview": {
+          "title": "Compliance Review",
+          "description": "KYC/CDD checks and sanctions screening are completed before filing."
+        },
+        "companySetup": {
+          "title": "Company Setup and Registration",
+          "description": "Power of attorney, translations, filings, and registration formalities are completed with local authorities."
+        },
+        "postSetup": {
+          "title": "Post-Setup Support",
+          "description": "Tax registration, registered address service, and selected banking support are coordinated based on your selected package."
+        }
+      }
+    },
+    "fees": {
+      "note": "The Georgia LLC package includes core incorporation services. Banking support is charged only when selected."
+    },
+    "applicant": {
+      "guidance": {
+        "label": "Georgia Incorporation Guidance",
+        "content": "Provide the applicant details and relationship to the Georgia corporation to be established."
+      },
+      "relationship": {
+        "label": "Relationship between the applicant and the Georgia corporation to be established",
+        "other": "Other relationship details",
+        "options": {
+          "officer": "Officer of the Georgia corporation (to be established)",
+          "authorized": "A person authorized by an officer of the Georgia corporation (to be established)",
+          "member": "Member of the Georgia corporation (to be established)",
+          "professional": "Professional (attorney, accountant, administrator, tax advisor, etc.) providing incorporation advice on behalf of the officers of the Georgia corporation (to be established)"
+        }
+      }
+    },
+    "compliance": {
+      "legalAndEthicalConcern": {
+        "label": "Does the incorporation purpose involve legal or ethical concerns such as money laundering, gambling, tax evasion, asset concealment, evasion of law for illegal business, or fraud?"
+      },
+      "annualRenewalConsent": {
+        "label": "Do you acknowledge that annual renewal and ongoing compliance obligations may apply after incorporation?"
+      },
+      "sanctionedCountryOperations": {
+        "label": "Will the planned Georgia corporation, holding company, group, or related company operate or plan to operate in sanctioned countries or restricted territories?"
+      },
+      "sanctionedResidenceExposure": {
+        "label": "Are any associated individuals resident in sanctioned countries or restricted territories?"
+      },
+      "sanctionedOwnershipOrAgency": {
+        "label": "Will the planned Georgia corporation be owned, controlled by, or act on behalf of sanctioned persons, entities, organizations, or governments?"
+      },
+      "crimeaSevastopolExposure": {
+        "label": "Are any associated persons or entities currently operating in Crimea or Sevastopol, or planning to do so?"
+      },
+      "oilGasMilitaryExposure": {
+        "label": "Will the planned Georgia corporation, holding company, group, or related company conduct business in oil, gas, energy, military, or defense sectors?",
+        "tooltip": "High-risk goods and sectors may trigger enhanced compliance review."
+      },
+      "options": {
+        "considerLegalAdvice": "Consider legal advice before proceeding"
+      }
+    },
+    "company": {
+      "requirements": {
+        "label": "Georgia Incorporation Requirements",
+        "content": "Georgia LLC Formation (all-inclusive) starts from USD 2,950 and includes core registration support. Standard incorporation processing time is typically a minimum of 14 business days."
+      },
+      "industrySelection": {
+        "label": "Select industry (check all relevant items)"
+      },
+      "industryOptions": {
+        "crypto": "Cryptocurrency-related (issuance, sale, gifting, ICO, exchange, wallet services, etc.)",
+        "it": "Development of IT, blockchain, software, etc.",
+        "cryptoInvestment": "Cryptocurrency-based investment business",
+        "cryptoGames": "Cryptocurrency-based games",
+        "forex": "Foreign exchange trading",
+        "finance": "Finance, investment, advisory, and lending business",
+        "trading": "Trading business",
+        "wholesaleRetail": "Wholesale and retail distribution business",
+        "consulting": "Consulting",
+        "manufacturing": "Manufacturing",
+        "ecommerce": "Online service industry (e-commerce)",
+        "onlinePurchase": "Online direct purchase / shipping agent / purchasing agent"
+      },
+      "purposeOfEstablishment": {
+        "label": "Purpose of establishing the Georgia corporation and expected future effects"
+      },
+      "purposeOptions": {
+        "relaxedRegulation": "Pursuing business diversification due to relatively relaxed regulations",
+        "advisorSuggestion": "A legal advisor, investor, or business partner recommends establishing a Georgia company",
+        "internationalExpansion": "Expanding business into various countries (international business)",
+        "assetManagement": "Asset management through real estate or financial asset investment",
+        "holding": "Holding company purpose for investment and management of subsidiaries or affiliates",
+        "financialPolicy": "Pursuing competitive advantage through flexible financial policy",
+        "lowTax": "Expansion of trading volume through low-tax and non-VAT transaction advantages",
+        "capitalGains": "Pursuit of investment returns through favorable capital-gains treatment"
+      },
+      "totalCapitalGel": {
+        "label": "Total capital to be paid in (GEL standard)",
+        "tooltip": "Minimum capital is GEL 1. If multiple shareholders or future share transfers are expected, set a practical amount to support your intended ownership ratio."
+      },
+      "totalCapitalGelOther": {
+        "label": "Total capital to be paid in (other)"
+      },
+      "registeredAddressChoice": {
+        "label": "Registered address of the Georgia corporation",
+        "options": {
+          "mirrAddress": "Use Mirr Asia registered business address service in Georgia",
+          "ownAddress": "Use our own business address in Georgia"
+        }
+      },
+      "registeredAddressDetails": {
+        "label": "Provide registered address details in Georgia"
+      }
+    },
+    "services": {
+      "packageOverview": {
+        "label": "Georgia Service Selection",
+        "content": "Base service includes Georgia LLC formation support with POA preparation, translation/notarization support, filings, registration extracts, tax registration, first-year registered business address service, and certified company documents."
+      },
+      "items": {
+        "base": {
+          "label": "Georgia LLC Formation (Remote Company Formation)",
+          "info": "All-inclusive core incorporation package."
+        },
+        "bankOpening": {
+          "label": "Georgia Company Bank Account Opening (Remote opening via power of attorney)",
+          "info": "Remote bank account opening support via power of attorney."
+        },
+        "sekerbankAlternative": {
+          "label": "Offshore Bank Alternative (Sekerbank Cyprus)",
+          "info": "Non-face-to-face offshore alternative service."
+        }
+      },
+      "bankingChoice": {
+        "label": "Select banking service option",
+        "options": {
+          "georgiaRemoteBankOpening": "Georgia company bank account opening (USD 2,500)",
+          "sekerbankOffshoreAlternative": "Offshore bank alternative - Sekerbank Cyprus (USD 400)"
+        }
+      }
+    },
+    "review": {
+      "declarationAgreement": {
+        "label": "I agree to provide required documents and information, confirm lawful and legitimate business purpose, and declare that all submitted information is true, complete, and accurate."
+      }
+    },
+    "steps": {
+      "applicant": {
+        "description": "Provide applicant details and relationship to the Georgia corporation."
+      },
+      "compliance": {
+        "description": "Complete legal, AML, and sanctions declarations before proceeding."
+      },
+      "company": {
+        "description": "Provide business profile, industry, purpose, capital, and registered address details."
+      },
+      "parties": {
+        "description": "Invite parties and assign designated contact person coverage."
+      },
+      "services": {
+        "description": "Review the base package and choose banking options if needed."
+      },
+      "invoice": {
+        "description": "Review fees before payment."
+      },
+      "payment": {
+        "description": "Proceed with card payment or bank transfer proof upload."
+      }
     }
   },
   "appUpdate": {
