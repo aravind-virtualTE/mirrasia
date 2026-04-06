@@ -11,7 +11,7 @@ type SearchBoxProps = {
 
 const SearchBox = ({ value, onChange, onSearch, isFocused, setIsFocused,placeText }: SearchBoxProps) => {
   return (
-    <div className="w-[400px]">
+    <div className="w-full max-w-md">
       <div className="relative">
         <div
           className={`

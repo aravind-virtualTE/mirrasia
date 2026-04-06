@@ -44,8 +44,8 @@ interface CreateTaskDialogProps {
     onOpenChange: (open: boolean) => void;
     isEditMode?: boolean;
     taskToEdit?: Task;
-    disbleCompany?: boolean;
-    disbleProject?: boolean;
+    disableCompany?: boolean;
+    disableProject?: boolean;
 }
 
 
@@ -54,8 +54,8 @@ export const CreateTaskDialog = ({
     onOpenChange,
     isEditMode = false,
     taskToEdit,
-    disbleCompany = false,
-    disbleProject = false,
+    disableCompany = false,
+    disableProject = false,
 }: CreateTaskDialogProps) => {
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
@@ -407,7 +407,7 @@ export const CreateTaskDialog = ({
                                 placeholder="Select a Company"
                                 onSelect={handleCurrencySelect}
                                 selectedItem={selectedValue}
-                                disabled={disbleCompany}
+                                disabled={disableCompany}
                             />
                         </div>
 
@@ -417,7 +417,7 @@ export const CreateTaskDialog = ({
                                 placeholder="Select a Project"
                                 onSelect={handleProjectySelect}
                                 selectedItem={selectedProject}
-                                disabled={disbleProject}
+                                disabled={disableProject}
                             />
                         </div>
                     </div>

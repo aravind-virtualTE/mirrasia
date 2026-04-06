@@ -47,7 +47,7 @@ const ProjectsTask: React.FC<{id: string, name:string}> = ({id, name}) => {
         ) : (
           <TaskTable tasks={projectsTasks} />
         )}
-        <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} disbleProject={false}/>
+        <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} disableProject={false}/>
       </CardContent>
     </Card>
   )
