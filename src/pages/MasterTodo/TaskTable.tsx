@@ -92,7 +92,6 @@ const TaskTable = ({
   onStatusFilterChange: externalOnStatusFilterChange,
   priorityFilter: externalPriorityFilter,
   onPriorityFilterChange: externalOnPriorityFilterChange,
-  onTaskMutated,
 }: TaskTableProps) => {
   // Fallback to local state when not controlled by parent
   const [localSortBy, setLocalSortBy] = useState("createdAt");

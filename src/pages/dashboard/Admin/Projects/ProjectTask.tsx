@@ -16,7 +16,7 @@ const ProjectsTask: React.FC<{id: string, name:string}> = ({id, name}) => {
     const fetchTask = async () => {
       const filters = {isProject: true}      
       await getTasks(filters).then((response) => {
-        setTasks(response)
+        setTasks(Array.isArray(response.data) ? response.data : [])
       })
     }
     fetchTask()

@@ -43,7 +43,7 @@ const TodoApp: React.FC<{ id: string; name: string }> = ({ id, name }) => {
       }
 
       const response = await getTasks(filters);
-      setTasks(response);
+      setTasks(Array.isArray(response.data) ? response.data : []);
     };
 
     if (id) {
