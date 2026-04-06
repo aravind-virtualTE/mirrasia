@@ -4,11 +4,11 @@ import {
   Task,
   tasksAtom,
   createTaskFormAtom,
-  users,
   deleteTask,
   statusColors,
   priorityColors,
   TaskStatus,
+  TaskPriority,
 } from "./mTodoStore";
 import {
   Edit,
@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/tooltip";
 import TaskDetailPopup from "./TaskDetailPopup";
 import { formatToDDMMYYYY } from "@/middleware";
+import { toast } from "@/hooks/use-toast";
 
 /* ----------------------------- helpers / UI ----------------------------- */
 
@@ -51,65 +52,17 @@ const DENSITY_STYLES: Record<Density, { row: string; cellPadY: string; text: str
   compact: { row: "h-9", cellPadY: "py-0.5", text: "text-[12px]" },
 };
 
-const priorityOrder = { Low: 1, Medium: 2, High: 3, Urgent: 4 } as const;
-
-// Deterministic pastel from string
-// const hueFromString = (s: string) =>
-//   Array.from(s).reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
-
-// const CompanyBadge: React.FC<{ name?: string }> = ({ name }) => {
-//   if (!name) return null;
-//   const hue = hueFromString(name);
-//   const bg = `hsl(${hue} 80% 96%)`;
-//   const ring = `hsl(${hue} 70% 84%)`;
-//   const chip = `hsl(${hue} 85% 90%)`;
-//   const txt = `hsl(${hue} 30% 30%)`;
-
-//   const initials = name
-//     .split(" ")
-//     .map((p) => p[0])
-//     .join("")
-//     .slice(0, 2)
-//     .toUpperCase();
-
-//   return (
-//     <TooltipProvider delayDuration={0}>
-//       <Tooltip>
-//         <TooltipTrigger asChild>
-//           <div
-//             className="flex items-center gap-1.5 rounded-full border px-2 py-0.5 max-w-[180px] sm:max-w-[220px]"
-//             style={{ backgroundColor: bg, borderColor: ring, color: txt }}
-//             title={name}
-//           >
-//             <span
-//               className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-semibold flex-shrink-0"
-//               style={{ backgroundColor: chip }}
-//             >
-//               {initials}
-//             </span>
-//             <span className="truncate leading-4">{name}</span>
-//           </div>
-//         </TooltipTrigger>
-//         <TooltipContent>{name}</TooltipContent>
-//       </Tooltip>
-//     </TooltipProvider>
-//   );
-// };
-
-const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; onClick: () => void; pastelClass: string; }> = ({ label, active, muted, onClick, pastelClass }) => (
+const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; onClick: () => void; pastelClass: string }> = ({ label, active, muted, onClick, pastelClass }) => (
   <button
     type="button"
     aria-pressed={!!active}
     onClick={onClick}
     className={[
-      // base
       "rounded-full border px-2.5 py-1 text-xs font-medium transition",
       "focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-1",
       pastelClass,
-      // visual states
       active
-        ? // Heavier border + color-matched ring; uses the chip's text color via `currentColor`
-        "border-2 border-current ring-2 ring-current/40 ring-offset-1 shadow-sm"
+        ? "border-2 border-current ring-2 ring-current/40 ring-offset-1 shadow-sm"
         : "border-transparent hover:border-current/40",
       muted ? "opacity-55" : "",
     ].join(" ")}
@@ -117,8 +70,45 @@ const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; o
     {label}
   </button>
 );
-// const SCROLL_CONTAINER_HEIGHT = 600;
-const TaskTable = ({ tasks }: { tasks: Task[] }) => {
+
+interface TaskTableProps {
+  tasks: Task[];
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  onSortChange?: (field: string) => void;
+  statusFilter?: TaskStatus[];
+  onStatusFilterChange?: (statuses: TaskStatus[]) => void;
+  priorityFilter?: TaskPriority[];
+  onPriorityFilterChange?: (priorities: TaskPriority[]) => void;
+  onTaskMutated?: () => void;
+}
+
+const TaskTable = ({
+  tasks,
+  sortBy: externalSortBy,
+  sortOrder: externalSortOrder,
+  onSortChange: externalOnSortChange,
+  statusFilter: externalStatusFilter,
+  onStatusFilterChange: externalOnStatusFilterChange,
+  priorityFilter: externalPriorityFilter,
+  onPriorityFilterChange: externalOnPriorityFilterChange,
+}: TaskTableProps) => {
+  // Fallback to local state when not controlled by parent
+  const [localSortBy, setLocalSortBy] = useState("createdAt");
+  const [localSortOrder, setLocalSortOrder] = useState<"asc" | "desc">("desc");
+  const [localStatusFilter, setLocalStatusFilter] = useState<TaskStatus[]>([]);
+  const [localPriorityFilter, setLocalPriorityFilter] = useState<TaskPriority[]>([]);
+
+  const sortBy = externalSortBy ?? localSortBy;
+  const sortOrder = externalSortOrder ?? localSortOrder;
+  const onSortChange = externalOnSortChange ?? ((field: string) => {
+    if (localSortBy === field) setLocalSortOrder((o) => o === "asc" ? "desc" : "asc");
+    else { setLocalSortBy(field); setLocalSortOrder("asc"); }
+  });
+  const statusFilter = externalStatusFilter ?? localStatusFilter;
+  const onStatusFilterChange = externalOnStatusFilterChange ?? setLocalStatusFilter;
+  const priorityFilter = externalPriorityFilter ?? localPriorityFilter;
+  const onPriorityFilterChange = externalOnPriorityFilterChange ?? setLocalPriorityFilter;
   const [, setFormState] = useAtom(createTaskFormAtom);
   const [, setAllTasks] = useAtom(tasksAtom);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -126,17 +116,9 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
   const [popupTask, setPopupTask] = useState<Task | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
-
-  type SortField = "dueDate" | "priority" | "assignees" | "createdAt" | "company" | "project";
-  const [sortField, setSortField] = useState<SortField | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [density, setDensity] = useState<Density>("ultra");
 
-  // new: pastel chip filters
-  const [statusFilter, setStatusFilter] = useState<Set<TaskStatus>>(new Set());
-  const [priorityFilter, setPriorityFilter] = useState<Set<Task["priority"]>>(
-    new Set()
-  );
+  // Overdue is a client-side computed filter (not stored in DB)
   const [overdueOnly, setOverdueOnly] = useState(false);
 
   const user = localStorage.getItem("user")
@@ -144,34 +126,33 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     : null;
 
   const toggleStatus = (s: TaskStatus) => {
-    const next = new Set(statusFilter);
-    if (next.has(s)) {
-      next.delete(s);
+    const current = new Set(statusFilter);
+    if (current.has(s)) {
+      current.delete(s);
     } else {
-      next.add(s);
+      current.add(s);
     }
-    setStatusFilter(next);
+    onStatusFilterChange(Array.from(current));
   };
-  const togglePriority = (p: Task["priority"]) => {
-    const next = new Set(priorityFilter);
-    if (next.has(p)) {
-      next.delete(p);
+
+  const togglePriority = (p: TaskPriority) => {
+    const current = new Set(priorityFilter);
+    if (current.has(p)) {
+      current.delete(p);
     } else {
-      next.add(p);
+      current.add(p);
     }
-    setPriorityFilter(next);
+    onPriorityFilterChange(Array.from(current));
   };
 
   const clearFilters = () => {
-    setStatusFilter(new Set());
-    setPriorityFilter(new Set());
+    onStatusFilterChange([]);
+    onPriorityFilterChange([]);
     setOverdueOnly(false);
   };
 
   const handleEditClick = (task: Task, e: React.MouseEvent) => {
     e.stopPropagation();
-    const assigneeNames = task.assignees.map((a) => a.name);
-    const selectedUserObjects = users.filter((u) => assigneeNames.includes(u.name));
     setFormState({
       taskName: task.name,
       description: task.description || "",
@@ -179,7 +160,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       dueDate: task.dueDate,
       priority: task.priority,
       status: task.status,
-      selectedUsers: selectedUserObjects,
+      selectedUsers: task.assignees.map((a) => ({ id: a.id || "", name: a.name })),
       selectedCompany: task.company,
       selectedProject: task.project,
     });
@@ -195,8 +176,13 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
   const confirmDelete = async () => {
     if (taskToDelete?._id) {
-      await deleteTask(taskToDelete._id);
-      setAllTasks((prev) => prev.filter((t) => t._id !== taskToDelete._id));
+      try {
+        await deleteTask(taskToDelete._id);
+        setAllTasks((prev) => prev.filter((t) => t._id !== taskToDelete._id));
+        toast({ title: "Task deleted" });
+      } catch {
+        toast({ title: "Failed to delete task", variant: "destructive" });
+      }
     }
     setDeleteDialogOpen(false);
     setTaskToDelete(null);
@@ -262,66 +248,14 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       : parts[0].substring(0, 2).toUpperCase();
   };
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortField(field);
-      setSortOrder("asc");
-    }
-  };
-
-  const filtered = useMemo(() => {
+  // Client-side overdue filter (computed field, can't be server-side)
+  const displayTasks = useMemo(() => {
+    if (!overdueOnly) return tasks;
     const todayStart = startOfDay(new Date());
-    return tasks.filter((t) => {
-      const statusPass =
-        statusFilter.size === 0 || statusFilter.has(t.status as TaskStatus);
-      const priorityPass =
-        priorityFilter.size === 0 || priorityFilter.has(t.priority);
-      const overduePass = !overdueOnly
-        ? true
-        : !!t.dueDate &&
-        isBefore(new Date(t.dueDate), todayStart) &&
-        t.status !== "COMPLETED";
-      return statusPass && priorityPass && overduePass;
-    });
-  }, [tasks, statusFilter, priorityFilter, overdueOnly]);
-
-  const sortedTasks = useMemo(() => {
-    const arr = [...filtered];
-    if (!sortField) return arr;
-    return arr.sort((a, b) => {
-      const aVal = (a as any)[sortField];
-      const bVal = (b as any)[sortField];
-      if (!aVal) return sortOrder === "asc" ? 1 : -1;
-      if (!bVal) return sortOrder === "asc" ? -1 : 1;
-
-      if (sortField === "dueDate" || sortField === "createdAt") {
-        const aDate = aVal instanceof Date ? aVal.getTime() : new Date(aVal).getTime();
-        const bDate = bVal instanceof Date ? bVal.getTime() : new Date(bVal).getTime();
-        return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
-      }
-      if (sortField === "priority") {
-        return sortOrder === "asc"
-          ? priorityOrder[aVal as keyof typeof priorityOrder] -
-          priorityOrder[bVal as keyof typeof priorityOrder]
-          : priorityOrder[bVal as keyof typeof priorityOrder] -
-          priorityOrder[aVal as keyof typeof priorityOrder];
-      }
-      if (sortField === "assignees") {
-        const first = (t: Task) =>
-          t.assignees?.length
-            ? t.assignees.map((x) => x.name.toLowerCase()).sort()[0] || ""
-            : "";
-        const aName = first(a);
-        const bName = first(b);
-        if (aName < bName) return sortOrder === "asc" ? -1 : 1;
-        if (aName > bName) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-      }
-      return 0;
-    });
-  }, [filtered, sortField, sortOrder]);
+    return tasks.filter(
+      (t) => !!t.dueDate && isBefore(new Date(t.dueDate), todayStart) && t.status !== "COMPLETED"
+    );
+  }, [tasks, overdueOnly]);
 
   if (tasks.length === 0) {
     return (
@@ -339,7 +273,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     COMPLETED: "bg-purple-100 text-purple-900 border-purple-200",
   };
 
-  const priorityPastels: Record<Task["priority"], string> = {
+  const priorityPastels: Record<TaskPriority, string> = {
     Low: "bg-gray-50 text-gray-800 border-gray-200",
     Medium: "bg-blue-50 text-blue-900 border-blue-200",
     High: "bg-orange-50 text-orange-900 border-orange-200",
@@ -357,9 +291,16 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     </Button>
   );
 
+  const SortIcon = ({ field }: { field: string }) => {
+    if (sortBy !== field) return null;
+    return sortOrder === "asc" ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />;
+  };
+
   /* -------------------------------- render -------------------------------- */
   const d = DENSITY_STYLES[density];
-  // console.log("sortedTasks",sortedTasks)
+  const statusFilterSet = new Set(statusFilter);
+  const priorityFilterSet = new Set(priorityFilter);
+
   return (
     <>
       {/* Chip filter bar */}
@@ -369,7 +310,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             <FilterChip
               key={s}
               label={s.replace("IN ", "")}
-              active={statusFilter.has(s)}
+              active={statusFilterSet.has(s)}
               onClick={() => toggleStatus(s)}
               pastelClass={statusPastels[s]}
             />
@@ -377,11 +318,11 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         </div>
 
         <div className="ml-2 flex flex-wrap items-center gap-1.5">
-          {(["Urgent", "High", "Medium", "Low"] as Task["priority"][]).map((p) => (
+          {(["Urgent", "High", "Medium", "Low"] as TaskPriority[]).map((p) => (
             <FilterChip
               key={p}
               label={p}
-              active={priorityFilter.has(p)}
+              active={priorityFilterSet.has(p)}
               onClick={() => togglePriority(p)}
               pastelClass={priorityPastels[p]}
             />
@@ -403,194 +344,90 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         </div>
       </div>
 
-      {/* ======= Sticky header + fixed-height scroll container ======= style={{ height: SCROLL_CONTAINER_HEIGHT }} */}
       <div className="rounded-md border">
-        <div className="overflow-auto" >
+        <div className="overflow-auto">
           <Table className={`compact-table w-full table-fixed ${d.text} min-w-[1120px]`}>
             <TableHeader className="sticky top-0 z-30 bg-gray-50 shadow-sm">
               <TableRow className={`${d.row}`}>
                 <TableHead className="w-[84px] sticky top-0 z-30 bg-gray-50">Status</TableHead>
-                <TableHead className="w-auto sticky top-0 z-30 bg-gray-50">Task</TableHead>
-
-                {/* NEW: Company column */}
-                <TableHead
-                  className="w-[180px] cursor-pointer sticky top-0 z-30 bg-gray-50"
-                  onClick={() => handleSort("company")}
-                >
-                  <div className="flex items-center">
-                    Company{" "}
-                    {sortField === "company" &&
-                      (sortOrder === "asc" ? (
-                        <ChevronUp className="ml-1 h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      ))}
-                  </div>
+                <TableHead className="w-auto sticky top-0 z-30 bg-gray-50 cursor-pointer" onClick={() => onSortChange("name")}>
+                  <div className="flex items-center">Task <SortIcon field="name" /></div>
                 </TableHead>
-
-                {/* NEW: Project column */}
-                <TableHead
-                  className="w-[180px] cursor-pointer sticky top-0 z-30 bg-gray-50"
-                  onClick={() => handleSort("project")}
-                >
-                  <div className="flex items-center">
-                    Project{" "}
-                    {sortField === "project" &&
-                      (sortOrder === "asc" ? (
-                        <ChevronUp className="ml-1 h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      ))}
-                  </div>
+                <TableHead className="w-[180px] cursor-pointer sticky top-0 z-30 bg-gray-50" onClick={() => onSortChange("company.name")}>
+                  <div className="flex items-center">Company <SortIcon field="company.name" /></div>
                 </TableHead>
-
-                <TableHead
-                  className="w-[160px] cursor-pointer sticky top-0 z-30 bg-gray-50"
-                  onClick={() => handleSort("assignees")}
-                >
-                  <div className="flex items-center">
-                    Assignee{" "}
-                    {sortField === "assignees" &&
-                      (sortOrder === "asc" ? (
-                        <ChevronUp className="ml-1 h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      ))}
-                  </div>
+                <TableHead className="w-[180px] cursor-pointer sticky top-0 z-30 bg-gray-50" onClick={() => onSortChange("project.name")}>
+                  <div className="flex items-center">Project <SortIcon field="project.name" /></div>
                 </TableHead>
-
-                <TableHead
-                  className="w-[112px] cursor-pointer sticky top-0 z-30 bg-gray-50"
-                  onClick={() => handleSort("dueDate")}
-                >
-                  <div className="flex items-center">
-                    Due{" "}
-                    {sortField === "dueDate" &&
-                      (sortOrder === "asc" ? (
-                        <ChevronUp className="ml-1 h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      ))}
-                  </div>
+                <TableHead className="w-[160px] cursor-pointer sticky top-0 z-30 bg-gray-50" onClick={() => onSortChange("assignees.name")}>
+                  <div className="flex items-center">Assignee <SortIcon field="assignees.name" /></div>
                 </TableHead>
-
-                <TableHead
-                  className="w-[100px] cursor-pointer sticky top-0 z-30 bg-gray-50"
-                  onClick={() => handleSort("priority")}
-                >
-                  <div className="flex items-center">
-                    Priority{" "}
-                    {sortField === "priority" &&
-                      (sortOrder === "asc" ? (
-                        <ChevronUp className="ml-1 h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      ))}
-                  </div>
+                <TableHead className="w-[112px] cursor-pointer sticky top-0 z-30 bg-gray-50" onClick={() => onSortChange("dueDate")}>
+                  <div className="flex items-center">Due <SortIcon field="dueDate" /></div>
                 </TableHead>
-
-                <TableHead
-                  className="w-[136px] cursor-pointer sticky top-0 z-30 bg-gray-50"
-                  onClick={() => handleSort("createdAt")}
-                  title="Sort by created date"
-                >
-                  <div className="flex items-center">
-                    Created At{" "}
-                    {sortField === "createdAt" &&
-                      (sortOrder === "asc" ? (
-                        <ChevronUp className="ml-1 h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      ))}
-                  </div>
+                <TableHead className="w-[100px] cursor-pointer sticky top-0 z-30 bg-gray-50" onClick={() => onSortChange("priority")}>
+                  <div className="flex items-center">Priority <SortIcon field="priority" /></div>
                 </TableHead>
-
+                <TableHead className="w-[136px] cursor-pointer sticky top-0 z-30 bg-gray-50" onClick={() => onSortChange("createdAt")} title="Sort by created date">
+                  <div className="flex items-center">Created At <SortIcon field="createdAt" /></div>
+                </TableHead>
                 <TableHead className="w-[88px] sticky top-0 z-30 bg-gray-50">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {sortedTasks.map((task) => (
+              {displayTasks.map((task) => (
                 <TableRow
                   onClick={() => handleRowClick(task)}
                   key={task._id}
                   className={`${d.row} cursor-pointer`}
                 >
                   <TableCell className={`${d.cellPadY}`}>
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}
-                    >
+                    <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
                       {task.status}
                     </Badge>
                   </TableCell>
-
-                  {/* Task name only (no badge) */}
                   <TableCell className={`${d.cellPadY}`}>
                     <div className="min-w-0" title={task.name}>
                       <span className="block truncate font-medium leading-5">{task.name}</span>
                     </div>
                   </TableCell>
-
-                  {/* NEW: Company cell */}
                   <TableCell className={`${d.cellPadY}`}>
                     <div className="min-w-0" title={task.company?.name || "-"}>
                       <span className="block truncate">{task.company?.name || "-"}</span>
                     </div>
                   </TableCell>
-
-                  {/* NEW: Project cell */}
                   <TableCell className={`${d.cellPadY}`}>
                     <div className="min-w-0" title={task.project?.name || "-"}>
                       <span className="block truncate">{task.project?.name || "-"}</span>
                     </div>
                   </TableCell>
-
                   <TableCell className={`${d.cellPadY}`}>{renderAssignees(task.assignees)}</TableCell>
-
                   <TableCell className={`${d.cellPadY}`}>
                     {task.dueDate ? formatToDDMMYYYY(task.dueDate) : "-"}
                   </TableCell>
-
                   <TableCell className={`${d.cellPadY}`}>
                     <div className="flex items-center gap-1">
-                      <Flag className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`} fill={"currentColor"} />
+                      <Flag className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`} fill="currentColor" />
                       <span>{task.priority}</span>
                     </div>
                   </TableCell>
-
                   <TableCell className={`${d.cellPadY}`}>
                     {task.createdAt ? formatToDDMMYYYY(task.createdAt) : "-"}
                   </TableCell>
-
                   <TableCell className={`${d.cellPadY}`} onClick={(e) => e.stopPropagation()}>
                     <div className="flex space-x-1">
                       {user?.role !== "user" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0"
-                          onClick={(e) => handleEditClick(task, e)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={(e) => handleEditClick(task, e)}>
                           <Edit className="h-3.5 w-3.5" />
                         </Button>
                       )}
                       {task.status === "COMPLETED" && user?.role === "master" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0"
-                          onClick={(e) => handleDeleteClick(task, e)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={(e) => handleDeleteClick(task, e)}>
                           <Trash2 className="h-3.5 w-3.5 text-red-500" />
                         </Button>
                       )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={() => handleRowClick(task)}
-                      >
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => handleRowClick(task)}>
                         <MessageCircle className="h-3.5 w-3.5 text-green-500" />
                       </Button>
                     </div>

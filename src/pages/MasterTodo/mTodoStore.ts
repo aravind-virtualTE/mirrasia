@@ -41,7 +41,15 @@ export interface Task {
   createdAt:Date
 }
 
+export interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
 export const tasksAtom = atom<Task[]>([]);
+export const paginationAtom = atom<PaginationMeta>({ page: 1, pageSize: 20, total: 0, totalPages: 0 });
 
 export const viewModeAtom = atom<'expanded' | 'grouped' | 'completed' | 'ganttChart'>('expanded');
 
@@ -106,14 +114,8 @@ export const priorityColors: Record<string, string> = {
     'Urgent': 'text-red-600',
 };
 
-export const users = [
-    { id: "1", name: "Nolan Kim" },
-    { id: "2", name: "Sarah Johnson" },
-    { id: "3", name: "Alex Wong" },
-    { id: "4", name: "Maria Garcia" },
-    { id: "5", name: "David Lee" },
-  ];
-  
+
+
 
 export const createTask = async (taskData:Task) => {
     try {
@@ -125,7 +127,7 @@ export const createTask = async (taskData:Task) => {
     }
   };
   
-  export const getTasks = async (filters = {}) => {
+  export const getTasks = async (filters: Record<string, any> = {}): Promise<{ data: Task[]; pagination: PaginationMeta }> => {
     try {
       const response = await api.get('/tasks', { params: filters });
       return response.data;
@@ -147,13 +149,12 @@ export const createTask = async (taskData:Task) => {
   };
   
   // UPDATE a task by ID
-  export const updateTask = async (id:string, updates:Task) => {
+  export const updateTask = async (id:string, updates:Task | FormData) => {
     try {
-      const response = await api.put(`/tasks/${id}`, updates,{
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+      const isFormData = updates instanceof FormData;
+      const response = await api.put(`/tasks/${id}`, updates, {
+        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' },
+      });
       return response.data;
     } catch (error) {
       console.error(`Error updating task ${id}:`, error);

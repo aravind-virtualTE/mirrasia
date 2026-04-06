@@ -21,7 +21,7 @@ const AdminTodo: React.FC = () => {
     if (user.role === 'admin') filters = { userId: id, }
     const fetchUser = async () => {
       await getTasks(filters).then((response) => {
-        setListState(response);
+        setListState(Array.isArray(response.data) ? response.data : []);
       })
     }
     fetchUser()
