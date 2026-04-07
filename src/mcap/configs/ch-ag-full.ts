@@ -4,6 +4,6 @@ export const CH_AG_FULL_CONFIG = createChCorporateConfig({
   id: "ch-ag-full",
   countryCode: "CH",
   countryName: "Swiss Corporation (AG)",
-  title: "mcap.ch.ag.title",
+  title: "ch.ag.title",
   variant: "AG",
 });
