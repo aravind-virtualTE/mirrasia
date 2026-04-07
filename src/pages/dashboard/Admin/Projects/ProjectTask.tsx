@@ -23,10 +23,13 @@ const ProjectsTask: React.FC<{id: string, name:string}> = ({id, name}) => {
   }, [])
 
   const createTaskAction = () => {
-    defaultFormState.isProject = true
-    defaultFormState.selectedProject = {'id': id, 'name': name}
-    setOpenDialog(true)
-    setFormState(defaultFormState);
+    const freshState = {
+      ...defaultFormState,
+      isProject: true,
+      selectedProject: { id, name },
+    };
+    setFormState(freshState);
+    setOpenDialog(true);
   }
 
   const projectsTasks = tasks?.filter((task) => task.project?.id == id) || [];
