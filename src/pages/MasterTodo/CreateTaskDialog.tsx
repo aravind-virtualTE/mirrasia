@@ -63,8 +63,6 @@ export const CreateTaskDialog = ({
     const [allList] = useAtom(allCompNameAtom);
     const [projects] = useAtom(projectsAtom);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedValue, setSelectedValue] = useState<{ id: string; name: string; } | null>(formState.selectedCompany || { id: '', name: '' });
-    const [selectedProject, setSelectedProj] = useState<{ id: string; name: string; } | null>(formState.selectedProject || { id: '', name: '' });
     const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null;
 
     // dropdown state
@@ -74,7 +72,7 @@ export const CreateTaskDialog = ({
 
     // Due date error
     const [dateError, setDateError] = useState<string>('');
-  
+
     const getFilteredCompanies = () => {
         if (!Array.isArray(allList) || allList.length === 0) return [];
         return allList
@@ -137,7 +135,12 @@ export const CreateTaskDialog = ({
                 shareWithClient: taskToEdit.shareWithClient,
             });
         } else if (!isEditMode && open) {
-            setFormState(defaultFormState);
+            setFormState((prev) => ({
+                ...defaultFormState,
+                selectedCompany: prev.selectedCompany ?? undefined,
+                selectedProject: prev.selectedProject ?? undefined,
+                isProject: prev.isProject ?? false,
+            }));
         }
         setDateError('');
     }, [isEditMode, taskToEdit, open, setFormState]);
@@ -241,22 +244,21 @@ export const CreateTaskDialog = ({
     };
 
     const handleCurrencySelect = (item: { id: string; name: string } | null) => {
-        setSelectedValue(item);
-        setFormState({ ...formState, selectedCompany: item });
+        setFormState((prev) => ({ ...prev, selectedCompany: item }));
     };
 
     const handleProjectySelect = (item: { id: string; name: string } | null) => {
-        setSelectedProj(item);
-        setFormState({ ...formState, selectedProject: item });
+        setFormState((prev) => ({ ...prev, selectedProject: item }));
     };
 
     const allowedStatuses = statuses
-        // user?.role === 'master' ? statuses : statuses.filter((s) => s.label !== 'COMPLETED');
+    // user?.role === 'master' ? statuses : statuses.filter((s) => s.label !== 'COMPLETED');
 
     // Normalize dueDate to UTC for display
     const normalizedDueDate = formState.dueDate
         ? startOfDay(toZonedTime(new Date(formState.dueDate), 'UTC'))
         : undefined;
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
@@ -406,7 +408,7 @@ export const CreateTaskDialog = ({
                                 items={filteredCompanies}
                                 placeholder="Select a Company"
                                 onSelect={handleCurrencySelect}
-                                selectedItem={selectedValue}
+                                selectedItem={formState.selectedCompany || null}
                                 disabled={disableCompany}
                             />
                         </div>
@@ -416,7 +418,7 @@ export const CreateTaskDialog = ({
                                 items={projects.map((project) => ({ id: project._id, name: project.projectName }))}
                                 placeholder="Select a Project"
                                 onSelect={handleProjectySelect}
-                                selectedItem={selectedProject}
+                                selectedItem={formState.selectedProject || null}
                                 disabled={disableProject}
                             />
                         </div>
