@@ -24,9 +24,9 @@ const cloneWithEntity = (id: string, title: string, entityType: string): McapCon
 };
 
 export const UAE_FREEZONE_CONFIGS: McapConfig[] = [
-  cloneWithEntity("uae-difc", "mcap.uae.freezones.titles.difc", "UAE-DIFC-FZCO"),
-  cloneWithEntity("uae-dmcc", "mcap.uae.freezones.titles.dmcc", "UAE-DMCC-FZCO"),
-  cloneWithEntity("uae-dwtc", "mcap.uae.freezones.titles.dwtc", "UAE-DWTC-FZCO"),
-  cloneWithEntity("uae-dic", "mcap.uae.freezones.titles.dic", "UAE-DIC-FZCO"),
-  cloneWithEntity("uae-ifza-fzco", "mcap.uae.freezones.titles.ifzaFzco", "UAE-IFZA-FZCO"),
+  cloneWithEntity("uae-difc", "uae.freezones.titles.difc", "UAE-DIFC-FZCO"),
+  cloneWithEntity("uae-dmcc", "uae.freezones.titles.dmcc", "UAE-DMCC-FZCO"),
+  cloneWithEntity("uae-dwtc", "uae.freezones.titles.dwtc", "UAE-DWTC-FZCO"),
+  cloneWithEntity("uae-dic", "uae.freezones.titles.dic", "UAE-DIC-FZCO"),
+  cloneWithEntity("uae-ifza-fzco", "uae.freezones.titles.ifzaFzco", "UAE-IFZA-FZCO"),
 ];
