@@ -262,8 +262,25 @@ const ToDoList = () => {
       if (searchQuery.trim()) filters.search = searchQuery.trim();
       if (fromDate) filters.createdFrom = toStartOfDayISO(fromDate);
       if (toDate) filters.createdTo = toEndOfDayISO(toDate);
-      if (statusFilter.length > 0) filters.status = statusFilter.join(",");
+
+      let statuses = [...statusFilter];
+      let excludeStatuses: string[] = [];
+
+      if (viewMode === 'completed') {
+        statuses = ['COMPLETED'];
+      } else if (viewMode === 'expanded') {
+        excludeStatuses = ['COMPLETED'];
+      }
+
+      if (statuses.length > 0) filters.status = statuses.join(",");
+      if (excludeStatuses.length > 0) filters.excludeStatus = excludeStatuses.join(",");
       if (priorityFilter.length > 0) filters.priority = priorityFilter.join(",");
+    } else {
+      if (viewMode === 'completed') {
+        filters.status = 'COMPLETED';
+      } else if (viewMode === 'expanded') {
+        filters.excludeStatus = 'COMPLETED';
+      }
     }
 
     filters.sortBy = sortBy;
@@ -282,7 +299,7 @@ const ToDoList = () => {
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, fromDate, toDate, statusFilter, priorityFilter, sortBy, sortOrder, currentPage, userId, user?.role]);
+  }, [searchQuery, fromDate, toDate, statusFilter, priorityFilter, sortBy, sortOrder, currentPage, userId, user?.role, viewMode]);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -304,7 +321,7 @@ const ToDoList = () => {
     if (!mounted) { setMounted(true); return; }
     fetchTasks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, sortOrder, currentPage, statusFilter, priorityFilter]);
+  }, [sortBy, sortOrder, currentPage, statusFilter, priorityFilter, viewMode]);
 
   // quick chip auto-applies
   const handleQuickSelect = async (qr: QuickRange) => {
@@ -319,7 +336,17 @@ const ToDoList = () => {
       const filters: Record<string, any> = {};
       if (user?.role === "admin") filters.userId = userId;
       if (searchQuery.trim()) filters.search = searchQuery.trim();
-      if (statusFilter.length > 0) filters.status = statusFilter.join(",");
+
+      let statuses = [...statusFilter];
+      let excludeStatuses: string[] = [];
+      if (viewMode === 'completed') {
+        statuses = ['COMPLETED'];
+      } else if (viewMode === 'expanded') {
+        excludeStatuses = ['COMPLETED'];
+      }
+      if (statuses.length > 0) filters.status = statuses.join(",");
+      if (excludeStatuses.length > 0) filters.excludeStatus = excludeStatuses.join(",");
+
       if (priorityFilter.length > 0) filters.priority = priorityFilter.join(",");
       filters.sortBy = sortBy;
       filters.order = sortOrder;
@@ -347,7 +374,17 @@ const ToDoList = () => {
       if (searchQuery.trim()) filters.search = searchQuery.trim();
       filters.createdFrom = toStartOfDayISO(from);
       filters.createdTo = toEndOfDayISO(to);
-      if (statusFilter.length > 0) filters.status = statusFilter.join(",");
+
+      let statuses = [...statusFilter];
+      let excludeStatuses: string[] = [];
+      if (viewMode === 'completed') {
+        statuses = ['COMPLETED'];
+      } else if (viewMode === 'expanded') {
+        excludeStatuses = ['COMPLETED'];
+      }
+      if (statuses.length > 0) filters.status = statuses.join(",");
+      if (excludeStatuses.length > 0) filters.excludeStatus = excludeStatuses.join(",");
+
       if (priorityFilter.length > 0) filters.priority = priorityFilter.join(",");
       filters.sortBy = sortBy;
       filters.order = sortOrder;
@@ -433,6 +470,11 @@ const ToDoList = () => {
     setCurrentPage(1);
   };
 
+  const handleViewModeChange = (mode: typeof viewMode) => {
+    setViewMode(mode);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="container mx-auto max-width">
       <div className="flex justify-between items-center mb-6">
@@ -446,7 +488,7 @@ const ToDoList = () => {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               variant={viewMode === "grouped" ? "default" : "outline"}
-              onClick={() => setViewMode("grouped")}
+              onClick={() => handleViewModeChange("grouped")}
               className="h-8 px-3 text-xs"
             >
               <Layers className="mr-2 h-4 w-4" />
@@ -454,7 +496,7 @@ const ToDoList = () => {
             </Button>
             <Button
               variant={viewMode === "expanded" ? "default" : "outline"}
-              onClick={() => setViewMode("expanded")}
+              onClick={() => handleViewModeChange("expanded")}
               className="h-8 px-3 text-xs"
             >
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -462,14 +504,14 @@ const ToDoList = () => {
             </Button>
             <Button
               variant={viewMode === "completed" ? "default" : "outline"}
-              onClick={() => setViewMode("completed")}
+              onClick={() => handleViewModeChange("completed")}
               className="h-8 px-3 text-xs"
             >
               Completed
             </Button>
             <Button
               variant={viewMode === "ganttChart" ? "default" : "outline"}
-              onClick={() => setViewMode("ganttChart")}
+              onClick={() => handleViewModeChange("ganttChart")}
               className="h-8 px-3 text-xs"
             >
               Gantt Chart
