@@ -64,8 +64,6 @@ export const TaskList = (props: TaskListProps) => {
   const [rawTasks] = useAtom(tasksAtom);
   const [viewMode] = useAtom(viewModeAtom);
   const tasks = Array.isArray(rawTasks) ? rawTasks : [];
-  const completedTasks = tasks.filter((task) => task.status === 'COMPLETED');
-  const normalTasks = tasks.filter((task) => task.status !== 'COMPLETED');
 
   const tableProps = {
     sortBy: props.sortBy,
@@ -80,9 +78,9 @@ export const TaskList = (props: TaskListProps) => {
 
   switch (viewMode) {
     case 'expanded':
-      return <TaskTable tasks={normalTasks} {...tableProps} />;
+      return <TaskTable tasks={tasks} {...tableProps} />;
     case 'completed':
-      return <TaskTable tasks={completedTasks} {...tableProps} />;
+      return <TaskTable tasks={tasks} {...tableProps} />;
     case 'ganttChart':
       return <GanttChart items={tasks as any} />;
     default:
