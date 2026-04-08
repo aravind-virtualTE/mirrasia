@@ -579,7 +579,8 @@ const McapCompanyDetail: React.FC = () => {
         </TabsList>
 
         <TabsContent value="details" className="p-4 md:p-6">
-          {!isDashboardDetailView && companyName && <TodoApp id={company._id} name={companyName} />}
+          {companyName && <TodoApp id={company._id} name={companyName} />}
+          {/* {!isDashboardDetailView && companyName && <TodoApp id={company._id} name={companyName} />} */}
 
           <div className="flex flex-wrap gap-3 mt-4">
             {canEdit && (
