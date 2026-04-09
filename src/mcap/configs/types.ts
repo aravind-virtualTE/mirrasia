@@ -184,6 +184,30 @@ export type RepeatableSectionWidgetConfig = {
   modes?: RepeatableSectionMode[];
 };
 
+export type McapRuntimeContext = {
+  data: Record<string, any>;
+  parties: any[];
+  journeyType: McapJourneyType;
+};
+
+export type McapCountryContext = {
+  countryCode: string;
+  countryName: string;
+};
+
+export type McapFieldChangeAction = {
+  mode?: "allow" | "block" | "reset";
+  blockMessage?: string;
+  confirmMessage?: string;
+};
+
+export type McapFieldChangeContext = McapRuntimeContext & {
+  fieldName: string;
+  prevValue: any;
+  nextValue: any;
+  paymentStatus: string;
+};
+
 export type McapConfig = {
   id: string;
   countryCode: string;
@@ -191,6 +215,14 @@ export type McapConfig = {
   currency: string;
   title?: string;
   steps: McapStep[];
+  launcherEnabled?: boolean;
+  skipNormalization?: boolean;
+  seedData?: Record<string, any>;
+  runtimeResolutionKeys?: string[];
+  getPreludeSteps?: (context: McapRuntimeContext & { runtimeConfig: McapConfig }) => McapStep[];
+  resolveRuntimeConfig?: (context: McapRuntimeContext) => McapConfig;
+  resolveCountryContext?: (context: McapRuntimeContext & { runtimeConfig: McapConfig }) => McapCountryContext;
+  onFieldChange?: (context: McapFieldChangeContext) => McapFieldChangeAction | null | undefined;
   reviewSummary?: McapReviewSummaryRow[];
   entityMeta?: Record<string, any>;
   confirmationDetails?: {

@@ -3324,7 +3324,7 @@
     "paymentCurrency": "Payment Currency For Card Payment",
     "currencyNote": "All prices are originally computed in {{currency}}. Conversion rates are updated live.",
     "managedByPartyKyc": "Selected in Party KYC",
-    "managedByPartySetup": "Calculated from party setup",
+    "managedByPartySetup": "Calculated from associated party setup",
     "additionalExecutive": {
       "toggleLabel": "Additional Executive KYC / Due Diligence",
       "toggleInfo": "Turn this on to add KYC / due diligence pricing from the party list. The preview updates automatically when party type or count changes.",
@@ -4522,6 +4522,29 @@
       "title": "Swiss Limited Liability Company (GmbH; LLC) Establishment",
       "confirmation": {
         "title": "Swiss Limited Liability Company (GmbH; LLC) Application Submitted"
+      }
+    },
+    "unified": {
+      "title": "Swiss Company Incorporation",
+      "steps": {
+        "companyType": {
+          "title": "Company Type",
+          "description": "Choose your Swiss incorporation type to continue."
+        }
+      },
+      "selector": {
+        "label": "Which company type do you want to incorporate?",
+        "help": "You can select AG, GmbH, or Foundation. Pricing and required steps will be applied automatically based on your selection.",
+        "options": {
+          "ag": "Swiss Corporation (AG)",
+          "gmbh": "Swiss Limited Liability Company (GmbH)",
+          "foundation": "Swiss Foundation"
+        }
+      },
+      "typeChange": {
+        "resetNote": "Changing the Swiss company type before payment will reset the current application details and pricing.",
+        "confirmReset": "Changing company type will reset the current Swiss form, parties, selected services, and pricing. Do you want to continue?",
+        "lockedAfterPayment": "Company type cannot be changed after payment is completed."
       }
     },
     "options": {

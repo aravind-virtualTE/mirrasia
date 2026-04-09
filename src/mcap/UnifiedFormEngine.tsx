@@ -34,12 +34,14 @@ import {
     applyAdditionalExecutiveFeesToFees,
     getAdditionalExecutiveUsdToBaseRate,
 } from "./additionalExecutivePricing";
+import { CORRESPONDENCE_SERVICE_FIELD } from "./correspondenceService";
 import {
     isExistingCompanyOnboardingJourney,
-    resolveMcapConfigForJourney,
     resolveMcapJourneyType,
 } from "./journey";
 import { buildFormSummary } from "./utils/SummaryBuilder";
+import { resolveMcapRuntimeConfig } from "./configs/registry";
+import { CH_INCORPORATION_TYPE_FIELD } from "./configs/ch-unified-full";
 
 // --- API Helper (Inlined for Demo) ---
 const API_BASE = API_URL.replace(/\/+$/, "");
@@ -108,6 +110,75 @@ const buildSignatureFile = (signatureDataUrl: string, fieldName: string) => {
     return new File([bytes], `${fieldName}-${Date.now()}.${extension}`, { type: mimeType });
 };
 
+const getCorrespondenceFlagState = (party: any): "enabled" | "disabled" | "unset" => {
+    if (!party || typeof party !== "object") return "unset";
+    const details = party.details && typeof party.details === "object" ? party.details : null;
+    const hasDetailsFlag = !!details && Object.prototype.hasOwnProperty.call(details, CORRESPONDENCE_SERVICE_FIELD);
+    const hasRootFlag = Object.prototype.hasOwnProperty.call(party, CORRESPONDENCE_SERVICE_FIELD);
+    if (!hasDetailsFlag && !hasRootFlag) return "unset";
+
+    const rawValue = hasDetailsFlag ? details?.[CORRESPONDENCE_SERVICE_FIELD] : party?.[CORRESPONDENCE_SERVICE_FIELD];
+    if (typeof rawValue === "boolean") return rawValue ? "enabled" : "disabled";
+
+    const normalized = String(rawValue ?? "").trim().toLowerCase();
+    if (["true", "yes", "1", "on"].includes(normalized)) return "enabled";
+    if (["false", "no", "0", "off", ""].includes(normalized)) return "disabled";
+    return "disabled";
+};
+
+const buildPartyHydrationKeys = (party: any, index: number) => {
+    const keys: string[] = [];
+    const addKey = (prefix: string, value: any) => {
+        const normalized = String(value ?? "").trim().toLowerCase();
+        if (!normalized) return;
+        const key = `${prefix}:${normalized}`;
+        if (!keys.includes(key)) keys.push(key);
+    };
+
+    addKey("_id", party?._id);
+    addKey("id", party?.id);
+    addKey("temp", party?.details?.clientTempId);
+    addKey("legacy", party?.details?.legacyPartyKey);
+    addKey("email", party?.email);
+    addKey("name", party?.name);
+    addKey("idx", index);
+    return keys;
+};
+
+const mergeCorrespondenceFlags = (incoming: any[], fallback: any[]) => {
+    if (!Array.isArray(incoming)) return [];
+    if (!Array.isArray(fallback) || fallback.length === 0) return incoming;
+
+    const fallbackByKey = new Map<string, any>();
+    fallback.forEach((party, idx) => {
+        buildPartyHydrationKeys(party, idx).forEach((key) => {
+            if (!fallbackByKey.has(key)) fallbackByKey.set(key, party);
+        });
+    });
+
+    return incoming.map((party, idx) => {
+        if (!party || typeof party !== "object") return party;
+        const incomingState = getCorrespondenceFlagState(party);
+        if (incomingState !== "unset") return party;
+
+        const matched = buildPartyHydrationKeys(party, idx)
+            .map((key) => fallbackByKey.get(key))
+            .find((candidate) => !!candidate);
+        if (!matched) return party;
+
+        const fallbackState = getCorrespondenceFlagState(matched);
+        if (fallbackState === "unset") return party;
+
+        return {
+            ...party,
+            details: {
+                ...(party.details && typeof party.details === "object" ? party.details : {}),
+                [CORRESPONDENCE_SERVICE_FIELD]: fallbackState === "enabled",
+            },
+        };
+    });
+};
+
 export const UnifiedFormEngine = ({
     config,
     journeyType = DEFAULT_MCAP_JOURNEY_TYPE,
@@ -142,9 +213,24 @@ export const UnifiedFormEngine = ({
     const ADMIN_TEST_RELAX_VALIDATION = true;
 
     const resolvedJourneyType = useMemo(() => resolveMcapJourneyType(journeyType), [journeyType]);
-    const runtimeConfig = useMemo(
-        () => resolveMcapConfigForJourney(config, resolvedJourneyType),
+    const runtimeResolutionKey = useMemo(() => {
+        const keys = Array.isArray(config.runtimeResolutionKeys) ? config.runtimeResolutionKeys : [];
+        if (keys.length === 0) return "default";
+        return keys
+            .map((key) => `${key}:${String(formData?.[key] ?? "")}`)
+            .join("|");
+    }, [config.runtimeResolutionKeys, formData]);
+    const resolveRuntimeConfigForData = useCallback(
+        (data: Record<string, any>) =>
+            resolveMcapRuntimeConfig(config, {
+                data,
+                journeyType: resolvedJourneyType,
+            }),
         [config, resolvedJourneyType]
+    );
+    const runtimeConfig = useMemo(
+        () => resolveRuntimeConfigForData(formData || {}),
+        [resolveRuntimeConfigForData, runtimeResolutionKey]
     );
     const isExistingCompanyOnboarding = useMemo(
         () => isExistingCompanyOnboardingJourney(resolvedJourneyType),
@@ -153,26 +239,59 @@ export const UnifiedFormEngine = ({
     const currentStep = runtimeConfig.steps[currentStepIdx];
     const isLastStep = currentStepIdx === runtimeConfig.steps.length - 1;
     const entityMeta = useMemo(() => runtimeConfig.entityMeta || {}, [runtimeConfig.entityMeta]);
-    const pricingBaseCurrency = useMemo(() => getPricingBaseCurrency(config.countryCode), [config.countryCode]);
+    const resolvedCountryContext = useMemo(() => {
+        const fallback = {
+            countryCode: runtimeConfig.countryCode || config.countryCode,
+            countryName: runtimeConfig.countryName || config.countryName,
+        };
+
+        if (!config.resolveCountryContext) {
+            return fallback;
+        }
+
+        const resolved = config.resolveCountryContext({
+            data: formData || {},
+            parties: Array.isArray(parties) ? parties : [],
+            journeyType: resolvedJourneyType,
+            runtimeConfig,
+        });
+
+        if (!resolved?.countryCode || !resolved?.countryName) {
+            return fallback;
+        }
+
+        return resolved;
+    }, [config, formData, parties, resolvedJourneyType, runtimeConfig]);
+    const pricingBaseCurrency = useMemo(
+        () => getPricingBaseCurrency(resolvedCountryContext.countryCode),
+        [resolvedCountryContext.countryCode]
+    );
+    const canonicalFormData = useMemo(
+        () => ({ ...(formData || {}), parties: Array.isArray(parties) ? parties : [] }),
+        [formData, parties]
+    );
     // Prefer fresh step-level computeFees. If converted FX metadata is missing from that output,
     // fall back to cached converted computedFees from ServiceSelectionWidget.
     const computedFees = useMemo(() => {
-        const cachedFees = formData?.computedFees;
+        const cachedFees = canonicalFormData?.computedFees;
         const calculated = currentStep.computeFees
-            ? currentStep.computeFees(formData, entityMeta)
+            ? currentStep.computeFees(canonicalFormData, entityMeta)
             : (cachedFees || currentStep.fees);
         const withAdditionalExecutiveFees = (fees: any) =>
             applyAdditionalExecutiveFeesToFees(fees, {
-                countryCode: config.countryCode,
+                countryCode: resolvedCountryContext.countryCode,
                 parties,
-                payMethod: formData?.payMethod,
+                payMethod: canonicalFormData?.payMethod,
                 enabled: Array.isArray(parties) && parties.length > 0,
-                usdToBaseRate: getAdditionalExecutiveUsdToBaseRate(config.countryCode, formData),
+                usdToBaseRate: getAdditionalExecutiveUsdToBaseRate(
+                    resolvedCountryContext.countryCode,
+                    canonicalFormData
+                ),
             });
 
         if (!cachedFees || !currentStep.computeFees) return withAdditionalExecutiveFees(calculated);
 
-        const requestedCurrency = String(formData?.paymentCurrency || formData?.currency || "").toUpperCase();
+        const requestedCurrency = String(canonicalFormData?.paymentCurrency || canonicalFormData?.currency || "").toUpperCase();
         const calculatedCurrency = String((calculated as any)?.currency || "").toUpperCase();
         const cachedCurrency = String((cachedFees as any)?.currency || "").toUpperCase();
         const cachedOriginalCurrency = String(
@@ -191,7 +310,7 @@ export const UnifiedFormEngine = ({
             && (!hasCalculatedFx || calculatedCurrency !== requestedCurrency);
 
         return withAdditionalExecutiveFees(shouldUseCachedFx ? cachedFees : calculated);
-    }, [config.countryCode, currentStep, formData, entityMeta, parties]);
+    }, [canonicalFormData, currentStep, entityMeta, parties, resolvedCountryContext.countryCode]);
 
     useEffect(() => {
         companyIdRef.current = companyId;
@@ -210,8 +329,11 @@ export const UnifiedFormEngine = ({
     const isAdminOrMaster = userRole === "admin" || userRole === "master";
     const allowAdminTestingBypass = ADMIN_TEST_RELAX_VALIDATION && isAdminOrMaster;
 
-    const defaultData = useMemo(() => {
+    const buildDefaultDataForConfig = useCallback((targetConfig: McapConfig) => {
         const initial: Record<string, any> = {};
+        if (config.seedData && typeof config.seedData === "object") {
+            Object.assign(initial, config.seedData);
+        }
 
         const applyFieldDefaults = (fields?: McapField[]) => {
             (fields || []).forEach((field) => {
@@ -238,7 +360,7 @@ export const UnifiedFormEngine = ({
             });
         };
 
-        runtimeConfig.steps.forEach((step) => {
+        targetConfig.steps.forEach((step) => {
             applyFieldDefaults(step.fields);
 
             if (step.widget === "RepeatableSection" && step.widgetConfig) {
@@ -253,7 +375,12 @@ export const UnifiedFormEngine = ({
         });
 
         return initial;
-    }, [runtimeConfig.steps]);
+    }, [config.seedData]);
+
+    const defaultData = useMemo(
+        () => buildDefaultDataForConfig(runtimeConfig),
+        [buildDefaultDataForConfig, runtimeConfig]
+    );
 
     useEffect(() => {
         if (Object.keys(formData).length === 0) {
@@ -267,15 +394,40 @@ export const UnifiedFormEngine = ({
 
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
-            setFormData((prev: any) => ({ ...defaultData, ...prev, ...initialData }));
+            setFormData((prev: any) => {
+                const merged = { ...defaultData, ...prev, ...initialData };
+                // Do not overwrite runtime resolution keys (e.g. chIncorporationType)
+                // that the user has explicitly changed away from the loaded initialData value.
+                const resolutionKeys = Array.isArray(config.runtimeResolutionKeys)
+                    ? config.runtimeResolutionKeys
+                    : [];
+                resolutionKeys.forEach((key) => {
+                    const userValue = prev?.[key];
+                    const loadedValue = initialData?.[key];
+                    // If the user changed the key away from the loaded value, preserve theirs.
+                    if (
+                        userValue !== undefined
+                        && userValue !== ""
+                        && userValue !== loadedValue
+                    ) {
+                        merged[key] = userValue;
+                    }
+                });
+                return merged;
+            });
         }
-    }, [initialData, defaultData]);
+    }, [initialData, defaultData, config.runtimeResolutionKeys]);
 
     useEffect(() => {
+        const initialDataParties = Array.isArray(initialData?.parties) ? initialData.parties : [];
         if (Array.isArray(initialParties) && initialParties.length > 0) {
-            setParties(initialParties);
+            setParties(mergeCorrespondenceFlags(initialParties, initialDataParties));
+            return;
         }
-    }, [initialParties]);
+        if (initialDataParties.length > 0) {
+            setParties(initialDataParties);
+        }
+    }, [initialData?.parties, initialParties]);
 
     useEffect(() => {
         if (initialCompanyId) {
@@ -291,9 +443,23 @@ export const UnifiedFormEngine = ({
     }, [initialStepIdx, runtimeConfig.steps.length]);
 
     useEffect(() => {
+        if (currentStepIdx <= runtimeConfig.steps.length - 1) return;
+        setCurrentStepIdx(Math.max(0, runtimeConfig.steps.length - 1));
+    }, [currentStepIdx, runtimeConfig.steps.length]);
+
+    useEffect(() => {
         if (!Array.isArray(parties)) return;
-        setFormData((prev: any) => ({ ...prev, parties }));
-    }, [parties]);
+        setFormData((prev: any) => ({
+            ...prev,
+            parties: mergeCorrespondenceFlags(
+                mergeCorrespondenceFlags(
+                    parties,
+                    Array.isArray(initialData?.parties) ? initialData.parties : []
+                ),
+                Array.isArray(prev?.parties) ? prev.parties : []
+            ),
+        }));
+    }, [initialData?.parties, parties]);
 
     useEffect(() => {
         let cancelled = false;
@@ -318,7 +484,10 @@ export const UnifiedFormEngine = ({
             };
         }
 
-        const existingRate = getAdditionalExecutiveUsdToBaseRate(config.countryCode, formData);
+        const existingRate = getAdditionalExecutiveUsdToBaseRate(
+            resolvedCountryContext.countryCode,
+            formData
+        );
         const existingTargetCurrency = String(
             formData?.[ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD] || ""
         ).toUpperCase();
@@ -334,7 +503,10 @@ export const UnifiedFormEngine = ({
                 if (cancelled) return;
 
                 setFormData((prev: any) => {
-                    const prevRate = getAdditionalExecutiveUsdToBaseRate(config.countryCode, prev);
+                    const prevRate = getAdditionalExecutiveUsdToBaseRate(
+                        resolvedCountryContext.countryCode,
+                        prev
+                    );
                     const prevTargetCurrency = String(
                         prev?.[ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD] || ""
                     ).toUpperCase();
@@ -361,14 +533,86 @@ export const UnifiedFormEngine = ({
             cancelled = true;
         };
     }, [
-        config.countryCode,
         formData,
         pricingBaseCurrency,
+        resolvedCountryContext.countryCode,
     ]);
 
     // --- Handlers ---
     const handleFieldChange = (name: string, value: any) => {
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
+        const previousValue = formData?.[name];
+        const nextValue = value;
+        const paymentStatus = String(formData?.paymentStatus || "").trim().toLowerCase();
+
+        const fieldChangeAction = config.onFieldChange
+            ? config.onFieldChange({
+                fieldName: name,
+                prevValue: previousValue,
+                nextValue,
+                paymentStatus,
+                data: formData || {},
+                parties: Array.isArray(parties) ? parties : [],
+                journeyType: resolvedJourneyType,
+            })
+            : null;
+
+        if (fieldChangeAction?.mode === "block") {
+            if (fieldChangeAction.blockMessage) {
+                toast({
+                    title: t("mcap.validation.missingInformation.title", "Missing information"),
+                    description: t(fieldChangeAction.blockMessage, fieldChangeAction.blockMessage),
+                    variant: "destructive",
+                });
+            }
+            return;
+        }
+
+        if (fieldChangeAction?.mode === "reset") {
+            const confirmationMessage = fieldChangeAction.confirmMessage
+                ? t(fieldChangeAction.confirmMessage, fieldChangeAction.confirmMessage)
+                : "";
+            if (confirmationMessage && !window.confirm(confirmationMessage)) {
+                return;
+            }
+
+            if (name === CH_INCORPORATION_TYPE_FIELD) {
+                setFormData((prev: any) => ({
+                    ...prev,
+                    ...(config.seedData || {}),
+                    [name]: nextValue,
+                    optionalFeeIds: [],
+                    serviceItemsSelected: [],
+                    serviceQuantities: {},
+                    computedFees: undefined,
+                    couponCode: "",
+                    couponDiscount: 0,
+                    couponLocalDiscount: 0,
+                    paymentIntentId: undefined,
+                    stripeLastStatus: undefined,
+                    stripeReceiptUrl: undefined,
+                    stripeAmountCents: undefined,
+                    stripeCurrency: undefined,
+                    paymentCurrencyTouched: false,
+                }));
+                return;
+            }
+
+            const seedData = {
+                ...(config.seedData || {}),
+                [name]: nextValue,
+            };
+            const nextRuntimeConfig = resolveRuntimeConfigForData(seedData);
+            const nextDefaultData = buildDefaultDataForConfig(nextRuntimeConfig);
+            setFormData({
+                ...nextDefaultData,
+                ...seedData,
+            });
+            setParties([]);
+            setCurrentStepIdx(0);
+            return;
+        }
+
+        setFormData((prev: any) => ({ ...prev, [name]: nextValue }));
     };
 
     const getEntityMeta = (code?: string) => {
@@ -580,14 +824,14 @@ export const UnifiedFormEngine = ({
 
             const payload = {
                 _id: currentCompanyId || undefined,
-                countryCode: config.countryCode,
-                countryName: config.countryName,
+                countryCode: resolvedCountryContext.countryCode,
+                countryName: resolvedCountryContext.countryName,
                 journeyType: resolvedJourneyType,
                 status: "Draft",
                 stepIdx: currentStepIdx,
                 data: formData,
                 parties,
-                userId: userId
+                ...(!currentCompanyId ? { userId } : {}),
             };
             const response = await saveToBackend(payload);
             if (response?.success && response?.data?._id) {
@@ -603,7 +847,15 @@ export const UnifiedFormEngine = ({
 
         ensureDraftInFlightRef.current = request;
         return request;
-    }, [config.countryCode, config.countryName, currentStepIdx, formData, parties, resolvedJourneyType, userId]);
+    }, [
+        currentStepIdx,
+        formData,
+        parties,
+        resolvedCountryContext.countryCode,
+        resolvedCountryContext.countryName,
+        resolvedJourneyType,
+        userId,
+    ]);
 
     useEffect(() => {
         if (currentStep.widget === "PaymentWidget" && !companyIdRef.current) {
@@ -755,14 +1007,14 @@ export const UnifiedFormEngine = ({
 
             const payload = {
                 _id: companyIdRef.current || undefined,
-                countryCode: config.countryCode,
-                countryName: config.countryName,
+                countryCode: resolvedCountryContext.countryCode,
+                countryName: resolvedCountryContext.countryName,
                 journeyType: resolvedJourneyType,
                 status: "Submitted",
                 stepIdx: currentStepIdx,
                 data: formData, // The dynamic fields
                 parties: parties, // The widget data
-                userId: userId
+                ...(!companyIdRef.current ? { userId } : {}),
             };
 
             const response = await saveToBackend(payload);
@@ -1419,7 +1671,7 @@ export const UnifiedFormEngine = ({
                                         partyFields={currentStep.partyFields}
                                         partyRoleOptions={currentStep.partyRoleOptions}
                                         defaultPartyRoles={currentStep.defaultPartyRoles}
-                                        countryCode={config.countryCode}
+                                        countryCode={resolvedCountryContext.countryCode}
                                     />
                                 </div>
                             ) : currentStep.widget === "PaymentWidget" ? (
@@ -1429,7 +1681,7 @@ export const UnifiedFormEngine = ({
                                     supportedCurrencies={currentStep.supportedCurrencies}
                                     companyId={companyId}
                                     onPaymentComplete={handlePaymentComplete}
-                                    data={formData}
+                                    data={canonicalFormData}
                                     onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
                                     initialPaymentStatus={memoizedPaymentStatus}
                                 />
@@ -1442,8 +1694,9 @@ export const UnifiedFormEngine = ({
                                     ) : null}
                                     <ServiceSelectionWidget
                                         config={runtimeConfig}
-                                        data={formData}
+                                        data={canonicalFormData}
                                         onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
+                                        fees={computedFees}
                                         items={currentStep.serviceItems}
                                         currency={runtimeConfig.currency}
                                         supportedCurrencies={
@@ -1461,9 +1714,9 @@ export const UnifiedFormEngine = ({
                                 </div>
                             ) : currentStep.widget === "PanamaServiceSetupWidget" ? (
                                 <PanamaServiceSetupWidget
-                                    data={formData}
+                                    data={canonicalFormData}
                                     onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
-                                    countryCode={config.countryCode}
+                                    countryCode={resolvedCountryContext.countryCode}
                                     config={currentStep.widgetConfig}
                                 />
                             ) : currentStep.widget === "InvoiceWidget" ? (
@@ -1471,7 +1724,7 @@ export const UnifiedFormEngine = ({
                                     fees={computedFees}
                                     onNext={handleNext}
                                     isSubmitting={isSubmitting}
-                                    data={formData}
+                                    data={canonicalFormData}
                                     onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
                                     companyId={companyId}
                                 />

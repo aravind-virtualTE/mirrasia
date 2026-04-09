@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { toast } from "@/hooks/use-toast";
 import api from "@/services/fetch";
 import { UnifiedFormEngine } from "./UnifiedFormEngine";
-import { MCAP_CONFIGS, MCAP_CONFIG_MAP } from "./configs/registry";
+import { MCAP_CONFIGS, MCAP_CONFIG_MAP, resolveMcapConfigForCompany } from "./configs/registry";
 import type { McapConfig, McapJourneyType } from "./configs/types";
 import { DEFAULT_MCAP_JOURNEY_TYPE } from "./configs/types";
 import { resolveMcapJourneyType } from "./journey";
@@ -58,7 +58,7 @@ export default function McapDashboard() {
   const requestedConfig = useMemo(() => {
     const id = searchParams.get("country");
     if (!id) return null;
-    return MCAP_CONFIG_MAP[id] || null;
+    return MCAP_CONFIG_MAP[id] || resolveMcapConfigForCompany({ countryCode: id, id });
   }, [searchParams]);
 
   const requestedCompanyId = useMemo(() => searchParams.get("companyId"), [searchParams]);
@@ -79,7 +79,11 @@ export default function McapDashboard() {
         const payload = res?.data?.data || res?.data;
         if (!payload?._id) throw new Error("company_not_found");
 
-        const cfg = MCAP_CONFIG_MAP[payload.countryCode] || null;
+        const cfg = resolveMcapConfigForCompany({
+          countryCode: payload.countryCode,
+          data: payload.data,
+          id: payload.id,
+        });
         if (!cfg) throw new Error("unsupported_country_configuration");
         if (!active) return;
 

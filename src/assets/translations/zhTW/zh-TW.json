@@ -4424,6 +4424,29 @@
         "title": "瑞士有限公司 (GmbH; LLC) 申請已提交"
       }
     },
+    "unified": {
+      "title": "瑞士公司註冊",
+      "steps": {
+        "companyType": {
+          "title": "公司類型",
+          "description": "請選擇您的瑞士公司註冊類型以繼續。"
+        }
+      },
+      "selector": {
+        "label": "您想要註冊哪種公司類型？",
+        "help": "您可以選擇 AG、GmbH 或基金會。系統將根據您的選擇自動套用定價及所需步驟。",
+        "options": {
+          "ag": "瑞士股份有限公司 (AG)",
+          "gmbh": "瑞士有限公司 (GmbH)",
+          "foundation": "瑞士基金會 (Foundation)"
+        }
+      },
+      "typeChange": {
+        "resetNote": "在付款前更改瑞士公司類型將重置目前的申請詳情及定價。",
+        "confirmReset": "更改公司類型將重置目前的瑞士申請表、關係方、已選服務及定價。您確定要繼續嗎？",
+        "lockedAfterPayment": "付款完成後，將無法更改公司類型。"
+      }
+    },
     "options": {
       "relationship": {
         "directorOfSwissEntity": "瑞士實體董事",
@@ -4819,7 +4842,7 @@
     }
   },
   "appUpdate": {
-     "title": "有新版本可用",
+    "title": "有新版本可用",
     "description": "請重新整理頁面以使用最新版本。",
     "refreshNow": "重新整理",
     "totalToPay": "待支付總額：",
