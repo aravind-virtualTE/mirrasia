@@ -63,6 +63,7 @@ The in-app admin page is intentionally pricing-only and educational.
   - logic does not match the requested pair-based pricing
 - Change needed:
   - replace current formula with requested pair-based pricing
+  - NOTE: For Hong Kong, the first two members (regardless of type) are included in the base package and are excluded from the packs calculation.
 
 ## Recommended architecture
 
@@ -81,7 +82,7 @@ Recommended new shared helper, either:
 Suggested helper surface:
 
 ```ts
-getAdditionalExecutiveCounts(parties)
+getAdditionalExecutiveCounts(countryCode, parties)
 getAdditionalExecutiveRates(countryCode)
 buildAdditionalExecutiveFeeItem(countryCode, parties)
 applyAdditionalExecutiveFeesToFees(fees, { countryCode, parties, payMethod })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import type { McapConfig, McapField, McapStep } from "./types";
 import CommonServiceAgrementTxt from "@/pages/Company/CommonServiceAgrementTxt";
@@ -10,9 +11,15 @@ import { PA_FULL_CONFIG } from "./pa-full";
 import { PPIF_FULL_CONFIG } from "./ppif-full";
 import { CR_FULL_CONFIG } from "./cr-full";
 import { UK_FULL_CONFIG } from "./uk-full";
-import { CH_FOUNDATION_FULL_CONFIG } from "./ch-foundation-full";
-import { CH_AG_FULL_CONFIG } from "./ch-ag-full";
-import { CH_GMBH_FULL_CONFIG } from "./ch-gmbh-full";
+import {
+  CH_AG_FULL_CONFIG,
+  CH_FOUNDATION_FULL_CONFIG,
+  CH_GMBH_FULL_CONFIG,
+  CH_UNIFIED_CONFIG_ID,
+  CH_UNIFIED_FLOW_VERSION,
+  CH_UNIFIED_FLOW_VERSION_FIELD,
+  createChUnifiedFullConfig,
+} from "./ch-unified-full";
 import { EE_FULL_CONFIG } from "./ee-full";
 import { LT_FULL_CONFIG } from "./lt-full";
 import { HU_FULL_CONFIG } from "./hu-full";
@@ -21,6 +28,7 @@ import { AU_FULL_CONFIG } from "./au-full";
 import { BVI_FULL_CONFIG } from "./bvi-full";
 import { GE_FULL_CONFIG } from "./ge-full";
 import { getComplianceGuardForCountryCode } from "./complianceGuards";
+import { resolveMcapConfigForJourney, resolveMcapJourneyType } from "../journey";
 
 export const STANDARD_FLOW_COUNTRIES = new Set([
   "HK",
@@ -207,6 +215,10 @@ const attachComplianceGuard = (config: McapConfig, steps: McapStep[]) => {
 };
 
 const normalizeConfig = (config: McapConfig): McapConfig => {
+  if (config.skipNormalization) {
+    return config;
+  }
+
   let steps = config.steps.map((s) => ({ ...s }));
   steps = stripLegalTermsOutsideAgreement(steps);
   steps = ensureCommonServiceAgreement(steps);
@@ -222,30 +234,146 @@ const normalizeConfig = (config: McapConfig): McapConfig => {
   return { ...config, steps };
 };
 
-export const MCAP_CONFIGS: McapConfig[] = [
-  HK_FULL_CONFIG,
-  US_FULL_CONFIG,
-  SG_FULL_CONFIG,
-  PA_FULL_CONFIG,
-  PPIF_FULL_CONFIG,
-  CR_FULL_CONFIG,
-  UK_FULL_CONFIG,
-  CH_AG_FULL_CONFIG,
-  CH_GMBH_FULL_CONFIG,
-  CH_FOUNDATION_FULL_CONFIG,
-  EE_FULL_CONFIG,
-  LT_FULL_CONFIG,
-  HU_FULL_CONFIG,
-  IE_FULL_CONFIG,
-  AU_FULL_CONFIG,
-  GE_FULL_CONFIG,
-  BVI_FULL_CONFIG,
-  UAE_IFZA_CONFIG,
-  ...UAE_FREEZONE_CONFIGS,
-].map(normalizeConfig);
+const HK_CONFIG = normalizeConfig(HK_FULL_CONFIG);
+const US_CONFIG = normalizeConfig(US_FULL_CONFIG);
+const SG_CONFIG = normalizeConfig(SG_FULL_CONFIG);
+const PA_CONFIG = normalizeConfig(PA_FULL_CONFIG);
+const PPIF_CONFIG = normalizeConfig(PPIF_FULL_CONFIG);
+const CR_CONFIG = normalizeConfig(CR_FULL_CONFIG);
+const UK_CONFIG = normalizeConfig(UK_FULL_CONFIG);
+const CH_AG_CONFIG = { ...normalizeConfig(CH_AG_FULL_CONFIG), launcherEnabled: false };
+const CH_GMBH_CONFIG = { ...normalizeConfig(CH_GMBH_FULL_CONFIG), launcherEnabled: false };
+const CH_FOUNDATION_CONFIG = { ...normalizeConfig(CH_FOUNDATION_FULL_CONFIG), launcherEnabled: false };
+const CH_UNIFIED_CONFIG = createChUnifiedFullConfig({
+  agConfig: CH_AG_CONFIG,
+  gmbhConfig: CH_GMBH_CONFIG,
+  foundationConfig: CH_FOUNDATION_CONFIG,
+});
+const EE_CONFIG = normalizeConfig(EE_FULL_CONFIG);
+const LT_CONFIG = normalizeConfig(LT_FULL_CONFIG);
+const HU_CONFIG = normalizeConfig(HU_FULL_CONFIG);
+const IE_CONFIG = normalizeConfig(IE_FULL_CONFIG);
+const AU_CONFIG = normalizeConfig(AU_FULL_CONFIG);
+const GE_CONFIG = normalizeConfig(GE_FULL_CONFIG);
+const BVI_CONFIG = normalizeConfig(BVI_FULL_CONFIG);
+const UAE_IFZA_NORMALIZED_CONFIG = normalizeConfig(UAE_IFZA_CONFIG);
+const UAE_FREEZONE_NORMALIZED_CONFIGS = UAE_FREEZONE_CONFIGS.map(normalizeConfig);
 
-export const MCAP_CONFIG_MAP = MCAP_CONFIGS.reduce<Record<string, McapConfig>>((acc, cfg) => {
+const SWISS_LEGACY_CONFIGS_BY_COUNTRY_CODE: Record<string, McapConfig> = {
+  CH: CH_AG_CONFIG,
+  CH_LLC: CH_GMBH_CONFIG,
+  CH_FOUNDATION: CH_FOUNDATION_CONFIG,
+};
+
+export const MCAP_RUNTIME_CONFIGS: McapConfig[] = [
+  HK_CONFIG,
+  US_CONFIG,
+  SG_CONFIG,
+  PA_CONFIG,
+  PPIF_CONFIG,
+  CR_CONFIG,
+  UK_CONFIG,
+  CH_UNIFIED_CONFIG,
+  CH_AG_CONFIG,
+  CH_GMBH_CONFIG,
+  CH_FOUNDATION_CONFIG,
+  EE_CONFIG,
+  LT_CONFIG,
+  HU_CONFIG,
+  IE_CONFIG,
+  AU_CONFIG,
+  GE_CONFIG,
+  BVI_CONFIG,
+  UAE_IFZA_NORMALIZED_CONFIG,
+  ...UAE_FREEZONE_NORMALIZED_CONFIGS,
+];
+
+export const MCAP_CONFIGS: McapConfig[] = MCAP_RUNTIME_CONFIGS.filter(
+  (cfg) => cfg.launcherEnabled !== false
+);
+
+export const MCAP_CONFIG_MAP = MCAP_RUNTIME_CONFIGS.reduce<Record<string, McapConfig>>((acc, cfg) => {
   acc[cfg.id] = cfg;
-  acc[cfg.countryCode] = cfg;
+  if (!acc[cfg.countryCode]) {
+    acc[cfg.countryCode] = cfg;
+  }
   return acc;
 }, {});
+
+type ResolveMcapConfigForCompanyInput = {
+  id?: string | null;
+  countryCode?: string | null;
+  data?: Record<string, any> | null;
+};
+
+const hasUnifiedSwissMarker = (data: Record<string, any> | null | undefined) =>
+  String(data?.[CH_UNIFIED_FLOW_VERSION_FIELD] || "") === CH_UNIFIED_FLOW_VERSION;
+
+export const resolveMcapConfigForCompany = ({
+  id,
+  countryCode,
+  data,
+}: ResolveMcapConfigForCompanyInput): McapConfig | null => {
+  const normalizedCountryCode = String(countryCode || "").trim().toUpperCase();
+  const normalizedId = String(id || "").trim();
+
+  if (normalizedCountryCode && normalizedCountryCode in SWISS_LEGACY_CONFIGS_BY_COUNTRY_CODE) {
+    if (hasUnifiedSwissMarker(data)) {
+      return MCAP_CONFIG_MAP[CH_UNIFIED_CONFIG_ID] || null;
+    }
+    return SWISS_LEGACY_CONFIGS_BY_COUNTRY_CODE[normalizedCountryCode];
+  }
+
+  if (normalizedId && MCAP_CONFIG_MAP[normalizedId]) {
+    return MCAP_CONFIG_MAP[normalizedId];
+  }
+
+  if (normalizedCountryCode && MCAP_CONFIG_MAP[normalizedCountryCode]) {
+    return MCAP_CONFIG_MAP[normalizedCountryCode];
+  }
+
+  return null;
+};
+
+type ResolveMcapRuntimeConfigInput = {
+  data?: Record<string, any> | null;
+  parties?: any[] | null;
+  journeyType?: unknown;
+};
+
+export const resolveMcapRuntimeConfig = (
+  config: McapConfig,
+  { data, parties, journeyType }: ResolveMcapRuntimeConfigInput = {}
+): McapConfig => {
+  const resolvedData = data && typeof data === "object" ? data : {};
+  const resolvedParties = Array.isArray(parties) ? parties : [];
+  const resolvedJourneyType = resolveMcapJourneyType(journeyType);
+  const journeyConfig = resolveMcapConfigForJourney(config, resolvedJourneyType);
+
+  const runtimeBaseConfig = journeyConfig.resolveRuntimeConfig
+    ? journeyConfig.resolveRuntimeConfig({
+      data: resolvedData,
+      parties: resolvedParties,
+      journeyType: resolvedJourneyType,
+    }) || journeyConfig
+    : journeyConfig;
+
+  const runtimeConfig = resolveMcapConfigForJourney(runtimeBaseConfig, resolvedJourneyType);
+  const preludeSteps = journeyConfig.getPreludeSteps
+    ? journeyConfig.getPreludeSteps({
+      data: resolvedData,
+      parties: resolvedParties,
+      journeyType: resolvedJourneyType,
+      runtimeConfig,
+    })
+    : [];
+
+  if (!Array.isArray(preludeSteps) || preludeSteps.length === 0) {
+    return runtimeConfig;
+  }
+
+  return {
+    ...runtimeConfig,
+    steps: [...preludeSteps, ...runtimeConfig.steps],
+  };
+};

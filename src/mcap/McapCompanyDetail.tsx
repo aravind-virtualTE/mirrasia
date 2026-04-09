@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "@/services/fetch";
-import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
+import { resolveMcapConfigForCompany, resolveMcapRuntimeConfig } from "@/mcap/configs/registry";
 import type { McapField, McapFees, McapJourneyType } from "@/mcap/configs/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,6 @@ import {
   EXISTING_COMPANY_ONBOARDING_BRN_FIELD,
   EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD,
   isExistingCompanyOnboardingJourney,
-  resolveMcapConfigForJourney,
   resolveMcapJourneyType,
 } from "@/mcap/journey";
 
@@ -449,11 +448,17 @@ const McapCompanyDetail: React.FC = () => {
   };
 
   const config = useMemo(() => {
-    if (!company?.countryCode) return null;
-    const baseConfig = MCAP_CONFIG_MAP[company.countryCode] || null;
+    const baseConfig = resolveMcapConfigForCompany({
+      countryCode: company?.countryCode,
+      data: company?.data,
+    });
     if (!baseConfig) return null;
-    return resolveMcapConfigForJourney(baseConfig, company?.journeyType);
-  }, [company?.countryCode, company?.journeyType]);
+    return resolveMcapRuntimeConfig(baseConfig, {
+      data: company?.data,
+      parties: company?.parties,
+      journeyType: company?.journeyType,
+    });
+  }, [company?.countryCode, company?.data, company?.journeyType, company?.parties]);
 
   const invoiceFees = useMemo<McapFees | undefined>(() => {
     const dataFees = company?.data?.computedFees;

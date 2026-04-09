@@ -72,10 +72,13 @@ export const getAdditionalExecutiveUsdToBaseRate = (countryCode: string | undefi
   return 0;
 };
 
-export const getAdditionalExecutiveCounts = (parties: any[]) => {
+export const getAdditionalExecutiveCounts = (countryCode: string | undefined, parties: any[]) => {
   const list = Array.isArray(parties) ? parties : [];
-  const corporateCount = list.filter((party) => party?.type === "entity" || party?.isCorp === true).length;
-  const individualCount = Math.max(0, list.length - corporateCount);
+  const isHK = normalizeMcapCountryCode(countryCode) === "HK";
+  const billableParties = isHK ? list.slice(2) : list;
+  
+  const corporateCount = billableParties.filter((party) => party?.type === "entity" || party?.isCorp === true).length;
+  const individualCount = Math.max(0, billableParties.length - corporateCount);
   return {
     individualCount,
     corporateCount,
@@ -91,7 +94,7 @@ export const getAdditionalExecutivePreview = (
     usdToBaseRate?: number;
   }
 ) => {
-  const counts = getAdditionalExecutiveCounts(parties);
+  const counts = getAdditionalExecutiveCounts(countryCode, parties);
   const pricingBaseCurrency = getPricingBaseCurrency(countryCode);
   const usdToBaseRate = pricingBaseCurrency === POLICY_CURRENCY
     ? 1

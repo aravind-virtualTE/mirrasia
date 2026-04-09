@@ -1,111 +1,97 @@
 /**
  * Exchange Rate Service
- * Prefers official ECB-based Frankfurter rates for pricing conversions.
- * Falls back to Gemini when the official API is unavailable or returns
- * an invalid payload.
+ * Uses Frankfurter (ECB-backed) as the FX provider.
  *
  * Important: this service is currency-pair based only. Pricing base currency
  * selection lives in the MCAP pricing layer:
  * - default base pricing currency: USD
- * - Estonia / Eustonia (EE): EUR
+ * - Estonia (EE): EUR
  * - Hungary (HU): EUR
  */
 
-import { GoogleGenAI, Type } from "@google/genai";
-
-// In-memory cache to avoid excessive API calls during the same session
 interface CacheEntry {
     rate: number;
     timestamp: number;
-    source: "frankfurter" | "gemini";
+    source: "frankfurter-v2" | "frankfurter-v1";
 }
 
 const rateCache: Record<string, CacheEntry> = {};
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour cache
+const pendingRateRequests = new Map<string, Promise<number>>();
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
 export const DEFAULT_PRICING_BASE_CURRENCY = "USD";
 const COUNTRY_PRICING_BASE_CURRENCIES: Record<string, string> = {
     EE: "EUR",
     HU: "EUR",
 };
 
-type GeminiExchangeResponse = {
-    rate: number;
+const normalizeCurrency = (value: string) => String(value || "").trim().toUpperCase();
+const isPositiveFiniteNumber = (value: unknown): value is number =>
+    typeof value === "number" && Number.isFinite(value) && value > 0;
+
+const fetchExchangeRateFromFrankfurterV2 = async (from: string, to: string): Promise<number> => {
+    const upperFrom = normalizeCurrency(from);
+    const upperTo = normalizeCurrency(to);
+    const url = `https://api.frankfurter.dev/v2/rates?base=${upperFrom}&quotes=${upperTo}`;
+    const response = await fetch(url, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Frankfurter v2 API error: ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const rate = Array.isArray(payload) ? Number(payload[0]?.rate) : NaN;
+    if (!isPositiveFiniteNumber(rate)) {
+        throw new Error(`Invalid Frankfurter v2 rate for ${upperFrom}->${upperTo}`);
+    }
+
+    return rate;
 };
 
-const GEMINI_MODEL = "gemini-3.1-pro-preview";
+// Safety fallback for legacy format while migrating all traffic to v2.
+const fetchExchangeRateFromFrankfurterV1 = async (from: string, to: string): Promise<number> => {
+    const upperFrom = normalizeCurrency(from);
+    const upperTo = normalizeCurrency(to);
+    const url = `https://api.frankfurter.dev/latest?from=${upperFrom}&to=${upperTo}`;
+    const response = await fetch(url, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Frankfurter v1 API error: ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const rate = Number(payload?.rates?.[upperTo]);
+    if (!isPositiveFiniteNumber(rate)) {
+        throw new Error(`Invalid Frankfurter v1 rate for ${upperFrom}->${upperTo}`);
+    }
+
+    return rate;
+};
+
+const setCache = (cacheKey: string, rate: number, source: CacheEntry["source"]) => {
+    rateCache[cacheKey] = {
+        rate,
+        timestamp: Date.now(),
+        source,
+    };
+};
+
+const getFreshCachedRate = (cacheKey: string): number | null => {
+    const cached = rateCache[cacheKey];
+    if (!cached) return null;
+    if (Date.now() - cached.timestamp > CACHE_TTL_MS) return null;
+    return cached.rate;
+};
 
 export const getPricingBaseCurrency = (countryCode?: string | null): string => {
     const upperCountryCode = String(countryCode || "").trim().toUpperCase();
     return COUNTRY_PRICING_BASE_CURRENCIES[upperCountryCode] || DEFAULT_PRICING_BASE_CURRENCY;
-};
-
-const getGoogleApiKey = () =>
-    import.meta.env.VITE_GOOGLE_API_KEY
-    || (typeof process !== "undefined" ? process.env.VITE_GOOGLE_API_KEY : undefined);
-
-const fetchExchangeRateFromGemini = async (from: string, to: string): Promise<number> => {
-    const apiKey = getGoogleApiKey();
-    if (!apiKey) {
-        throw new Error("Missing Google API key");
-    }
-
-    const genAI = new GoogleGenAI({ apiKey });
-    const upperFrom = from.toUpperCase();
-    const upperTo = to.toUpperCase();
-    console.log(`[ExchangeRate] Fetching Gemini FX rate for ${upperFrom}->${upperTo} using model ${GEMINI_MODEL}`);
-    const result = await genAI.models.generateContent({
-        model: GEMINI_MODEL,
-        contents: `Return the latest available foreign exchange rate from ${upperFrom} to ${upperTo}. Return JSON only.`,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: {
-                type: Type.OBJECT,
-                properties: {
-                    rate: {
-                        type: Type.NUMBER,
-                    },
-                },
-                required: ["rate"],
-            },
-        },
-    });
-
-    const text = String(result.text || "").trim();
-    if (!text) {
-        throw new Error(`Empty Gemini FX response for ${upperFrom}->${upperTo}`);
-    }
-
-    let parsed: GeminiExchangeResponse | null = null;
-    try {
-        parsed = JSON.parse(text) as GeminiExchangeResponse;
-    } catch {
-        throw new Error(`Invalid Gemini FX JSON for ${upperFrom}->${upperTo}`);
-    }
-
-    const rate = Number(parsed?.rate);
-    if (!(Number.isFinite(rate) && rate > 0)) {
-        throw new Error(`Invalid Gemini FX rate for ${upperFrom}->${upperTo}`);
-    }
-
-    return rate;
-};
-
-const fetchExchangeRateFromFrankfurter = async (from: string, to: string): Promise<number> => {
-    const url = `https://api.frankfurter.app/latest?from=${from.toUpperCase()}&to=${to.toUpperCase()}`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error(`Exchange rate API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const rate = data.rates[to.toUpperCase()];
-
-    if (typeof rate !== "number") {
-        throw new Error(`Invalid rate received for ${from}->${to}`);
-    }
-
-    return rate;
 };
 
 /**
@@ -115,46 +101,51 @@ const fetchExchangeRateFromFrankfurter = async (from: string, to: string): Promi
  * @returns Exchange rate (e.g., 7.8 for USD->HKD)
  */
 export const getExchangeRate = async (from: string, to: string): Promise<number> => {
-    const upperFrom = from.toUpperCase();
-    const upperTo = to.toUpperCase();
+    const upperFrom = normalizeCurrency(from);
+    const upperTo = normalizeCurrency(to);
     if (upperFrom === upperTo) return 1;
+    if (!upperFrom || !upperTo) {
+        throw new Error("Invalid currency code");
+    }
 
     const cacheKey = `${upperFrom}_${upperTo}`;
-    const now = Date.now();
-
-    // Check cache
-    const cached = rateCache[cacheKey];
-    if (cached && now - cached.timestamp < CACHE_TTL_MS && cached.source === "frankfurter") {
-        console.log(`[ExchangeRate] Using cached rate for ${cacheKey}: ${cached.rate}`);
-        return cached.rate;
+    const freshCachedRate = getFreshCachedRate(cacheKey);
+    if (freshCachedRate !== null) {
+        return freshCachedRate;
     }
 
-    try {
-        let rate: number;
+    const pendingRequest = pendingRateRequests.get(cacheKey);
+    if (pendingRequest) {
+        return pendingRequest;
+    }
+
+    const requestPromise = (async () => {
+        const staleCachedRate = rateCache[cacheKey]?.rate;
         try {
-            rate = await fetchExchangeRateFromFrankfurter(upperFrom, upperTo);
-            console.log(`[ExchangeRate] Fetched Frankfurter rate for ${cacheKey}: ${rate}`);
-            rateCache[cacheKey] = { rate, timestamp: now, source: "frankfurter" };
-            return rate;
-        } catch (officialError) {
-            console.warn(`[ExchangeRate] Frankfurter FX lookup failed for ${cacheKey}, falling back to Gemini`, officialError);
-            rate = await fetchExchangeRateFromGemini(upperFrom, upperTo);
-            console.log(`[ExchangeRate] Fetched Gemini rate for ${cacheKey}: ${rate}`);
-            rateCache[cacheKey] = { rate, timestamp: now, source: "gemini" };
-            return rate;
+            try {
+                const v2Rate = await fetchExchangeRateFromFrankfurterV2(upperFrom, upperTo);
+                setCache(cacheKey, v2Rate, "frankfurter-v2");
+                return v2Rate;
+            } catch (v2Error) {
+                console.warn(`[ExchangeRate] Frankfurter v2 failed for ${cacheKey}, trying legacy endpoint`, v2Error);
+                const v1Rate = await fetchExchangeRateFromFrankfurterV1(upperFrom, upperTo);
+                setCache(cacheKey, v1Rate, "frankfurter-v1");
+                return v1Rate;
+            }
+        } catch (error) {
+            console.error(`[ExchangeRate] Failed to fetch FX rate for ${cacheKey}`, error);
+            if (isPositiveFiniteNumber(staleCachedRate)) {
+                console.warn(`[ExchangeRate] Using stale cached FX rate for ${cacheKey}`);
+                return staleCachedRate;
+            }
+            throw error;
+        } finally {
+            pendingRateRequests.delete(cacheKey);
         }
-    } catch (error) {
-        console.error("[ExchangeRate] Error fetching rate:", error);
+    })();
 
-        // Fallback to cached value if available (even if expired)
-        if (cached) {
-            console.warn(`[ExchangeRate] Using expired cache for ${cacheKey}`);
-            return cached.rate;
-        }
-
-        // Ultimate fallback - throw error or use hardcoded rate
-        throw error;
-    }
+    pendingRateRequests.set(cacheKey, requestPromise);
+    return requestPromise;
 };
 
 /**
@@ -162,7 +153,7 @@ export const getExchangeRate = async (from: string, to: string): Promise<number>
  * @param amount - Amount in source currency
  * @param from - Source currency code
  * @param to - Target currency code
- * @returns Converted amount
+ * @returns Converted amount and applied rate
  */
 export const convertCurrency = async (
     amount: number,
@@ -190,3 +181,4 @@ export const convertUsdToHkd = async (
     const { convertedAmount, rate } = await convertCurrency(usdAmount, "USD", "HKD");
     return { hkdAmount: convertedAmount, rate };
 };
+

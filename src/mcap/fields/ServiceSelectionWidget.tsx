@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,6 +25,7 @@ interface ServiceSelectionWidgetProps {
     config: McapConfig;
     data: any;
     onChange: (data: any) => void;
+    fees?: any;
     items?: any[] | ((data: any, entityMeta?: any) => any[]);
     currency?: string;
     supportedCurrencies?: string[];
@@ -43,6 +45,7 @@ export function ServiceSelectionWidget({
     config,
     data,
     onChange,
+    fees,
     items,
     currency,
     supportedCurrencies,
@@ -246,15 +249,21 @@ export function ServiceSelectionWidget({
     const sameSelection = (a: string[], b: string[]) =>
         a.length === b.length && a.every(id => b.includes(id));
 
+    const effectiveComputedFees = useMemo(() => {
+        const external = fees && typeof fees === "object" ? fees : null;
+        if (external) return external;
+        return data?.computedFees && typeof data.computedFees === "object" ? data.computedFees : {};
+    }, [data?.computedFees, fees]);
+
     const computedItemsById = useMemo(() => {
         const map = new Map<string, any>();
-        const computedItems = Array.isArray(data?.computedFees?.items) ? data.computedFees.items : [];
+        const computedItems = Array.isArray(effectiveComputedFees?.items) ? effectiveComputedFees.items : [];
         computedItems.forEach((item: any) => {
             if (!item?.id) return;
             map.set(String(item.id), item);
         });
         return map;
-    }, [data?.computedFees?.items]);
+    }, [effectiveComputedFees?.items]);
 
     // Compute pricing and propagate as single source of truth (service + invoice + payment).
     const handleChange = async (
@@ -277,6 +286,15 @@ export function ServiceSelectionWidget({
             const normalizedCurrency = allowedCurrencies.includes(String(payCurr).toUpperCase())
                 ? String(payCurr).toUpperCase()
                 : allowedCurrencies[0];
+            const resolveFallbackCurrency = (preferredCurrency?: string) => {
+                const preferred = String(preferredCurrency || "").toUpperCase();
+                if (preferred && allowedCurrencies.includes(preferred)) return preferred;
+                if (allowedCurrencies.includes(basePricingCurrency)) return basePricingCurrency;
+                if (allowedCurrencies.includes(DEFAULT_PRICING_BASE_CURRENCY)) return DEFAULT_PRICING_BASE_CURRENCY;
+                return allowedCurrencies[0];
+            };
+            let effectivePaymentCurrency = normalizedCurrency;
+            let conversionFallback = false;
             const nextData = {
                 ...data,
                 ...dataPatch,
@@ -299,38 +317,75 @@ export function ServiceSelectionWidget({
                 if (needsCurrencyConversion) {
                     const sourceCurrency = computedCurrency;
                     const sourceTotal = Number(computedFees?.total ?? 0);
-                    const conv = await convertCurrency(sourceTotal, sourceCurrency, normalizedCurrency);
-                    const rate = Number(conv.rate || 0);
-                    const scale = (val: any) => Number((Number(val || 0) * rate).toFixed(2));
-                    const cardFeePct = getCardFeePct(normalizedCurrency);
-                    const payMethod = String(nextData.payMethod || "card").toLowerCase();
-                    const convertedTotal = Number(conv.convertedAmount || 0);
-                    const cardFeeSurcharge = payMethod === "card"
-                        ? Number((convertedTotal * cardFeePct).toFixed(2))
-                        : 0;
-                    const grandTotal = Number((convertedTotal + cardFeeSurcharge).toFixed(2));
+                    try {
+                        const conv = await convertCurrency(sourceTotal, sourceCurrency, normalizedCurrency);
+                        const rate = Number(conv.rate || 0);
+                        const scale = (val: any) => Number((Number(val || 0) * rate).toFixed(2));
+                        const cardFeePct = getCardFeePct(normalizedCurrency);
+                        const payMethod = String(nextData.payMethod || "card").toLowerCase();
+                        const convertedTotal = Number(conv.convertedAmount || 0);
+                        const cardFeeSurcharge = payMethod === "card"
+                            ? Number((convertedTotal * cardFeePct).toFixed(2))
+                            : 0;
+                        const grandTotal = Number((convertedTotal + cardFeeSurcharge).toFixed(2));
 
-                    computedFees = {
-                        ...computedFees,
-                        currency: normalizedCurrency,
-                        items: Array.isArray(computedFees?.items)
-                            ? computedFees.items.map((item: any) => ({
-                                ...item,
-                                amount: scale(item?.amount),
-                                ...(item?.original !== undefined ? { original: scale(item?.original) } : {}),
-                            }))
-                            : [],
-                        government: scale(computedFees?.government),
-                        service: scale(computedFees?.service),
-                        total: convertedTotal,
-                        exchangeRateUsed: rate,
-                        originalCurrency: sourceCurrency,
-                        originalAmount: sourceTotal,
-                        ...(sourceCurrency === "USD" ? { originalAmountUsd: sourceTotal } : {}),
-                        cardFeePct,
-                        cardFeeSurcharge,
-                        grandTotal,
-                    };
+                        computedFees = {
+                            ...computedFees,
+                            currency: normalizedCurrency,
+                            items: Array.isArray(computedFees?.items)
+                                ? computedFees.items.map((item: any) => ({
+                                    ...item,
+                                    amount: scale(item?.amount),
+                                    ...(item?.original !== undefined ? { original: scale(item?.original) } : {}),
+                                }))
+                                : [],
+                            government: scale(computedFees?.government),
+                            service: scale(computedFees?.service),
+                            total: convertedTotal,
+                            exchangeRateUsed: rate,
+                            originalCurrency: sourceCurrency,
+                            originalAmount: sourceTotal,
+                            ...(sourceCurrency === "USD" ? { originalAmountUsd: sourceTotal } : {}),
+                            cardFeePct,
+                            cardFeeSurcharge,
+                            grandTotal,
+                        };
+                    } catch (conversionError) {
+                        conversionFallback = true;
+                        effectivePaymentCurrency = resolveFallbackCurrency(sourceCurrency || basePricingCurrency);
+                        console.error("Currency conversion failed. Falling back to base pricing currency.", conversionError);
+
+                        const normalizedOriginalCurrency = String(
+                            computedFees?.originalCurrency
+                            || (computedFees?.originalAmountUsd !== undefined ? "USD" : sourceCurrency || basePricingCurrency)
+                        ).toUpperCase();
+                        const normalizedOriginalAmount = Number(
+                            computedFees?.originalAmount
+                            ?? (computedFees?.originalAmountUsd !== undefined
+                                ? computedFees.originalAmountUsd
+                                : computedFees?.total ?? 0)
+                        );
+                        const fallbackCurrency = effectivePaymentCurrency;
+                        const fallbackTotal = Number(computedFees?.total || 0);
+                        const fallbackCardFeePct = Number(computedFees?.cardFeePct || getCardFeePct(fallbackCurrency));
+                        const payMethod = String(nextData.payMethod || "card").toLowerCase();
+                        const fallbackCardFeeSurcharge = payMethod === "card"
+                            ? Number((fallbackTotal * fallbackCardFeePct).toFixed(2))
+                            : Number(computedFees?.cardFeeSurcharge || 0);
+                        const fallbackGrandTotal = Number((fallbackTotal + fallbackCardFeeSurcharge).toFixed(2));
+                        const { exchangeRateUsed: _ignoredExchangeRateUsed, ...computedFeesWithoutLegacyUsd } = computedFees || {};
+
+                        computedFees = {
+                            ...computedFeesWithoutLegacyUsd,
+                            currency: fallbackCurrency,
+                            originalCurrency: normalizedOriginalCurrency,
+                            originalAmount: normalizedOriginalAmount,
+                            ...(normalizedOriginalCurrency === "USD" ? { originalAmountUsd: normalizedOriginalAmount } : {}),
+                            cardFeePct: fallbackCardFeePct,
+                            cardFeeSurcharge: fallbackCardFeeSurcharge,
+                            grandTotal: fallbackGrandTotal,
+                        };
+                    }
                 } else {
                     const normalizedOriginalCurrency = String(
                         computedFees?.originalCurrency
@@ -388,13 +443,27 @@ export function ServiceSelectionWidget({
 
                 let finalSubtotal = subtotalBase;
                 let rate: number | undefined;
+                let displayCurrency = normalizedCurrency;
                 if (normalizedCurrency !== basePricingCurrency) {
-                    const conv = await convertCurrency(subtotalBase, basePricingCurrency, normalizedCurrency);
-                    finalSubtotal = conv.convertedAmount;
-                    rate = conv.rate;
+                    try {
+                        const conv = await convertCurrency(subtotalBase, basePricingCurrency, normalizedCurrency);
+                        finalSubtotal = conv.convertedAmount;
+                        rate = conv.rate;
+                    } catch (conversionError) {
+                        conversionFallback = true;
+                        displayCurrency = resolveFallbackCurrency(basePricingCurrency);
+                        effectivePaymentCurrency = displayCurrency;
+                        finalSubtotal = subtotalBase;
+                        rate = undefined;
+                        console.error("Currency conversion failed. Falling back to base pricing currency.", conversionError);
+                    }
                 }
+                const isConvertedDisplay =
+                    displayCurrency !== basePricingCurrency
+                    && Number.isFinite(Number(rate))
+                    && Number(rate) > 0;
 
-                const cardFeePct = getCardFeePct(normalizedCurrency);
+                const cardFeePct = getCardFeePct(displayCurrency);
                 const payMethod = String(nextData.payMethod || "card").toLowerCase();
                 const cardFeeSurcharge = payMethod === "card"
                     ? Number((finalSubtotal * cardFeePct).toFixed(2))
@@ -402,13 +471,13 @@ export function ServiceSelectionWidget({
                 const grandTotal = Number((finalSubtotal + cardFeeSurcharge).toFixed(2));
 
                 computedFees = {
-                    currency: normalizedCurrency,
+                    currency: displayCurrency,
                     items: [
                         ...govItems.map((f: any) => ({
                             id: f.id,
                             label: f.label,
-                            amount: normalizedCurrency !== basePricingCurrency ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                            original: normalizedCurrency !== basePricingCurrency ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                            amount: isConvertedDisplay ? Number((f.amount * Number(rate || 1)).toFixed(2)) : f.amount,
+                            original: isConvertedDisplay ? Number((f.original * Number(rate || 1)).toFixed(2)) : f.original,
                             info: f.info,
                             kind: "government" as const,
                             quantity: 1,
@@ -424,8 +493,8 @@ export function ServiceSelectionWidget({
                                 return {
                                     id: f.id,
                                     label: f.label,
-                                    amount: normalizedCurrency !== basePricingCurrency ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                                    original: normalizedCurrency !== basePricingCurrency ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                                    amount: isConvertedDisplay ? Number((f.amount * Number(rate || 1)).toFixed(2)) : f.amount,
+                                    original: isConvertedDisplay ? Number((f.original * Number(rate || 1)).toFixed(2)) : f.original,
                                     info: f.info,
                                     kind: "service" as const,
                                     quantity,
@@ -433,10 +502,10 @@ export function ServiceSelectionWidget({
                                 };
                             }),
                     ],
-                    government: normalizedCurrency !== basePricingCurrency ? Number((governmentTotalBase * (rate || 1)).toFixed(2)) : governmentTotalBase,
-                    service: normalizedCurrency !== basePricingCurrency ? Number((serviceTotalBase * (rate || 1)).toFixed(2)) : serviceTotalBase,
+                    government: isConvertedDisplay ? Number((governmentTotalBase * Number(rate || 1)).toFixed(2)) : governmentTotalBase,
+                    service: isConvertedDisplay ? Number((serviceTotalBase * Number(rate || 1)).toFixed(2)) : serviceTotalBase,
                     total: finalSubtotal,
-                    exchangeRateUsed: rate,
+                    exchangeRateUsed: isConvertedDisplay ? rate : undefined,
                     originalCurrency: basePricingCurrency,
                     originalAmount: subtotalBase,
                     ...(basePricingCurrency === "USD" ? { originalAmountUsd: subtotalBase } : {}),
@@ -453,22 +522,34 @@ export function ServiceSelectionWidget({
                 enabled: Array.isArray(nextData?.parties) && nextData.parties.length > 0,
                 usdToBaseRate: getAdditionalExecutiveUsdToBaseRate(config?.countryCode, nextData),
             });
+            if (conversionFallback && computedFees && typeof computedFees === "object") {
+                computedFees = {
+                    ...computedFees,
+                    conversionFallback: true,
+                    requestedCurrency: normalizedCurrency,
+                };
+            }
 
+            const resolvedPaymentCurrency = effectivePaymentCurrency;
+            const nextDataWithResolvedCurrency = {
+                ...nextData,
+                paymentCurrency: resolvedPaymentCurrency,
+            };
             const feesChanged = JSON.stringify(data.computedFees || {}) !== JSON.stringify(computedFees);
             const selectionChanged = !sameSelection(normalizedIds, selectedIds);
-            const currencyChanged = normalizedCurrency !== selectedCurrency;
+            const currencyChanged = resolvedPaymentCurrency !== selectedCurrency;
             const quantitiesChanged = JSON.stringify(serviceQuantities || {}) !== JSON.stringify(normalizedQuantities || {});
             const patchChanged = Object.keys(dataPatch).some((key) =>
-                JSON.stringify(data?.[key]) !== JSON.stringify(nextData[key])
+                JSON.stringify(data?.[key]) !== JSON.stringify(nextDataWithResolvedCurrency[key])
             );
 
             if (feesChanged || selectionChanged || currencyChanged || quantitiesChanged || patchChanged) {
                 onChange({
-                    ...nextData,
+                    ...nextDataWithResolvedCurrency,
                     optionalFeeIds: normalizedIds,
                     serviceItemsSelected: normalizedIds,
                     serviceQuantities: normalizedQuantities,
-                    paymentCurrency: normalizedCurrency,
+                    paymentCurrency: resolvedPaymentCurrency,
                     paymentCurrencyTouched: markPaymentCurrencyTouched ? true : data?.paymentCurrencyTouched,
                     computedFees,
                 });
@@ -501,14 +582,14 @@ export function ServiceSelectionWidget({
         return Number.isFinite(n) ? n : 0;
     };
 
-    const computedFeesCurrency = String(data?.computedFees?.currency || "").toUpperCase();
+    const computedFeesCurrency = String(effectiveComputedFees?.currency || "").toUpperCase();
     const computedFeesSourceCurrency = String(
-        data?.computedFees?.originalCurrency
-        || (data?.computedFees?.originalAmountUsd !== undefined ? "USD" : basePricingCurrency)
+        effectiveComputedFees?.originalCurrency
+        || (effectiveComputedFees?.originalAmountUsd !== undefined ? "USD" : basePricingCurrency)
     ).toUpperCase();
 
     const getRowAmounts = (item: any) => {
-        const rate = Number(data?.computedFees?.exchangeRateUsed || 0);
+        const rate = Number(effectiveComputedFees?.exchangeRateUsed || 0);
         const hasMatchingComputedCurrency = computedFeesCurrency === selectedCurrency;
         const shouldConvert =
             computedFeesSourceCurrency !== selectedCurrency
@@ -618,9 +699,13 @@ export function ServiceSelectionWidget({
             : "service.managedByPartySetup";
         const managedStatusFallback = typeof item?.managedStatusLabel === "string"
             ? item.managedStatusLabel
-            : "Calculated from party setup";
+            : "Calculated from Associated party setup";
         const managedStatusText = partyManaged
-            ? String(t("service.managedByPartyKyc", "Selected in Party KYC"))
+            ? String(
+                effectiveQty > 0
+                    ? t("service.managedByPartyKycSelected", "Selected in Party KYC")
+                    : t("service.managedByPartyKycNotSelected", "Not selected in Party KYC")
+            )
             : String(t(managedStatusKey, managedStatusFallback));
         const managedRateText = unitRateText
             ? (effectiveQty > 0 ? `${effectiveQty} x ${unitRateText}` : unitRateText)
@@ -743,9 +828,9 @@ export function ServiceSelectionWidget({
         if (
             computedFeesSourceCurrency !== selectedCurrency
             && computedFeesCurrency === selectedCurrency
-            && data.computedFees?.exchangeRateUsed
+            && effectiveComputedFees?.exchangeRateUsed
         ) {
-            return Number((amount * data.computedFees.exchangeRateUsed).toFixed(2));
+            return Number((amount * effectiveComputedFees.exchangeRateUsed).toFixed(2));
         }
         return amount;
     };
@@ -754,12 +839,12 @@ export function ServiceSelectionWidget({
     const mandatorySvcSubtotalConverted = convertAmount(mandatorySvcSubtotal);
     const managedSvcSubtotalConverted = convertAmount(managedSvcSubtotal);
     const optionalSvcSubtotalConverted = convertAmount(optionalSvcSubtotal);
-    const normalizedCardFeePct = Number(data.computedFees?.cardFeePct || 0);
-    const normalizedCardFeeSurcharge = Number(data.computedFees?.cardFeeSurcharge || 0);
+    const normalizedCardFeePct = Number(effectiveComputedFees?.cardFeePct || 0);
+    const normalizedCardFeeSurcharge = Number(effectiveComputedFees?.cardFeeSurcharge || 0);
     const hasCardFeeLine = normalizedCardFeeSurcharge > 0;
     const totalConverted =
-        typeof data.computedFees?.total === "number"
-            ? Number(data.computedFees.total)
+        typeof effectiveComputedFees?.total === "number"
+            ? Number(effectiveComputedFees.total)
             : govSubtotalConverted + mandatorySvcSubtotalConverted + managedSvcSubtotalConverted + optionalSvcSubtotalConverted;
     const computedIndividualPreviewItem = computedItemsById.get(ADDITIONAL_EXECUTIVE_INDIVIDUALS_ID);
     const computedCorporatePreviewItem = computedItemsById.get(ADDITIONAL_EXECUTIVE_CORPORATES_ID);
@@ -963,12 +1048,12 @@ export function ServiceSelectionWidget({
                             </div>
                         </div>
 
-                        {data.computedFees?.exchangeRateUsed
+                        {effectiveComputedFees?.exchangeRateUsed
                             && computedFeesSourceCurrency !== selectedCurrency
                             && computedFeesCurrency === selectedCurrency && (
                             <div className="px-3 py-1 bg-primary/10 rounded-md border border-primary/20">
                                 <p className="text-[10px] text-primary font-medium">
-                                    1 {computedFeesSourceCurrency} = {data.computedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
+                                    1 {computedFeesSourceCurrency} = {effectiveComputedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
                                 </p>
                             </div>
                         )}
@@ -983,6 +1068,17 @@ export function ServiceSelectionWidget({
                             }
                         )}
                     </p>
+                    {effectiveComputedFees?.conversionFallback && (
+                        <p className="text-[10px] text-amber-700 max-w-xs text-center md:text-right">
+                            {(t as any)(
+                                "service.currencyFallbackNote",
+                                {
+                                    defaultValue: "Live currency conversion is temporarily unavailable. Showing default prices in {{currency}}.",
+                                    currency: selectedCurrency,
+                                }
+                            )}
+                        </p>
+                    )}
                 </CardContent>
             </Card>
 

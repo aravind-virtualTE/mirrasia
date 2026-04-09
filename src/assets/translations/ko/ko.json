@@ -4423,6 +4423,29 @@
         "title": "스위스 유한회사 (GmbH; LLC) 신청서 제출 완료"
       }
     },
+    "unified": {
+      "title": "스위스 법인 설립",
+      "steps": {
+        "companyType": {
+          "title": "회사 유형",
+          "description": "진행을 위해 설립할 스위스 법인 유형을 선택해 주세요."
+        }
+      },
+      "selector": {
+        "label": "어떤 유형의 회사를 설립하시겠습니까?",
+        "help": "AG(주식회사), GmbH(유한회사) 또는 재단(Foundation) 중에서 선택할 수 있습니다. 선택하신 유형에 따라 가격 및 필수 절차가 자동으로 적용됩니다.",
+        "options": {
+          "ag": "스위스 주식회사 (AG)",
+          "gmbh": "스위스 유한회사 (GmbH)",
+          "foundation": "스위스 재단 (Foundation)"
+        }
+      },
+      "typeChange": {
+        "resetNote": "결제 전 스위스 법인 유형을 변경하면 현재 작성 중인 신청 상세 내용 및 가격이 초기화됩니다.",
+        "confirmReset": "회사 유형을 변경하면 현재 스위스 신청서, 관계자, 선택된 서비스 및 가격이 모두 초기화됩니다. 계속하시겠습니까?",
+        "lockedAfterPayment": "결제가 완료된 후에는 회사 유형을 변경할 수 없습니다."
+      }
+    },
     "options": {
       "relationship": {
         "directorOfSwissEntity": "스위스 법인의 이사",
