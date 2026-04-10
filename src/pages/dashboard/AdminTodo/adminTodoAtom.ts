@@ -2,6 +2,7 @@ import { atom } from 'jotai';
 import { toast } from 'sonner';
 import { fetchTodosByUserId, addTodo as addTodoApi, updateTodo as updateTodoApi, deleteTodo as deleteTodoApi,reassignTodo } from './fetch';
 export type TodoStatus = "Pending" | "Processing" | "Completed" | "Deadline" | "Urgent";
+export type DurationUnit = "hours" | "days" | "weeks";
 
 export interface Todo {
   _id: string;
@@ -11,6 +12,11 @@ export interface Todo {
   createdAt: Date;
   userId?: string;
   docId?: string;
+  duration?: number | null;
+  durationUnit?: DurationUnit;
+  startedAt?: Date;
+  reminderSent?: boolean;
+  dailyReminderSent?: boolean;
 }
 
 // Initial todos state
@@ -33,9 +39,9 @@ export const loadTodosAtom = atom(
   );
 
 // Add a todo via API
-export const addTodoAtom = atom(null, async (_get, set, { userId, role, title, deadline }: { userId: string;role:string; title: string; deadline: Date | null }) => {
+export const addTodoAtom = atom(null, async (_get, set, { userId, role, title, deadline, duration, durationUnit }: { userId: string; role: string; title: string; deadline: Date | null; duration?: number | null; durationUnit?: DurationUnit }) => {
   try {
-    await addTodoApi(userId, { title, deadline }); // We don't need to directly use returned todo
+    await addTodoApi(userId, { title, deadline, duration, durationUnit }); // We don't need to directly use returned todo
     const todos = await fetchTodosByUserId(userId,role); // Re-fetch from server to get fresh state
     set(todosAtom, todos); // Avoid duplicate entries
     toast.success("Todo added successfully");

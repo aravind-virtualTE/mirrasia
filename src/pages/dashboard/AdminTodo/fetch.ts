@@ -12,7 +12,7 @@ export const fetchTodosByUserId = async (userId: string, role: string) => {
   };
   
   // Add a new todo for a userId
-  export const addTodo = async (userId: string, todo: { title: string; deadline?: Date | null }) => {
+  export const addTodo = async (userId: string, todo: { title: string; deadline?: Date | null; duration?: number | null; durationUnit?: string }) => {
     try {
       const response = await api.post(`/adminTodo/${userId}`, todo);
       return response.data;
