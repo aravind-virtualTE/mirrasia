@@ -286,7 +286,7 @@ const ToDoList = () => {
     filters.sortBy = sortBy;
     filters.order = sortOrder;
     filters.page = opts?.page ?? currentPage;
-    filters.pageSize = 20;
+    filters.pageSize = 40;
 
     setLoading(true);
     try {
@@ -351,7 +351,7 @@ const ToDoList = () => {
       filters.sortBy = sortBy;
       filters.order = sortOrder;
       filters.page = 1;
-      filters.pageSize = 20;
+      filters.pageSize = 40;
       setLoading(true);
       try {
         const response = await getTasks(filters);
