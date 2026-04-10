@@ -1,27 +1,23 @@
-import { useAtom } from "jotai";
-import { useEffect, 
-  // useState 
-} from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { ListTodo } from "lucide-react";
-// import AdminTodoList from "../AdminTodo/TodoApp";
-// import ToDoList from "@/pages/MasterTodo/Mtodo";
-import { getTasks, tasksAtom } from "@/pages/MasterTodo/mTodoStore";
+import { getTasks } from "@/pages/MasterTodo/mTodoStore";
 import { useNavigate } from "react-router-dom";
 
 
 const AdminTodo: React.FC = () => {
 
   const navigate = useNavigate();
-  const [todos, setListState] = useAtom(tasksAtom);
+  const [activeCount, setActiveCount] = useState<number>(0);
   useEffect(() => {
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const id = user ? user.id : ""
-    let filters = {}
-    if (user.role === 'admin') filters = { userId: id, }
+    // Active tasks = everything except COMPLETED. We only need the count, so pageSize: 1.
+    const filters: Record<string, unknown> = { excludeStatus: 'COMPLETED', pageSize: 1 }
+    if (user?.role === 'admin') filters.userId = id
     const fetchUser = async () => {
       await getTasks(filters).then((response) => {
-        setListState(Array.isArray(response.data) ? response.data : []);
+        setActiveCount(response.pagination?.total ?? 0);
       })
     }
     fetchUser()
@@ -38,7 +34,7 @@ const AdminTodo: React.FC = () => {
           <span className="text-sm font-medium">To-do List</span>
         </div>
         <span className="text-sm text-muted-foreground">
-          Total: <span className="font-bold">{todos.length}</span>
+          Active: <span className="font-bold">{activeCount}</span>
         </span>
       </div>
     </Card>

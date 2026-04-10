@@ -149,17 +149,31 @@ const Layout: React.FC = () => {
         roles: ["user", "admin", "master"],
         children: [
           {
+            id: "switch-service",
+            icon: RefreshCw,
+            label: t("sideItems.switchService", "Switch Service"),
+            roles: ["admin", "master"],
+            to: "/switch-services",
+          },
+          {
             id: "switch-services",
             icon: RefreshCw,
             label: t("sideItems.switchServices"),
-            roles: ["user", "admin", "master"],
+            roles: [ "admin", "master"],
             to: "/switch-services-list",
+          },
+           {
+            id: "accounting-form",
+            icon: Briefcase,
+            label: t("sideItems.accountForm", "Accounting Form"),
+            roles: [ "admin", "master"],
+            to: "/accounting-services",
           },
           {
             id: "accounting-support",
             icon: Briefcase,
             label: t("sideItems.accountList"),
-            roles: ["user", "admin", "master"],
+            roles: ["admin", "master"],
             to: "/accounting-support-list",
           },
           {
@@ -173,7 +187,7 @@ const Layout: React.FC = () => {
             id: "sign-docs",
             icon: FileCheck,
             label: t("sideItems.signDocs"),
-            roles: ["user", "admin", "master"],
+            roles: ["admin", "master"],
             to: "/service-agreement-sign-docs",
           },
           {

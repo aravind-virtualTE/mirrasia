@@ -5,6 +5,7 @@ import api from '@/services/fetch';
 
 export type TaskPriority = 'Low' | 'Medium' | 'High' | 'Urgent';
 export type TaskStatus = 'TO DO' | 'IN PROGRESS' | 'IN REVIEW' | 'COMPLETED';
+export type DurationUnit = 'hours' | 'days' | 'weeks';
 
 export interface Comment {
   _id?: string;
@@ -37,8 +38,14 @@ export interface Task {
   };
   userId?: string;
   isProject?: boolean;
-  shareWithClient?: boolean 
+  shareWithClient?: boolean
   createdAt:Date
+  // Duration timer fields (for expiry email reminders)
+  duration?: number | null;
+  durationUnit?: DurationUnit;
+  startedAt?: Date | string;
+  reminderSent?: boolean;
+  dailyReminderSent?: boolean;
 }
 
 export interface PaginationMeta {
@@ -65,6 +72,10 @@ export interface CreateTaskFormState {
   selectedProject: { id: string  ; name: string } | undefined | null;
   isProject?: boolean;
   shareWithClient?: boolean
+  // Duration timer (preset string like "1-hours" or "custom"; numeric + unit when custom)
+  durationPreset?: string | null;
+  customDuration?: number | null;
+  customDurationUnit?: DurationUnit;
 }
 
 export const defaultFormState: CreateTaskFormState = {
@@ -78,7 +89,10 @@ export const defaultFormState: CreateTaskFormState = {
   selectedCompany: undefined,
   selectedProject: undefined,
   isProject: false,
-  shareWithClient: false
+  shareWithClient: false,
+  durationPreset: null,
+  customDuration: null,
+  customDurationUnit: 'hours',
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);

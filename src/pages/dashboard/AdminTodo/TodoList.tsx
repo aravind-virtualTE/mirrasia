@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { Todo, updateStatusAtom, deleteTodoAtom, reassignTodoAtom } from "./adminTodoAtom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import TodoForm from "./TodoForm";
 import { useAtom } from "jotai";
 import { todosAtom, loadTodosAtom } from "./adminTodoAtom";
 import { User } from "@/components/userList/UsersList";
-import { Calendar, MoreVertical, Trash2 } from "lucide-react";
+import { Calendar, Clock, MoreVertical, Trash2 } from "lucide-react";
 
 
 const statusColors: Record<string, string> = {
@@ -79,7 +79,12 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
             </p>
           ) : (
             todos.map((todo) => (
-              <div className="flex items-start gap-2 py-2 border-b border-gray-100" key={todo._id}>
+              <div
+                className={`flex items-start gap-2 py-2 border-b border-gray-100 ${
+                  todo.reminderSent && todo.status !== "Completed" ? "border-l-2 border-l-red-400 pl-2" : ""
+                }`}
+                key={todo._id}
+              >
                 <Checkbox
                   checked={todo.status === "Completed"}
                   onCheckedChange={() => handleCheck(todo)}
@@ -120,6 +125,21 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
                     <div className="flex items-center text-xs text-gray-500 mt-0.5">
                       <Calendar size={12} className="mr-1" />
                       {format(new Date(todo.deadline), "dd MMM yyyy")}
+                    </div>
+                  )}
+                  {/* Duration info */}
+                  {todo.duration && (
+                    <div className="flex items-center text-xs text-gray-500 mt-0.5">
+                      <Clock size={12} className="mr-1" />
+                      {todo.duration} {todo.durationUnit}
+                      {todo.startedAt && (() => {
+                        const msPerUnit: Record<string, number> = { hours: 3600000, days: 86400000, weeks: 604800000 };
+                        const expiryMs = new Date(todo.startedAt).getTime() + (todo.duration! * (msPerUnit[todo.durationUnit || "hours"] || 3600000));
+                        const isExpired = Date.now() >= expiryMs;
+                        return isExpired
+                          ? <span className="ml-1 text-red-500 font-medium">(Expired)</span>
+                          : <span className="ml-1 text-green-600">({formatDistanceToNow(new Date(expiryMs))} left)</span>;
+                      })()}
                     </div>
                   )}
                 </div>

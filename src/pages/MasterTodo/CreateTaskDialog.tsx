@@ -4,6 +4,7 @@ import {
     Task,
     TaskPriority,
     TaskStatus,
+    DurationUnit,
     tasksAtom,
     createTaskFormAtom,
     priorities,
@@ -38,6 +39,50 @@ import { Switch } from '@/components/ui/switch';
 import SearchSelectNew from '@/components/SearchSelect2';
 import DatePicker from 'react-datepicker'; // Import react-datepicker
 import 'react-datepicker/dist/react-datepicker.css'; // Import styles
+
+const PRESET_DURATIONS: { label: string; value: string }[] = [
+    { label: '1 hour', value: '1-hours' },
+    { label: '2 hours', value: '2-hours' },
+    { label: '4 hours', value: '4-hours' },
+    { label: '8 hours', value: '8-hours' },
+    { label: '1 day', value: '1-days' },
+    { label: '1 week', value: '1-weeks' },
+    { label: 'Custom', value: 'custom' },
+];
+
+/**
+ * resolveDurationFromForm()
+ * --------------------------
+ * Converts the form's duration controls (preset string + optional custom
+ * value/unit) into the { duration, durationUnit } pair the backend expects.
+ *
+ * Steps:
+ *   1. If no preset is selected -> return { duration: null, durationUnit: 'hours' }
+ *      (null duration means "no timer" — backend cron will skip this task).
+ *   2. If preset is "custom":
+ *        - duration = customDuration (or null when blank)
+ *        - durationUnit = customDurationUnit (default "hours")
+ *   3. Otherwise the preset is shaped like "<value>-<unit>" (e.g. "8-hours",
+ *      "1-weeks"). Split on "-", parse the numeric value, and use the unit.
+ */
+const resolveDurationFromForm = (
+    durationPreset: string | null | undefined,
+    customDuration: number | null | undefined,
+    customDurationUnit: DurationUnit | undefined
+): { duration: number | null; durationUnit: DurationUnit } => {
+    if (!durationPreset) return { duration: null, durationUnit: 'hours' };
+    if (durationPreset === 'custom') {
+        return {
+            duration: customDuration ?? null,
+            durationUnit: customDurationUnit || 'hours',
+        };
+    }
+    const [val, unit] = durationPreset.split('-');
+    return {
+        duration: parseInt(val, 10),
+        durationUnit: (unit as DurationUnit) || 'hours',
+    };
+};
 
 interface CreateTaskDialogProps {
     open: boolean;
@@ -119,6 +164,22 @@ export const CreateTaskDialog = ({
 
     useEffect(() => {
         if (isEditMode && taskToEdit && open) {
+            // Reverse-map persisted duration -> form preset string
+            let presetForEdit: string | null = null;
+            let customForEdit: number | null = null;
+            let customUnitForEdit: DurationUnit = 'hours';
+            if (taskToEdit.duration != null) {
+                const unit = (taskToEdit.durationUnit || 'hours') as DurationUnit;
+                const candidate = `${taskToEdit.duration}-${unit}`;
+                const matched = PRESET_DURATIONS.find((p) => p.value === candidate);
+                if (matched) {
+                    presetForEdit = matched.value;
+                } else {
+                    presetForEdit = 'custom';
+                    customForEdit = taskToEdit.duration;
+                    customUnitForEdit = unit;
+                }
+            }
             setFormState({
                 taskName: taskToEdit.name,
                 description: taskToEdit.description || '',
@@ -133,6 +194,9 @@ export const CreateTaskDialog = ({
                 selectedCompany: taskToEdit.company,
                 selectedProject: taskToEdit.project,
                 shareWithClient: taskToEdit.shareWithClient,
+                durationPreset: presetForEdit,
+                customDuration: customForEdit,
+                customDurationUnit: customUnitForEdit,
             });
         } else if (!isEditMode && open) {
             setFormState((prev) => ({
@@ -177,6 +241,13 @@ export const CreateTaskDialog = ({
     const handleSubmit = async () => {
         if (!formState.taskName) return;
 
+        // Resolve duration controls -> backend shape
+        const { duration, durationUnit } = resolveDurationFromForm(
+            formState.durationPreset,
+            formState.customDuration,
+            formState.customDurationUnit
+        );
+
         setIsLoading(true);
         try {
             if (isEditMode && taskToEdit) {
@@ -191,6 +262,8 @@ export const CreateTaskDialog = ({
                     company: formState.selectedCompany,
                     project: formState.selectedProject,
                     shareWithClient: formState.shareWithClient,
+                    duration,
+                    durationUnit,
                     comments: formState.comment
                         ? [
                             ...taskToEdit.comments,
@@ -221,6 +294,8 @@ export const CreateTaskDialog = ({
                     company: formState.selectedCompany,
                     project: formState.selectedProject,
                     shareWithClient: formState.shareWithClient,
+                    duration,
+                    durationUnit,
                     createdAt: new Date(),
                     comments: formState.comment
                         ? [
@@ -399,6 +474,75 @@ export const CreateTaskDialog = ({
                                 ))}
                             </SelectContent>
                         </Select>
+                    </div>
+
+                    {/* Task Duration (timer + email reminders) */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <Select
+                            value={formState.durationPreset || ''}
+                            onValueChange={(val) => {
+                                setFormState({
+                                    ...formState,
+                                    durationPreset: val,
+                                    // Reset custom fields when leaving "custom"
+                                    customDuration: val === 'custom' ? formState.customDuration ?? null : null,
+                                    customDurationUnit: val === 'custom' ? formState.customDurationUnit || 'hours' : 'hours',
+                                });
+                            }}
+                        >
+                            <SelectTrigger id="duration" className="w-full">
+                                <SelectValue placeholder="Task duration (optional)" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {PRESET_DURATIONS.map((p) => (
+                                    <SelectItem key={p.value} value={p.value}>
+                                        {p.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {formState.durationPreset === 'custom' ? (
+                            <div className="flex items-center gap-2">
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    placeholder="Value"
+                                    className="flex-1"
+                                    value={formState.customDuration ?? ''}
+                                    onChange={(e) =>
+                                        setFormState({
+                                            ...formState,
+                                            customDuration: e.target.value ? Number(e.target.value) : null,
+                                        })
+                                    }
+                                />
+                                <Select
+                                    value={formState.customDurationUnit || 'hours'}
+                                    onValueChange={(val) =>
+                                        setFormState({
+                                            ...formState,
+                                            customDurationUnit: val as DurationUnit,
+                                        })
+                                    }
+                                >
+                                    <SelectTrigger className="w-[110px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="hours">Hours</SelectItem>
+                                        <SelectItem value="days">Days</SelectItem>
+                                        <SelectItem value="weeks">Weeks</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        ) : (
+                            <div className="flex items-center text-xs text-muted-foreground px-1">
+                                {formState.durationPreset
+                                    ? 'Reminder email will be sent when this duration expires.'
+                                    : 'Leave empty for no timer.'}
+                            </div>
+                        )}
                     </div>
 
                     {/* Company & Project */}
