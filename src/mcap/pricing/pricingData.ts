@@ -1117,7 +1117,7 @@ export const initialPricingData: CountryRegion[] = [
         "flag": "HK",
         "countryCode": "HK",
         "serviceId": "cr_fee",
-        "pricing": { "amount": 221, "currency": "USD", "notes": "Default MCAP service fee override" }
+        "pricing": { "amount": 222, "currency": "USD", "notes": "Default MCAP service fee override" }
       },
       {
         "name": "HK BR Fee",
@@ -1125,7 +1125,7 @@ export const initialPricingData: CountryRegion[] = [
         "flag": "HK",
         "countryCode": "HK",
         "serviceId": "br_fee",
-        "pricing": { "amount": 283, "currency": "USD" }
+        "pricing": { "amount": 303, "currency": "USD" }
       },
       {
         "name": "HK Incorporation Service",
