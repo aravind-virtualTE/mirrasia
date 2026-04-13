@@ -367,13 +367,13 @@ const Layout: React.FC = () => {
         roles: ["admin", "master"],
         to: "/sms-management",
       },
-      {
-        id: "yourCompanies",
-        icon: Building2,
-        label: "Associated Companies",
-        roles: ["admin", "master"],
-        to: "/admin-companies-list",
-      },
+      // {
+      //   id: "yourCompanies",
+      //   icon: Building2,
+      //   label: "Associated Companies",
+      //   roles: ["admin", "master"],
+      //   to: "/admin-companies-list",
+      // },
       {
         id: "letter-generator",
         icon: Building2,
