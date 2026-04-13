@@ -12,8 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { MCAP_CONFIG_MAP, MCAP_CONFIGS } from "../configs/registry";
 
 const SUGGESTED_QUESTIONS = [
-    "How to incorporate in Hong Kong?",
-    "What are the requirements for Panama?",
+    "How to incorporate in Switzerland?",
+    "What are the requirements for UK?",
     "Compare Singapore vs HK taxes",
     "Show me all available countries"
 ];
@@ -96,6 +96,15 @@ export function McapBotWidget() {
             "ppif-full": ["panama foundation", "ppif", "private interest foundation"],
             "cr-full": ["costa rica", "cr"],
             "uae-ifza": ["uae", "dubai", "ifza", "united arab emirates"],
+            "uk-full": ["uk", "united kingdom", "britain", "england", "london"],
+            "ch-unified-full": ["switzerland", "swiss", "ch", "geneva", "zurich"],
+            "ee-full": ["estonia", "ee"],
+            "lt-full": ["lithuania", "lt"],
+            "hu-full": ["hungary", "hu"],
+            "ie-full": ["ireland", "ie", "irish"],
+            "au-full": ["australia", "au"],
+            "ge-full": ["georgia", "ge"],
+            "bvi-full": ["bvi", "british virgin islands", "virgin islands"],
         };
 
         // Check each config for keyword matches
