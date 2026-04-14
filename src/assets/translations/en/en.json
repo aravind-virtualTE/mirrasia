@@ -4314,6 +4314,49 @@
           "label": "Consulting (regulation, feasibility, docs, operations)"
         }
       }
+    },
+    "unified": {
+      "title": "UAE Company Incorporation",
+      "selector": {
+        "label": "Jurisdiction",
+        "help": "Select the UAE jurisdiction for your company. Changing this later will reset service selections and pricing.",
+        "localLlc": "Dubai Local LLC (Mainland)",
+        "ifza": "Dubai IFZA Free Zone",
+        "ifzaFzco": "Dubai IFZA Free Zone Company (FZCO)",
+        "difc": "Dubai DIFC Free Zone",
+        "dmcc": "Dubai DMCC Free Zone",
+        "dwtc": "Dubai DWTC Free Zone",
+        "dic": "Dubai DIC Free Zone",
+        "abuDhabi": "Abu Dhabi Mainland"
+      },
+      "jurisdictionChange": {
+        "lockedAfterPayment": "Jurisdiction cannot be changed after payment has been completed. Please contact support if you need to change it.",
+        "resetNote": "Changing the jurisdiction will reset your service selections and pricing. Applicant and company details will be preserved."
+      },
+      "services": {
+        "ad": {
+          "businessApplication": "Business application",
+          "nameReservation": "Company name reservation",
+          "companyRegistration": "Company registration",
+          "commercialLicense": "Commercial license issuance",
+          "businessActivityLicense": "Business activity license",
+          "infoProtection": "Information protection registration",
+          "mailbox": "Mailbox",
+          "consulting": "Consulting fees",
+          "bankIntro": "Bank account opening (Dubai)",
+          "vat": "VAT (5%) on setup",
+          "visaEstablishmentCard": "Establishment Card (government)",
+          "visaEChannel": "New E-Channel account (government)",
+          "visaResidence": "Residence visa (government)",
+          "visaConsultingMedical": "Consulting + medical insurance",
+          "visaVat": "VAT (5%) on visa bundle",
+          "visaBundle": {
+            "label": "Visa bundle (optional, per visa quota)",
+            "info": "Includes establishment card, e-channel, residence visa, and consulting + medical insurance. VAT (5%) added automatically."
+          },
+          "note": "Year-2 operating costs (business activity license, info protection, mailbox, secretary) are billed separately."
+        }
+      }
     }
   },
   "cr": {
