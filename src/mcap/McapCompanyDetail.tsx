@@ -40,7 +40,6 @@ import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCente
 import { InvoiceWidget } from "@/mcap/fields/InvoiceWidget";
 import {
   EXISTING_COMPANY_ONBOARDING_BRN_FIELD,
-  EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD,
   isExistingCompanyOnboardingJourney,
   resolveMcapJourneyType,
 } from "@/mcap/journey";
@@ -78,7 +77,7 @@ type McapCompany = {
 
   status?: string;
   incorporationStatus?: string;
-  incorporationDate?: string;
+  incorporationDate?: string | Date;
   paymentStatus?: string;
   assignedTo?: string;
   stepIdx?: number;
@@ -118,7 +117,7 @@ const fmtDate = (d?: string | Date) => {
 
 const EXISTING_COMPANY_ONBOARDING_SUMMARY_FIELDS = new Set([
   EXISTING_COMPANY_ONBOARDING_BRN_FIELD,
-  EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD,
+  "incorporationDate",
 ]);
 
 const isExistingCompanyOnboardingSummaryField = (stepId?: string, fieldName?: string) => {
@@ -532,7 +531,7 @@ const McapCompanyDetail: React.FC = () => {
   const applicantEmail = getEmail(company);
   const applicantPhone = getPhone(company);
   const onboardingBrnNo = String(data?.[EXISTING_COMPANY_ONBOARDING_BRN_FIELD] || "").trim();
-  const onboardingIncorporationDate = String(data?.[EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD] || "").trim();
+  const onboardingIncorporationDate = String(company?.incorporationDate || "").trim();
   const companyNameKey = resolveFieldKey(data, ["companyName_1", "name1"], "companyName_1");
   const companyAlt1Key = resolveFieldKey(data, ["companyName_2", "name2"], "companyName_2");
   const companyAlt2Key = resolveFieldKey(data, ["companyName_3", "name3"], "companyName_3");
@@ -777,7 +776,7 @@ const McapCompanyDetail: React.FC = () => {
                           <Input
                             type="date"
                             value={onboardingIncorporationDate}
-                            onChange={(e) => updateDataField(EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD, e.target.value)}
+                            onChange={(e) => updateDataField("incorporationDate", e.target.value)}
                             className="h-8"
                             placeholder={t("mcap.journey.onboardingFields.incorporationDate.placeholder", "Select incorporation date")}
                           />
