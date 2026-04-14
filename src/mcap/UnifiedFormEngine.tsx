@@ -41,7 +41,6 @@ import {
 } from "./journey";
 import { buildFormSummary } from "./utils/SummaryBuilder";
 import { resolveMcapRuntimeConfig } from "./configs/registry";
-import { CH_INCORPORATION_TYPE_FIELD } from "./configs/ch-unified-full";
 
 // --- API Helper (Inlined for Demo) ---
 const API_BASE = API_URL.replace(/\/+$/, "");
@@ -575,7 +574,10 @@ export const UnifiedFormEngine = ({
                 return;
             }
 
-            if (name === CH_INCORPORATION_TYPE_FIELD) {
+            const resolutionKeys = Array.isArray(config.runtimeResolutionKeys)
+                ? config.runtimeResolutionKeys
+                : [];
+            if (resolutionKeys.includes(name)) {
                 setFormData((prev: any) => ({
                     ...prev,
                     ...(config.seedData || {}),

@@ -531,7 +531,7 @@ const McapCompanyDetail: React.FC = () => {
   const applicantEmail = getEmail(company);
   const applicantPhone = getPhone(company);
   const onboardingBrnNo = String(data?.[EXISTING_COMPANY_ONBOARDING_BRN_FIELD] || "").trim();
-  const onboardingIncorporationDate = String(company?.incorporationDate || "").trim();
+  const onboardingIncorporationDate = String(company?.incorporationDate || "").trim().slice(0, 10);
   const companyNameKey = resolveFieldKey(data, ["companyName_1", "name1"], "companyName_1");
   const companyAlt1Key = resolveFieldKey(data, ["companyName_2", "name2"], "companyName_2");
   const companyAlt2Key = resolveFieldKey(data, ["companyName_3", "name3"], "companyName_3");
@@ -776,7 +776,7 @@ const McapCompanyDetail: React.FC = () => {
                           <Input
                             type="date"
                             value={onboardingIncorporationDate}
-                            onChange={(e) => updateDataField("incorporationDate", e.target.value)}
+                            onChange={(e) => updateField("incorporationDate", e.target.value)}
                             className="h-8"
                             placeholder={t("mcap.journey.onboardingFields.incorporationDate.placeholder", "Select incorporation date")}
                           />
