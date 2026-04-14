@@ -13,8 +13,7 @@ const PRICING_WIDGETS = new Set([
 ]);
 const COMPANY_STEP_ID = "company";
 
-export const EXISTING_COMPANY_ONBOARDING_BRN_FIELD = "existingCompanyBrnNo";
-export const EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD = "existingCompanyIncorporationDate";
+export const EXISTING_COMPANY_ONBOARDING_BRN_FIELD = "brnNo";
 
 const EXISTING_COMPANY_ONBOARDING_COMPANY_FIELDS: McapField[] = [
   {
@@ -25,7 +24,7 @@ const EXISTING_COMPANY_ONBOARDING_COMPANY_FIELDS: McapField[] = [
     required: true,
   },
   {
-    name: EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD,
+    name: 'incorporationDate',
     type: "date",
     label: "mcap.journey.onboardingFields.incorporationDate.label",
     placeholder: "mcap.journey.onboardingFields.incorporationDate.placeholder",
