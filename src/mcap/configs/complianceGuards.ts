@@ -107,7 +107,7 @@ const countryRulesByCode: Record<string, ConsultationRule[]> = {
     { field: "sanctionedCountryOperations", allow: ["no"] },
     { field: "sanctionedResidenceExposure", allow: ["no"] },
     { field: "sanctionedOwnershipOrControl", allow: ["no"] },
-    { field: "crimeaSevastopolExposure", allow: ["no"] },
+    // { field: "crimeaSevastopolExposure", allow: ["no"] },
     { field: "oilGasMilitaryExposure", allow: ["no"] },
   ],
   UAE: [
