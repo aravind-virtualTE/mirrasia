@@ -3650,6 +3650,18 @@
         "companyFallback": "Company",
         "pending": "pending"
       }
+    },
+    "journey": {
+      "onboardingFields": {
+        "brnNo": {
+          "label": "BRN No.",
+          "placeholder": "Enter BRN number"
+        },
+        "incorporationDate": {
+          "label": "Incorporation Date",
+          "placeholder": "Select incorporation date"
+        }
+      }
     }
   },
   "au": {
