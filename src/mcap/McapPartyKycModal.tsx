@@ -128,6 +128,29 @@ export default function McapPartyKycModal({
     if (status === "submitted") setMode("detail");
   };
 
+  const handleAdminKycAction = async (status: "approved" | "expired" | "submitted" | "rejected") => {
+    if (!party?._id) return;
+    let reason = "";
+    if (status === "rejected" || status === "expired") {
+      reason = window.prompt(`Reason for ${status}?`) || "";
+      if (!reason) return;
+    }
+    try {
+      const res = await api.post(`/mcap/parties/${party._id}/kyc-status`, { status, reason });
+      if (!res?.data?.success) {
+        setError(res?.data?.message || t("mcap.partyKyc.ui.saveFailedTitle", "Save failed"));
+        return;
+      }
+      const updated = res.data.data as Party;
+      setParty((prev) => (prev ? { ...prev, ...updated } : updated));
+      onSaved?.();
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message || t("mcap.partyKyc.ui.saveFailedTitle", "Save failed"),
+      );
+    }
+  };
+
   const handleFileUpload = async (field: string, file: File) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -224,6 +247,26 @@ export default function McapPartyKycModal({
             />
           )}
         </ScrollArea>
+
+        {isAdmin && !forceReadOnly && mode === "detail" && party && (
+          <div className="flex flex-wrap items-center gap-2 border-t bg-background px-4 py-3 sm:px-6">
+            <span className="mr-auto text-xs text-muted-foreground">
+              {t("mcap.partyKyc.ui.adminActions", "Admin actions")}
+            </span>
+            <Button size="sm" onClick={() => handleAdminKycAction("approved")}>
+              {t("mcap.partyKyc.ui.approve", "Approve")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => handleAdminKycAction("submitted")}>
+              {t("mcap.partyKyc.ui.flagSubmitted", "Flag Submitted")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => handleAdminKycAction("expired")}>
+              {t("mcap.partyKyc.ui.markExpired", "Mark Expired")}
+            </Button>
+            <Button size="sm" variant="destructive" onClick={() => handleAdminKycAction("rejected")}>
+              {t("mcap.partyKyc.ui.reject", "Reject")}
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
