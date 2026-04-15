@@ -34,7 +34,13 @@ import TodoApp from "@/pages/Todo/TodoApp";
 import MemoApp from "@/pages/Company/Details/MemosHK";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
-import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck, Ticket } from "lucide-react";
+import { Banknote, Building2, Mail, MoreHorizontal, Phone, ReceiptText, Send, ShieldCheck, Ticket } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import McapPartyKycModal from "@/mcap/McapPartyKycModal";
 import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCenter";
 import { InvoiceWidget } from "@/mcap/fields/InvoiceWidget";
@@ -61,7 +67,16 @@ type McapParty = {
   kycStatus?: string;
   kycExpiresAt?: string;
   kycOverrideReason?: string;
+  details?: Record<string, any>;
 };
+
+const PARTY_ROLE_OPTIONS: { value: string; label: string }[] = [
+  { value: "director", label: "Director" },
+  { value: "shareholder", label: "Shareholder" },
+  { value: "dcp", label: "DCP" },
+];
+
+const PARTY_SHARE_TYPE_OPTIONS = ["ordinary", "preference"];
 
 type McapCompany = {
   _id: string;
@@ -295,6 +310,10 @@ const McapCompanyDetail: React.FC = () => {
   const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("details");
   const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
+  const [partyDialogOpen, setPartyDialogOpen] = useState(false);
+  const [partyDialogMode, setPartyDialogMode] = useState<"create" | "edit">("create");
+  const [partyDialogDraft, setPartyDialogDraft] = useState<McapParty | null>(null);
+  const [isSavingParty, setIsSavingParty] = useState(false);
 
   const fetchCompany = async () => {
     if (!id) return;
@@ -381,28 +400,6 @@ const McapCompanyDetail: React.FC = () => {
     }
   };
 
-  const handleKycStatus = async (party: McapParty, status: string, reason = "") => {
-    if (!party?._id || !canEdit) return;
-    try {
-      const res = await api.post(`/mcap/parties/${party._id}/kyc-status`, { status, reason });
-      if (res?.data?.success) {
-        toast({ title: "KYC updated", description: `Status set to ${status}.` });
-        const updatedParty = res.data.data;
-        setCompany((prev) => {
-          if (!prev) return prev;
-          const updated = (prev.parties || []).map((p) =>
-            p._id === party._id ? { ...p, ...updatedParty } : p
-          );
-          return { ...prev, parties: updated };
-        });
-      } else {
-        toast({ title: "Update failed", description: res?.data?.message || "Unable to update KYC.", variant: "destructive" });
-      }
-    } catch (err) {
-      toast({ title: "Update failed", description: "Unable to update KYC.", variant: "destructive" });
-    }
-  };
-
   const handleRevokeDcp = async (party: McapParty) => {
     if (!party?._id || !canEdit) return;
     const hasDcpRole = (party.roles || []).includes("dcp");
@@ -432,6 +429,112 @@ const McapCompanyDetail: React.FC = () => {
       }
     } catch (err) {
       toast({ title: "Revoke failed", description: "Unable to revoke DCP role.", variant: "destructive" });
+    }
+  };
+
+  const openPartyDialog = (mode: "create" | "edit", party: McapParty | null) => {
+    setPartyDialogMode(mode);
+    if (mode === "edit" && party) {
+      setPartyDialogDraft({
+        ...party,
+        roles: [...(party.roles || [])],
+        details: { ...(party.details || {}) },
+      });
+    } else {
+      setPartyDialogDraft({
+        name: "",
+        email: "",
+        phone: "",
+        type: "person",
+        roles: [],
+        shares: 0,
+        shareType: "ordinary",
+        details: {},
+      });
+    }
+    setPartyDialogOpen(true);
+  };
+
+  const updatePartyDraftField = (key: keyof McapParty, value: any) => {
+    setPartyDialogDraft((prev) => (prev ? { ...prev, [key]: value } : prev));
+  };
+
+  const togglePartyDraftRole = (role: string) => {
+    setPartyDialogDraft((prev) => {
+      if (!prev) return prev;
+      const roles = new Set(prev.roles || []);
+      if (roles.has(role)) roles.delete(role);
+      else roles.add(role);
+      return { ...prev, roles: Array.from(roles) };
+    });
+  };
+
+  const handleSavePartyDialog = async () => {
+    if (!company?._id || !canEdit || !partyDialogDraft) return;
+    if (!partyDialogDraft.name?.trim() && !partyDialogDraft.email?.trim()) {
+      toast({ title: "Missing info", description: "Name or email is required.", variant: "destructive" });
+      return;
+    }
+    setIsSavingParty(true);
+    try {
+      const payload: Record<string, any> = {
+        companyId: company._id,
+        name: partyDialogDraft.name || "",
+        email: (partyDialogDraft.email || "").trim().toLowerCase(),
+        phone: partyDialogDraft.phone || "",
+        type: partyDialogDraft.type || "person",
+        roles: partyDialogDraft.roles || [],
+        shares: Number(partyDialogDraft.shares || 0),
+        shareType: partyDialogDraft.shareType || "ordinary",
+        details: partyDialogDraft.details || {},
+      };
+      if (partyDialogMode === "edit" && partyDialogDraft._id) {
+        payload._id = partyDialogDraft._id;
+      }
+      const res = await api.post("/mcap/parties", payload);
+      if (res?.data?.success) {
+        toast({
+          title: partyDialogMode === "edit" ? "Party updated" : "Party created",
+          description: "Changes saved successfully.",
+        });
+        setPartyDialogOpen(false);
+        setPartyDialogDraft(null);
+        await fetchCompany();
+      } else {
+        toast({
+          title: "Save failed",
+          description: res?.data?.message || "Unable to save party.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({ title: "Save failed", description: "Unable to save party.", variant: "destructive" });
+    } finally {
+      setIsSavingParty(false);
+    }
+  };
+
+  const handleDeleteParty = async (party: McapParty) => {
+    if (!party?._id || !canEdit) return;
+    const target = party.name || party.email || "this party";
+    const confirmed = window.confirm(
+      `Delete ${target}? They will lose access to this company (other companies they belong to are unaffected).`
+    );
+    if (!confirmed) return;
+    try {
+      const res = await api.delete(`/mcap/parties/${party._id}`);
+      if (res?.data?.success) {
+        toast({ title: "Party deleted", description: "Access revoked for this company." });
+        await fetchCompany();
+      } else {
+        toast({
+          title: "Delete failed",
+          description: res?.data?.message || "Unable to delete party.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({ title: "Delete failed", description: "Unable to delete party.", variant: "destructive" });
     }
   };
 
@@ -842,14 +945,23 @@ const McapCompanyDetail: React.FC = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Parties (Shareholders/Directors/DCP)</CardTitle>
-                  {company.roleStatus?.missing?.length ? (
-                    <div className="text-xs text-destructive">
-                      Missing required roles: {company.roleStatus.missing.join(", ")}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <CardTitle>Parties (Shareholders/Directors/DCP)</CardTitle>
+                      {company.roleStatus?.missing?.length ? (
+                        <div className="text-xs text-destructive">
+                          Missing required roles: {company.roleStatus.missing.join(", ")}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground">All mandatory roles present</div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground">All mandatory roles present</div>
-                  )}
+                    {canEdit && (
+                      <Button size="sm" onClick={() => openPartyDialog("create", null)}>
+                        Add Party
+                      </Button>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {company.parties?.length ? (
@@ -857,24 +969,36 @@ const McapCompanyDetail: React.FC = () => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[25%]">Party</TableHead>
-                            <TableHead className="w-[18%]">Roles</TableHead>
-                            <TableHead className="w-[12%]">Shares</TableHead>
-                            <TableHead className="w-[15%]">KYC</TableHead>
-                            <TableHead className="w-[15%]">Invite</TableHead>
-                            <TableHead className="w-[10%]">View</TableHead>
-                            {canEdit && <TableHead className="w-[15%]">Actions</TableHead>}
+                            <TableHead className="w-[4%]">#</TableHead>
+                            <TableHead className="w-[22%]">Party</TableHead>
+                            <TableHead className="w-[16%]">Roles</TableHead>
+                            <TableHead className="w-[8%]">Shares</TableHead>
+                            <TableHead className="w-[14%]">KYC</TableHead>
+                            <TableHead className="w-[12%]">Invite</TableHead>
+                            <TableHead className="w-[8%]">View</TableHead>
+                            {canEdit && <TableHead className="w-[16%] text-right">Actions</TableHead>}
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {company.parties.map((p) => (
+                          {company.parties.map((p, idx) => (
                             <TableRow key={p._id || p.email}>
+                              <TableCell className="text-sm text-muted-foreground">{idx + 1}</TableCell>
                               <TableCell>
                                 <div className="font-medium">{p.name || "N/A"}</div>
                                 <div className="text-xs text-muted-foreground">{p.email}</div>
                               </TableCell>
-                              <TableCell className="text-xs text-muted-foreground">
-                                {(p.roles || []).join(", ") || "N/A"}
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1">
+                                  {(p.roles || []).length ? (
+                                    (p.roles || []).map((r) => (
+                                      <Badge key={r} variant="secondary" className="capitalize text-[10px]">
+                                        {r}
+                                      </Badge>
+                                    ))
+                                  ) : (
+                                    <span className="text-xs text-muted-foreground">N/A</span>
+                                  )}
+                                </div>
                               </TableCell>
                               <TableCell className="text-sm">{p.shares ?? "N/A"}</TableCell>
                               <TableCell className="space-y-1">
@@ -921,33 +1045,36 @@ const McapCompanyDetail: React.FC = () => {
                                 </Button>
                               </TableCell>
                               {canEdit && (
-                                <TableCell className="space-y-1">
-                                  <div className="flex flex-wrap gap-2">
-                                    <Button variant="outline" size="sm" onClick={() => handleKycStatus(p, "approved")}>
-                                      Mark Approved
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "expired")}>
-                                      Mark Expired
-                                    </Button>
-                                  </div>
-                                  <div className="flex flex-wrap gap-2">
-                                    <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "submitted")}>
-                                      Flag Submitted
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "rejected")}>
-                                      Reject
-                                    </Button>
-                                    {(p.roles || []).includes("dcp") && (
+                                <TableCell className="text-right">
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
                                       <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => handleRevokeDcp(p)}
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8"
                                         disabled={!p._id}
+                                        aria-label="Row actions"
                                       >
-                                        Revoke DCP
+                                        <MoreHorizontal className="h-4 w-4" />
                                       </Button>
-                                    )}
-                                  </div>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem onClick={() => openPartyDialog("edit", p)}>
+                                        Edit
+                                      </DropdownMenuItem>
+                                      {(p.roles || []).includes("dcp") && (
+                                        <DropdownMenuItem onClick={() => handleRevokeDcp(p)}>
+                                          Revoke DCP
+                                        </DropdownMenuItem>
+                                      )}
+                                      <DropdownMenuItem
+                                        onClick={() => handleDeleteParty(p)}
+                                        className="text-destructive focus:text-destructive"
+                                      >
+                                        Delete
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </TableCell>
                               )}
                             </TableRow>
@@ -1217,6 +1344,121 @@ const McapCompanyDetail: React.FC = () => {
         onSaved={fetchCompany}
         forceReadOnly={isDashboardDetailView}
       />
+      <Dialog open={partyDialogOpen} onOpenChange={(open) => {
+        setPartyDialogOpen(open);
+        if (!open) setPartyDialogDraft(null);
+      }}>
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{partyDialogMode === "edit" ? "Edit Party" : "Add Party"}</DialogTitle>
+            <DialogDescription>
+              {partyDialogMode === "edit"
+                ? "Update party details, roles, and KYC fields."
+                : "Create a new party linked to this company."}
+            </DialogDescription>
+          </DialogHeader>
+          {partyDialogDraft && (
+            <div className="grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-1">
+                  <Label>Name</Label>
+                  <Input
+                    value={partyDialogDraft.name || ""}
+                    onChange={(e) => updatePartyDraftField("name", e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <Label>Email</Label>
+                  <Input
+                    type="email"
+                    value={partyDialogDraft.email || ""}
+                    onChange={(e) => updatePartyDraftField("email", e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <Label>Phone</Label>
+                  <Input
+                    value={partyDialogDraft.phone || ""}
+                    onChange={(e) => updatePartyDraftField("phone", e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <Label>Type</Label>
+                  <Select
+                    value={partyDialogDraft.type || "person"}
+                    onValueChange={(v) => updatePartyDraftField("type", v)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="person">Person</SelectItem>
+                      <SelectItem value="entity">Entity</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-1">
+                <Label>Roles</Label>
+                <div className="flex flex-wrap gap-3">
+                  {PARTY_ROLE_OPTIONS.map((opt) => {
+                    const checked = (partyDialogDraft.roles || []).includes(opt.value);
+                    return (
+                      <label key={opt.value} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => togglePartyDraftRole(opt.value)}
+                        />
+                        {opt.label}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-1">
+                  <Label>Shares</Label>
+                  <Input
+                    type="number"
+                    value={partyDialogDraft.shares ?? 0}
+                    onChange={(e) => updatePartyDraftField("shares", Number(e.target.value))}
+                  />
+                </div>
+                <div className="grid gap-1">
+                  <Label>Share Type</Label>
+                  <Select
+                    value={partyDialogDraft.shareType || "ordinary"}
+                    onValueChange={(v) => updatePartyDraftField("shareType", v)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PARTY_SHARE_TYPE_OPTIONS.map((s) => (
+                        <SelectItem key={s} value={s}>
+                          {s}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="outline" onClick={() => setPartyDialogOpen(false)} disabled={isSavingParty}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSavePartyDialog} disabled={isSavingParty}>
+                  {isSavingParty ? "Saving..." : partyDialogMode === "edit" ? "Save Changes" : "Create Party"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
       {!isExistingCompanyOnboarding && (
         <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
           <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto p-0">
