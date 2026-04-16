@@ -174,14 +174,30 @@ const TaskDetailPopup = ({
       timestamp: new Date().toISOString(),
       author: commentingUser?.fullName || "",
       authorId: commentingUser?.id || "",
-      fileUrl: submissionData.attachments[0],
     };
     try {
       if (!task || !task._id) return;
-      const response = await updateTask(task._id, {
-        ...task,
-        comments: [...((task?.comments || []) as any[]), newComment],
-      });
+
+      const hasFile = submissionData.attachments?.[0]?.file instanceof File;
+      let payload: any;
+
+      if (hasFile) {
+        const formData = new FormData();
+        const updatedTask = {
+          ...task,
+          comments: [...((task?.comments || []) as any[]), newComment],
+        };
+        formData.append("taskData", JSON.stringify(updatedTask));
+        formData.append("file", submissionData.attachments[0].file);
+        payload = formData;
+      } else {
+        payload = {
+          ...task,
+          comments: [...((task?.comments || []) as any[]), newComment],
+        };
+      }
+
+      const response = await updateTask(task._id, payload);
       setTasks((prev) => prev.map((t) => (t._id === task._id ? response : t)));
     } catch (e) {
       console.error("Failed to submit comment", e);
