@@ -4081,23 +4081,23 @@
     }
   },
   "uae": {
-    "title": "Dubai IFZA Company Incorporation",
+    "title": "Dubai Entity Incorporation",
     "freezones": {
       "titles": {
         "difc": "Dubai DIFC Free Zone Incorporation",
         "dmcc": "Dubai DMCC Free Zone Incorporation",
         "dwtc": "Dubai DWTC Free Zone Incorporation",
         "dic": "Dubai DIC Free Zone Incorporation",
-        "ifzaFzco": "Dubai IFZA Free Zone Incorporation"
+        "ifzaFzco": "Dubai Free Zone Incorporation"
       }
     },
     "confirmation": {
       "title": "Application Submitted Successfully",
-      "message": "Your application for Dubai IFZA company incorporation has been received. Our team will review your details and contact you for the next steps.",
+      "message": "Your application for Dubai Entity incorporation has been received. Our team will review your details and contact you for the next steps.",
       "steps": {
         "initialReview": {
           "title": "Initial Review",
-          "description": "Review of your company details and business intent (1-2 business days)."
+          "description": "Review of your entity details and business intent (1-2 business days)."
         },
         "kycVerification": {
           "title": "KYC Verification",
@@ -4105,7 +4105,7 @@
         },
         "filing": {
           "title": "Filing",
-          "description": "Official submission to UAE/IFZA authorities."
+          "description": "Official submission to UAE authorities."
         }
       }
     },
@@ -4142,7 +4142,7 @@
       },
       "fields": {
         "applicantRelationship": {
-          "label": "Relationship between applicant and the Dubai IFZA company (multiple selections possible)"
+          "label": "Relationship between applicant and the entity."
         },
         "applicantRelationshipOther": {
           "label": "Other relationship (please specify)"
@@ -4151,7 +4151,7 @@
     },
     "compliance": {
       "legalEthicalIssues": {
-        "label": "Is the purpose of establishing a Dubai IFZA company likely to involve legal or ethical issues (money laundering, gambling, tax evasion, fraud, etc.)?"
+        "label": "Is the purpose of establishing an entity likely to involve legal or ethical issues (money laundering, gambling, tax evasion, fraud, etc.)?"
       },
       "annualRenewalConsent": {
         "label": "After establishment, annual renewal work occurs every year and requires related costs and data. Do you agree?"
@@ -4211,7 +4211,7 @@
           "label": "Company business description (3-4 sentences)"
         },
         "purposeOfEstablishment": {
-          "label": "Purpose of establishing an IFZA corporation in Dubai and expected effects"
+          "label": "Purpose of establishing an Entity in Dubai and expected effects"
         },
         "paidInCapital": {
           "label": "Total Paid-in Capital (AED)"
@@ -4220,10 +4220,10 @@
           "label": "Other capital amount (AED)"
         },
         "registeredAddressChoice": {
-          "label": "Registered address in Dubai IFZA"
+          "label": "Registered address in Dubai"
         },
         "registeredAddress": {
-          "label": "Enter your business address in Dubai IFZA"
+          "label": "Enter your business address in Dubai"
         }
       }
     },
@@ -4251,11 +4251,11 @@
         "dicFzco": "Dubai DIC Free Zone Company (FZCO)"
       },
       "applicantRelationship": {
-        "director": "Director of the Dubai IFZA company (to be established)",
-        "chiefManager": "Chief Manager of the Dubai IFZA company (to be established)",
-        "authorizedPerson": "Person authorized by the Director of the Dubai IFZA company (to be established)",
-        "majorShareholder": "Major Shareholder of the Dubai IFZA company (to be established)",
-        "expertAdvisor": "Expert providing establishment consultation (lawyer, accountant, agent, etc.)"
+        "director": "Director",
+        "chiefManager": "Chief Manager",
+        "authorizedPerson": "Person authorized by the Director",
+        "majorShareholder": "Major Shareholder",
+        "expertAdvisor": "Expert providing establishment consultation"
       },
       "businessType": {
         "crypto": "Cryptocurrency related (issuance, exchange, wallet services)",
@@ -4287,7 +4287,7 @@
       },
       "registeredAddressChoice": {
         "mirrAsia": "Use Mirr Asia registration address service",
-        "own": "Use a separate address in Dubai IFZA"
+        "own": "Use a separate address in Dubai"
       }
     },
     "services": {
@@ -4332,20 +4332,39 @@
       "selector": {
         "label": "Jurisdiction",
         "help": "Select the UAE jurisdiction for your company. Changing this later will reset service selections and pricing.",
-        "localLlc": "Dubai Local LLC (Mainland)",
-        "ifza": "Dubai IFZA Free Zone",
-        "ifzaFzco": "Dubai IFZA Free Zone Company (FZCO)",
-        "difc": "Dubai DIFC Free Zone",
-        "dmcc": "Dubai DMCC Free Zone",
-        "dwtc": "Dubai DWTC Free Zone",
-        "dic": "Dubai DIC Free Zone",
-        "abuDhabi": "Abu Dhabi Mainland"
+        "ifza": "Dubai IFZA Free Zone Company",
+        "abuDhabiMainland": "Abu Dhabi Mainland Company",
+        "meydanJafza": "Meydan / JAFZA Free Zone Company",
+        "rasAlKhaimah": "Ras Al Khaimah Company (Quote Only)",
+        "meydanJafzaZoneLabel": "Select Meydan or JAFZA",
+        "meydan": "Meydan Free Zone",
+        "jafza": "JAFZA (Jebel Ali Free Zone)"
+      },
+      "applicant": {
+        "companyNameIfzaHint": "For IFZA jurisdiction, please make sure the proposed company name ends with FZCO."
       },
       "jurisdictionChange": {
         "lockedAfterPayment": "Jurisdiction cannot be changed after payment has been completed. Please contact support if you need to change it.",
         "resetNote": "Changing the jurisdiction will reset your service selections and pricing. Applicant and company details will be preserved."
       },
+      "pricing": {
+        "rakPending": "Pricing for Ras Al Khaimah is pending admin approval. Service selection, invoice, and payment are skipped for this jurisdiction. Submit the form to receive a manual quote.",
+        "meydanJafza": {
+          "help": "Meydan/JAFZA requires one additional zone selection. Base pricing updates from your selected zone.",
+          "meydanNote": "Meydan pricing includes incorporation and management fees.",
+          "jafzaNote": "JAFZA pricing includes a government registration fee plus incorporation and management service fees."
+        }
+      },
       "services": {
+        "ifza": {
+          "licenseWithVisa": "License (includes 1 visa quota)",
+          "licenseWithVisaInfo": "Government fee derived from AED 16,900 (displayed in USD for payment).",
+          "establishmentCard": "Establishment Card",
+          "establishmentCardInfo": "Government fee derived from AED 2,000 (displayed in USD for payment).",
+          "setupHandling": "Company setup and license handling",
+          "taxVatRegistration": "Corporate Tax and VAT registration",
+          "minimumCost": "Minimum IFZA setup cost (without add-ons): USD 8,950."
+        },
         "ad": {
           "businessApplication": "Business application",
           "nameReservation": "Company name reservation",
@@ -4354,19 +4373,39 @@
           "businessActivityLicense": "Business activity license",
           "infoProtection": "Information protection registration",
           "mailbox": "Mailbox",
-          "consulting": "Consulting fees",
+          "consulting": "Company establishment and license consulting fees",
           "bankIntro": "Bank account opening (Dubai)",
-          "vat": "VAT (5%) on setup",
-          "visaEstablishmentCard": "Establishment Card (government)",
-          "visaEChannel": "New E-Channel account (government)",
-          "visaResidence": "Residence visa (government)",
-          "visaConsultingMedical": "Consulting + medical insurance",
-          "visaVat": "VAT (5%) on visa bundle",
-          "visaBundle": {
-            "label": "Visa bundle (optional, per visa quota)",
-            "info": "Includes establishment card, e-channel, residence visa, and consulting + medical insurance. VAT (5%) added automatically."
-          },
+          "vatGovernment": "VAT (5%) on government fees",
+          "vatService": "VAT (5%) on service fees",
           "note": "Year-2 operating costs (business activity license, info protection, mailbox, secretary) are billed separately."
+        },
+        "meydanJafza": {
+          "meydan": {
+            "companyIncorporationFee": "Meydan company incorporation fee",
+            "managementFee": "Meydan management fee"
+          },
+          "jafza": {
+            "registrationFee": "JAFZA registration fee",
+            "companyIncorporationFee": "JAFZA company incorporation fee",
+            "managementFee": "JAFZA management fee"
+          }
+        },
+        "addons": {
+          "medicalEmiratesId": "Medical test and Emirates ID",
+          "fastTrackBiometrics": "Fast-track biometrics",
+          "visaProcessing": "Visa processing",
+          "visaStatusChange": "Visa status change",
+          "investorTitleRegistration": "Investor title registration",
+          "bankAccountSetupSupport": "Bank account setup support",
+          "extraBusinessActivity": "Extra business activity",
+          "bookKeeping": "Bookkeeping",
+          "audit": "Audit",
+          "units": {
+            "person": "person",
+            "request": "request",
+            "activity": "activity",
+            "year": "year"
+          }
         }
       }
     }

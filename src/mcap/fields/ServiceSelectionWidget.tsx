@@ -37,6 +37,7 @@ type QuantityScope = "totalParties" | "dcpParties";
 interface QuantityControlMeta {
     enabled?: boolean;
     min?: number;
+    max?: number;
     maxBy?: QuantityScope;
     unitLabel?: string;
 }
@@ -115,14 +116,26 @@ export function ServiceSelectionWidget({
         [additionalExecutiveUsdToBaseRate, config?.countryCode, parties]
     );
 
-    const govItems = useMemo(
-        () => (Array.isArray(feesMeta?.government) ? feesMeta.government : []),
-        [feesMeta?.government]
+    const resolvedServiceItems = useMemo(
+        () => (Array.isArray(resolvedItems) ? resolvedItems : []),
+        [resolvedItems]
     );
+    const hasResolvedServiceItems = resolvedServiceItems.length > 0;
+    const isGovernmentItem = (item: any) => String(item?.kind || "").toLowerCase() === "government";
+    const govItems = useMemo(() => {
+        if (hasResolvedServiceItems) {
+            return resolvedServiceItems.filter((item: any) => isGovernmentItem(item));
+        }
+        return Array.isArray(feesMeta?.government) ? feesMeta.government : [];
+    }, [feesMeta?.government, hasResolvedServiceItems, resolvedServiceItems]);
     const svcSource = useMemo(
-        () => (((resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []))
-            .filter((item: any) => !ADDITIONAL_EXECUTIVE_ITEM_IDS.has(String(item?.id || "")))),
-        [feesMeta?.service, resolvedItems]
+        () => {
+            const source = hasResolvedServiceItems
+                ? resolvedServiceItems.filter((item: any) => !isGovernmentItem(item))
+                : (Array.isArray(feesMeta?.service) ? feesMeta.service : []);
+            return source.filter((item: any) => !ADDITIONAL_EXECUTIVE_ITEM_IDS.has(String(item?.id || "")));
+        },
+        [feesMeta?.service, hasResolvedServiceItems, resolvedServiceItems]
     );
     const svcItemsMeta = useMemo(() => [...svcSource, ...additionalExecutiveItems], [additionalExecutiveItems, svcSource]);
     const servicePricingSignature = useMemo(
@@ -152,6 +165,10 @@ export function ServiceSelectionWidget({
     const getQuantityCap = (item: any) => {
         const meta = getQuantityMeta(item);
         if (!meta.enabled) return 1;
+        const fixedMax = Number(meta.max);
+        if (Number.isFinite(fixedMax) && fixedMax > 0) {
+            return Math.max(1, Math.floor(fixedMax));
+        }
         const maxBy = meta.maxBy || "totalParties";
         const rawCap = maxBy === "dcpParties" ? dcpPartyCount : totalPartyCount;
         return Math.max(0, Number(rawCap || 0));
@@ -164,7 +181,7 @@ export function ServiceSelectionWidget({
         const cap = getQuantityCap(item);
         if (cap <= 0) return 0;
 
-        const minQty = Math.max(1, Number(getQuantityMeta(item).min || 1));
+        const minQty = Math.max(1, Math.floor(Number(getQuantityMeta(item).min || 1)));
         const parsed = Number(rawValue);
         const hasPositiveRawQty = Number.isFinite(parsed) && parsed > 0;
         const shouldInclude = selected || hasPositiveRawQty;
@@ -783,6 +800,7 @@ export function ServiceSelectionWidget({
     // Group items by category
     const govItemsWithFees = govItems.map((f: any) => ({
         ...f,
+        mandatory: true,
         category: "government",
         checked: true, // always checked
     }));

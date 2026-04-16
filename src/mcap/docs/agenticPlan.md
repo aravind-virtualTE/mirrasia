@@ -1,6 +1,6 @@
 # MCAP Unified Form Engine: Agentic Plan
 
-Last updated: 2026-04-09
+Last updated: 2026-04-16
 
 ## 1. Purpose
 This document is the implementation-level reference for how MCAP incorporation and onboarding flows are built, resolved, priced, validated, and debugged.
@@ -54,6 +54,29 @@ Rules:
   - coupon fields
   - payment intent metadata
 - applicant and core company data must stay intact on Swiss type change
+
+### UAE unified rules
+UAE now uses a single runtime source of truth in `src/mcap/configs/uae-unified-full.ts`.
+
+Rules:
+- only 4 jurisdictions are active:
+  - `dubai-ifza`
+  - `abu-dhabi-mainland`
+  - `meydan-jafza`
+  - `ras-al-khaimah`
+- `meydan-jafza` requires sub-selection `uaeMeydanJafzaZone` (`meydan` or `jafza`)
+- IFZA keeps an applicant hint that company names should end with `FZCO`
+- changing UAE jurisdiction or Meydan/JAFZA sub-selection clears pricing state only:
+  - `optionalFeeIds`
+  - `serviceItemsSelected`
+  - `serviceQuantities`
+  - `computedFees`
+  - coupon fields
+  - payment intent metadata
+- RAK is quote-only for now:
+  - runtime removes `services`, `invoice`, and `payment` steps
+  - applicant/questionnaire, agreement, and review still run
+  - pricing note must explain that admin pricing is pending
 
 ### Critical invariant
 Changing a `runtimeResolutionKeys` field causes `defaultData` to recompute.
@@ -143,6 +166,15 @@ Preferred model:
 - prefers current step fee output
 - falls back to cached converted `formData.computedFees` only when step output is missing required FX metadata
 - wraps fee output with `applyAdditionalExecutiveFeesToFees(...)`
+
+UAE pricing contract:
+- UAE `computeFees` must always return:
+  - `items[]` with `kind` (`government` or `service`)
+  - `government`, `service`, `total`
+  - `currency`
+  - card fee fields
+- `ServiceSelectionWidget` and `InvoiceWidget` must consume the same computed fee shape
+- optional UAE add-ons use manual quantity controls with explicit caps (not party-count-only caps)
 
 ### Coupon rule
 Coupons are applied after base fee computation inside invoice and payment widgets.
@@ -314,6 +346,14 @@ Every core behavior change should include:
    - one extended flow such as `PA` or `PPIF`
 
 ## 14. Changelog
+- 2026-04-16
+  - UAE unified flow now uses 4 jurisdictions only (`IFZA`, `Abu Dhabi Mainland`, `Meydan/JAFZA`, `Ras Al Khaimah`)
+  - added required `uaeMeydanJafzaZone` sub-selection for combined Meydan/JAFZA jurisdiction
+  - moved UAE pricing to one typed unified contract with explicit `government` vs `service` item kinds
+  - enabled manual quantity-based add-ons for all priced UAE jurisdictions
+  - RAK now runs in quote-only mode by stripping `services`, `invoice`, and `payment` steps at runtime
+  - registry now resolves UAE through unified runtime config only (legacy UAE runtime routes retired)
+  - retained IFZA applicant hint so proposed company names explicitly end with `FZCO`
 - 2026-04-09
   - consolidated Swiss config logic into `src/mcap/configs/ch-unified-full.ts`
   - kept Swiss runtime title fixed while preserving subtype-driven steps, services, pricing, and split-code persistence

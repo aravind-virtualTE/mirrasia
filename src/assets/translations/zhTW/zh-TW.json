@@ -3969,14 +3969,14 @@
     }
   },
   "uae": {
-    "title": "杜拜 IFZA 公司成立",
+    "title": "杜拜實體註冊",
     "freezones": {
       "titles": {
         "difc": "杜拜 DIFC 自貿區公司成立",
         "dmcc": "杜拜 DMCC 自貿區公司成立",
         "dwtc": "杜拜 DWTC 自貿區公司成立",
         "dic": "杜拜 DIC 自貿區公司成立",
-        "ifzaFzco": "杜拜 IFZA 自貿區公司成立"
+        "ifzaFzco": "杜拜 自貿區公司成立"
       }
     },
     "confirmation": {
@@ -3985,7 +3985,7 @@
       "steps": {
         "initialReview": {
           "title": "初步審核",
-          "description": "審核您的公司詳情及業務意圖（1-2 個工作日）。"
+          "description": "審核您的實體詳情及業務意圖（需 1-2 個工作日）"
         },
         "kycVerification": {
           "title": "KYC 驗證",
@@ -3993,7 +3993,7 @@
         },
         "filing": {
           "title": "提交申報",
-          "description": "向阿聯酋/IFZA 當局正式提交申請。"
+          "description": "正式向阿聯酋 (UAE) 當局提交申請"
         }
       }
     },
@@ -4030,7 +4030,7 @@
       },
       "fields": {
         "applicantRelationship": {
-          "label": "申請人與杜拜 IFZA 公司（待成立）之間的關係（可多選）"
+          "label": "申請人與該實體之間的關係"
         },
         "applicantRelationshipOther": {
           "label": "其他關係（請註明）"
@@ -4039,7 +4039,7 @@
     },
     "compliance": {
       "legalEthicalIssues": {
-        "label": "設立杜拜 IFZA 公司的目的，是否可能涉及法律或倫理問題（洗錢、賭博、逃稅、詐騙等）？"
+        "label": "成立實體之目的是否可能涉及法律或倫理問題（如洗錢、博彩、逃稅、欺詐等）？"
       },
       "annualRenewalConsent": {
         "label": "公司成立後，每年均需辦理年度續期工作，並產生相關費用及數據需求。您是否同意？"
@@ -4099,7 +4099,7 @@
           "label": "公司業務描述（3-4 句話）"
         },
         "purposeOfEstablishment": {
-          "label": "在杜拜設立 IFZA 公司的目的及預期效果"
+          "label": "在杜拜成立實體之目的及預期效益"
         },
         "paidInCapital": {
           "label": "總實收資本 (AED)"
@@ -4108,10 +4108,10 @@
           "label": "其他資本金額 (AED)"
         },
         "registeredAddressChoice": {
-          "label": "在杜拜 IFZA 的註冊地址"
+          "label": "杜拜註冊地址"
         },
         "registeredAddress": {
-          "label": "輸入您在杜拜 IFZA 的營業地址"
+          "label": "請輸入您在杜拜的營業地址"
         }
       }
     },
@@ -4139,11 +4139,11 @@
         "dicFzco": "杜拜 DIC 自貿區公司 (FZCO)"
       },
       "applicantRelationship": {
-        "director": "杜拜 IFZA 公司的董事（待委任）",
-        "chiefManager": "杜拜 IFZA 公司的總經理（待委任）",
-        "authorizedPerson": "由杜拜 IFZA 公司董事授權的人士（待委任）",
-        "majorShareholder": "杜拜 IFZA 公司的主要股東（待委任）",
-        "expertAdvisor": "提供成立諮詢的專家（律師、會計師、代理人等）"
+        "director": "董事 (Director)",
+        "chiefManager": "總經理 / 首席經理 (Chief Manager)",
+        "authorizedPerson": "由董事授權之人士",
+        "majorShareholder": "大股東",
+        "expertAdvisor": "提供設立諮詢之專家"
       },
       "businessType": {
         "crypto": "加密貨幣相關（發行、交易所、錢包服務）",
@@ -4175,7 +4175,7 @@
       },
       "registeredAddressChoice": {
         "mirrAsia": "使用 Mirr Asia 註冊地址服務",
-        "own": "使用杜拜 IFZA 的獨立地址"
+        "own": "使用位於杜拜的獨立地址"
       }
     },
     "services": {

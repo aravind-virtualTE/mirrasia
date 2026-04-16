@@ -377,36 +377,36 @@ export const UAE_IFZA_CONFIG: McapConfig = {
       fields: [
         // --- Entity Selection ---
         { type: "select", name: "entityType", label: "uae.company.fields.entityType.label", required: true, options: ENTITY_OPTIONS, colSpan: 2 },
-        {
-          type: "derived",
-          name: "initialCostUSD",
-          label: "uae.company.fields.initialCostUsd.label",
-          compute: (_data, entity) => (entity?.initialCostUSD ? `$${entity.initialCostUSD.toLocaleString()}` : ""),
-        },
-        {
-          type: "derived",
-          name: "capital",
-          label: "uae.company.fields.capital.label",
-          compute: (_data, entity) => entity?.capital || "",
-        },
-        {
-          type: "derived",
-          name: "officeRequirement",
-          label: "uae.company.fields.officeRequirement.label",
-          compute: (_data, entity) => entity?.office || "",
-        },
-        {
-          type: "derived",
-          name: "visaCost",
-          label: "uae.company.fields.visaCost.label",
-          compute: (_data, entity) => entity?.visa || "",
-        },
-        {
-          type: "derived",
-          name: "establishmentPeriod",
-          label: "uae.company.fields.establishmentPeriod.label",
-          compute: (_data, entity) => entity?.establishmentDays || "",
-        },
+        // {
+        //   type: "derived",
+        //   name: "initialCostUSD",
+        //   label: "uae.company.fields.initialCostUsd.label",
+        //   compute: (_data, entity) => (entity?.initialCostUSD ? `$${entity.initialCostUSD.toLocaleString()}` : ""),
+        // },
+        // {
+        //   type: "derived",
+        //   name: "capital",
+        //   label: "uae.company.fields.capital.label",
+        //   compute: (_data, entity) => entity?.capital || "",
+        // },
+        // {
+        //   type: "derived",
+        //   name: "officeRequirement",
+        //   label: "uae.company.fields.officeRequirement.label",
+        //   compute: (_data, entity) => entity?.office || "",
+        // },
+        // {
+        //   type: "derived",
+        //   name: "visaCost",
+        //   label: "uae.company.fields.visaCost.label",
+        //   compute: (_data, entity) => entity?.visa || "",
+        // },
+        // {
+        //   type: "derived",
+        //   name: "establishmentPeriod",
+        //   label: "uae.company.fields.establishmentPeriod.label",
+        //   compute: (_data, entity) => entity?.establishmentDays || "",
+        // },
         // --- Company Business Details ---
         {
           type: "checkbox-group",
