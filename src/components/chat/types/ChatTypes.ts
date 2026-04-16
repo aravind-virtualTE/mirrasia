@@ -18,13 +18,18 @@ export interface Group {
 
 export interface ChatMessage {
   from: "me" | "them";
-  text: string;
+  text?: string;
   timestamp: string;
   senderId?: string;
   senderName?: string;
+  targetId?: string;
   read: boolean;
-  messageId?: string;
+  messageId: string; // Made required
   groupId?: string;
+  fileUrl?: string;
+  fileName?: string;
+  fileType?: string;
+  reactions?: { userId: string; emoji: string }[];
 }
 
 export interface Chat {
