@@ -347,6 +347,13 @@ Every core behavior change should include:
 
 ## 14. Changelog
 - 2026-04-16
+  - `ServiceSelectionWidget` now renders section headers and subtotals when items have `kind` tags:
+    - "Government Fees" section with mandatory badge and subtotal row
+    - "Our Service Fees" section for mandatory service items
+    - "Optional Add-On Services" section for optional items with quantity controls
+    - Per-section subtotals before the grand total row
+  - removed legacy UAE dead code: deleted `uae-freezones.ts`, removed old `computeUaeFees`/`buildUaeServiceItems`/`UAE_SERVICE_CATALOG` from `uae-ifza.ts`
+  - stripped legacy `serviceItems`/`computeFees` callbacks from `UAE_IFZA_CONFIG` base steps (unified config overrides these at runtime)
   - UAE unified flow now uses 4 jurisdictions only (`IFZA`, `Abu Dhabi Mainland`, `Meydan/JAFZA`, `Ras Al Khaimah`)
   - added required `uaeMeydanJafzaZone` sub-selection for combined Meydan/JAFZA jurisdiction
   - moved UAE pricing to one typed unified contract with explicit `government` vs `service` item kinds

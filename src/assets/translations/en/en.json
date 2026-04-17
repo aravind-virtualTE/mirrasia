@@ -1160,7 +1160,11 @@
         "title": "Our Service Fees",
         "badge": "Service",
         "description": "Professional services and support for your incorporation."
-      }
+      },
+      "optionalAddons": {
+        "title": "Optional Add-On Services"
+      },
+      "subtotal": "Subtotal"
     },
     "table": {
       "description": "Service Description",

@@ -180,7 +180,11 @@ Responsibilities:
 - prefer step `computeFees`
 - support legacy fallback computation
 - support external `fees` from the engine as the row-level source of truth
-- split government vs service rows from shared `kind` metadata when provided
+- split government vs service rows from shared `kind` metadata when provided, with section headers and subtotals:
+  - "Government Fees" section (with mandatory badge) when government-kind items exist
+  - "Our Service Fees" section for mandatory service items
+  - "Optional Add-On Services" section for non-mandatory service items
+  - per-section subtotal rows before the grand total
 - support live FX conversion when needed
 - if conversion fails, fall back to the base allowed currency and persist:
   - `conversionFallback`
@@ -365,6 +369,8 @@ Check:
 
 ## Changelog
 - 2026-04-16
+  - `ServiceSelectionWidget` now renders section headers (Government Fees, Service Fees, Optional Add-Ons) and per-section subtotals for all configs that tag items with `kind`
+  - removed legacy UAE dead code: `uae-freezones.ts` deleted, `uae-ifza.ts` trimmed to base step structure only
   - documented unified UAE runtime model with 4 jurisdictions and Meydan/JAFZA sub-selection
   - documented RAK quote-only behavior (`services`, `invoice`, `payment` removed at runtime)
   - documented UAE fee contract requirement for item `kind` split and shared widget consumption

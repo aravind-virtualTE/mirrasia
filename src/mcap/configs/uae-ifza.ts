@@ -85,133 +85,6 @@ const YES_NO_DONT_KNOW_OPTIONS = [
   { label: "mcap.common.options.doNotKnow", value: "unknown" },
 ];
 
-type UaeServiceItem = {
-  id: string;
-  label: string;
-  amount: number;
-  original: number;
-  mandatory?: boolean;
-  info?: string;
-};
-
-const UAE_SERVICE_CATALOG: UaeServiceItem[] = [
-  {
-    id: "vasp_setup_emi",
-    label: "uae.services.items.vaspSetupEmi.label",
-    amount: 14850,
-    original: 14850,
-    info: "uae.services.items.vaspSetupEmi.info",
-  },
-  {
-    id: "vasp_kyc_kyt",
-    label: "uae.services.items.vaspKycKyt.label",
-    amount: 2500,
-    original: 2500,
-    mandatory: false,
-    info: "uae.services.items.vaspKycKyt.info",
-  },
-  {
-    id: "vasp_aml_10",
-    label: "uae.services.items.vaspAml10.label",
-    amount: 1000,
-    original: 1000,
-  },
-  {
-    id: "vasp_aml_20",
-    label: "uae.services.items.vaspAml20.label",
-    amount: 1800,
-    original: 1800,
-  },
-  {
-    id: "vasp_accounting",
-    label: "uae.services.items.vaspAccounting.label",
-    amount: 3000,
-    original: 3000,
-  },
-  {
-    id: "ifza_setup_bank",
-    label: "uae.services.items.ifzaSetupBank.label",
-    amount: 5000,
-    original: 5000,
-  },
-  {
-    id: "legal_opinion_ifza",
-    label: "uae.services.items.legalOpinionIfza.label",
-    amount: 1500,
-    original: 1500,
-  },
-  {
-    id: "legal_opinion_domestic",
-    label: "uae.services.items.legalOpinionDomestic.label",
-    amount: 5000,
-    original: 5000,
-  },
-  {
-    id: "consulting",
-    label: "uae.services.items.consulting.label",
-    amount: 2000,
-    original: 2000,
-  },
-];
-
-const getSelectedServiceIds = (data: any) => {
-  const selected = new Set<string>();
-  const optionalFeeIds = Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds : [];
-  const serviceItemsSelected = Array.isArray(data?.serviceItemsSelected) ? data.serviceItemsSelected : [];
-  optionalFeeIds.forEach((id: any) => selected.add(String(id)));
-  serviceItemsSelected.forEach((id: any) => selected.add(String(id)));
-  return selected;
-};
-
-const buildUaeServiceItems = (data: any, entityMeta: any) => {
-  const entity = entityMeta?.[data?.entityType] || null;
-  const setupCost = Number(entity?.setupCostUSD || 0);
-  return [
-    {
-      id: "setup",
-      label: "uae.services.items.setup.label",
-      amount: setupCost,
-      original: setupCost,
-      mandatory: true,
-      info: "uae.services.items.setup.info",
-    },
-    ...UAE_SERVICE_CATALOG,
-  ];
-};
-
-const computeUaeFees = (data: any, entityMeta: any) => {
-  const selectedIds = getSelectedServiceIds(data);
-  const allItems = buildUaeServiceItems(data, entityMeta);
-  const items = allItems
-    .filter((item) => item.mandatory || selectedIds.has(item.id))
-    .map((item) => ({
-      id: item.id,
-      label: item.label,
-      amount: item.amount,
-      original: item.original,
-      kind: "service" as const,
-      ...(item.info ? { info: item.info } : {}),
-    }));
-
-  const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  const paymentCurrency = String(data?.paymentCurrency || data?.currency || "USD").toUpperCase();
-  const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
-  const cardFeeSurcharge = String(data?.payMethod || "").toLowerCase() === "card" ? total * cardFeePct : 0;
-
-  return {
-    currency: "USD",
-    paymentCurrency,
-    items,
-    government: 0,
-    service: total,
-    total,
-    cardFeePct,
-    cardFeeSurcharge,
-    grandTotal: total + cardFeeSurcharge,
-    note: "uae.fees.note",
-  };
-};
-
 export const UAE_IFZA_CONFIG: McapConfig = {
   id: "uae-ifza",
   countryCode: "UAE",
@@ -375,38 +248,8 @@ export const UAE_IFZA_CONFIG: McapConfig = {
       requireDcp: true,
       requirePartyInvite: true,
       fields: [
-        // --- Entity Selection ---
+        // --- Entity Selection (overridden by unified selector in uae-unified-full.ts) ---
         { type: "select", name: "entityType", label: "uae.company.fields.entityType.label", required: true, options: ENTITY_OPTIONS, colSpan: 2 },
-        // {
-        //   type: "derived",
-        //   name: "initialCostUSD",
-        //   label: "uae.company.fields.initialCostUsd.label",
-        //   compute: (_data, entity) => (entity?.initialCostUSD ? `$${entity.initialCostUSD.toLocaleString()}` : ""),
-        // },
-        // {
-        //   type: "derived",
-        //   name: "capital",
-        //   label: "uae.company.fields.capital.label",
-        //   compute: (_data, entity) => entity?.capital || "",
-        // },
-        // {
-        //   type: "derived",
-        //   name: "officeRequirement",
-        //   label: "uae.company.fields.officeRequirement.label",
-        //   compute: (_data, entity) => entity?.office || "",
-        // },
-        // {
-        //   type: "derived",
-        //   name: "visaCost",
-        //   label: "uae.company.fields.visaCost.label",
-        //   compute: (_data, entity) => entity?.visa || "",
-        // },
-        // {
-        //   type: "derived",
-        //   name: "establishmentPeriod",
-        //   label: "uae.company.fields.establishmentPeriod.label",
-        //   compute: (_data, entity) => entity?.establishmentDays || "",
-        // },
         // --- Company Business Details ---
         {
           type: "checkbox-group",
@@ -564,14 +407,12 @@ export const UAE_IFZA_CONFIG: McapConfig = {
       title: "mcap.common.steps.services",
       description: "uae.steps.services.description",
       widget: "ServiceSelectionWidget",
-      serviceItems: (data: any, entityMeta: any) => buildUaeServiceItems(data, entityMeta),
     },
     {
       id: "invoice",
       title: "mcap.common.steps.invoice",
       description: "uae.steps.invoice.description",
       widget: "InvoiceWidget",
-      computeFees: (data, entityMeta) => computeUaeFees(data, entityMeta),
     },
     {
       id: "payment",
@@ -579,7 +420,6 @@ export const UAE_IFZA_CONFIG: McapConfig = {
       description: "uae.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
-      computeFees: (data, entityMeta) => computeUaeFees(data, entityMeta),
     },
   ],
 };

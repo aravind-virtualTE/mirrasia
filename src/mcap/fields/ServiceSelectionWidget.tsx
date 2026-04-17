@@ -998,14 +998,88 @@ export function ServiceSelectionWidget({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {/* Unified view: all items in one list */}
-                                {[
-                                    ...govItemsWithFees,
-                                    ...mandatorySvcWithFees,
-                                    ...optionalSvcWithFees,
-                                ].map((item) => (
-                                    <Row key={item.id} item={item} />
-                                ))}
+                                {/* Government Fees Section */}
+                                {govItemsWithFees.length > 0 && (
+                                    <>
+                                        <TableRow className="bg-muted/30 hover:bg-muted/30">
+                                            <TableCell colSpan={4} className="py-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-sm">
+                                                        {t("service.sections.government.title", "Government Fees")}
+                                                    </span>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                                                        {t("service.sections.government.badge", "Mandatory")}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {govItemsWithFees.map((item: any) => (
+                                            <Row key={item.id} item={item} />
+                                        ))}
+                                        <TableRow className="bg-muted/10 hover:bg-muted/10">
+                                            <TableCell colSpan={2} className="text-right text-sm font-semibold text-muted-foreground">
+                                                {t("service.sections.subtotal", "Subtotal")}
+                                            </TableCell>
+                                            <TableCell className="text-right text-sm font-semibold">
+                                                {formatPrice(govSubtotalConverted, selectedCurrency)}
+                                            </TableCell>
+                                            <TableCell />
+                                        </TableRow>
+                                    </>
+                                )}
+
+                                {/* Mandatory Service Fees Section */}
+                                {mandatorySvcWithFees.length > 0 && (
+                                    <>
+                                        <TableRow className="bg-muted/30 hover:bg-muted/30">
+                                            <TableCell colSpan={4} className="py-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-sm">
+                                                        {t("service.sections.service.title", "Our Service Fees")}
+                                                    </span>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                                                        {t("service.sections.service.badge", "Service")}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {mandatorySvcWithFees.map((item: any) => (
+                                            <Row key={item.id} item={item} />
+                                        ))}
+                                    </>
+                                )}
+
+                                {/* Optional Add-On Services Section */}
+                                {optionalSvcWithFees.length > 0 && (
+                                    <>
+                                        <TableRow className="bg-muted/30 hover:bg-muted/30">
+                                            <TableCell colSpan={4} className="py-2">
+                                                <span className="font-semibold text-sm">
+                                                    {t("service.sections.optionalAddons.title", "Optional Add-On Services")}
+                                                </span>
+                                            </TableCell>
+                                        </TableRow>
+                                        {optionalSvcWithFees.map((item: any) => (
+                                            <Row key={item.id} item={item} />
+                                        ))}
+                                    </>
+                                )}
+
+                                {/* Service Subtotal (mandatory + optional combined) */}
+                                {(mandatorySvcWithFees.length > 0 || optionalSvcWithFees.length > 0) && (
+                                    <TableRow className="bg-muted/10 hover:bg-muted/10">
+                                        <TableCell colSpan={2} className="text-right text-sm font-semibold text-muted-foreground">
+                                            {t("service.sections.subtotal", "Subtotal")}
+                                        </TableCell>
+                                        <TableCell className="text-right text-sm font-semibold">
+                                            {formatPrice(
+                                                mandatorySvcSubtotalConverted + managedSvcSubtotalConverted + optionalSvcSubtotalConverted,
+                                                selectedCurrency
+                                            )}
+                                        </TableCell>
+                                        <TableCell />
+                                    </TableRow>
+                                )}
 
                                 {/* Grand Total Row */}
                                 <TableRow className="bg-primary/10 hover:bg-primary/10">
