@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { finYearOptions } from "@/pages/Company/NewHKForm/hkIncorpo";
+import { applicantRoles, finYearOptions } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type {
   McapConfig,
   McapFeeItem,
@@ -370,15 +370,9 @@ const buildCorporateApplicantFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "authorRelationship",
-    label: "ch.corporate.applicant.fields.authorRelationship.label",
+    label: "newHk.steps.applicant.fields.roles.label",
     required: true,
-    options: [
-      { label: "ch.options.relationship.directorOfSwissEntity", value: "director" },
-      { label: "ch.options.relationship.delegate", value: "delegate" },
-      { label: "ch.options.relationship.directOrIndirectShareholder", value: "shareholder" },
-      { label: "ch.options.relationship.expert", value: "expert" },
-      { label: "mcap.common.options.other", value: "other" },
-    ],
+    options: applicantRoles,
     colSpan: 2,
   },
   {
