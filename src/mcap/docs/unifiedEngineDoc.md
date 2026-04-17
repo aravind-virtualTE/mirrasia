@@ -1,7 +1,7 @@
 # Unified Form Engine Documentation
 
-Version: 1.8
-Last updated: 2026-04-09
+Version: 1.9
+Last updated: 2026-04-16
 
 ## Overview
 `UnifiedFormEngine.tsx` is a config-driven workflow engine for multi-country incorporation and onboarding.
@@ -130,6 +130,23 @@ Behavior:
 - runtime subtype changes steps, services, pricing, and split persistence codes
 - changing `chIncorporationType` clears service and pricing state only; it does not clear applicant or core company data
 
+### UAE implementation
+UAE now resolves through one runtime config in `src/mcap/configs/uae-unified-full.ts`.
+
+Behavior:
+- active jurisdictions are limited to:
+  - `dubai-ifza`
+  - `abu-dhabi-mainland`
+  - `meydan-jafza`
+  - `ras-al-khaimah`
+- `meydan-jafza` requires `uaeMeydanJafzaZone` (`meydan` or `jafza`)
+- IFZA applicant step includes a hint that proposed company names should end with `FZCO`
+- jurisdiction or Meydan/JAFZA sub-selection changes reset pricing state only
+- RAK is quote-only and runtime removes:
+  - `services`
+  - `invoice`
+  - `payment`
+
 ### Critical invariant
 Changing a runtime resolution field recomputes `defaultData`.
 That re-fires the hydration merge.
@@ -163,12 +180,18 @@ Responsibilities:
 - prefer step `computeFees`
 - support legacy fallback computation
 - support external `fees` from the engine as the row-level source of truth
+- split government vs service rows from shared `kind` metadata when provided, with section headers and subtotals:
+  - "Government Fees" section (with mandatory badge) when government-kind items exist
+  - "Our Service Fees" section for mandatory service items
+  - "Optional Add-On Services" section for non-mandatory service items
+  - per-section subtotal rows before the grand total
 - support live FX conversion when needed
 - if conversion fails, fall back to the base allowed currency and persist:
   - `conversionFallback`
   - `requestedCurrency`
 - render the global additional executive toggle and preview
 - keep managed row totals aligned with invoice and payment
+- support explicit manual quantity caps (`quantityControl.max`) for add-ons that are not party-count bound
 
 ### PanamaServiceSetupWidget
 Responsibilities:
@@ -345,6 +368,13 @@ Check:
 - when adding new review signature fields beyond `eSign`, update backend allowlists before rollout
 
 ## Changelog
+- 2026-04-16
+  - `ServiceSelectionWidget` now renders section headers (Government Fees, Service Fees, Optional Add-Ons) and per-section subtotals for all configs that tag items with `kind`
+  - removed legacy UAE dead code: `uae-freezones.ts` deleted, `uae-ifza.ts` trimmed to base step structure only
+  - documented unified UAE runtime model with 4 jurisdictions and Meydan/JAFZA sub-selection
+  - documented RAK quote-only behavior (`services`, `invoice`, `payment` removed at runtime)
+  - documented UAE fee contract requirement for item `kind` split and shared widget consumption
+  - documented explicit quantity cap support in `ServiceSelectionWidget`
 - 2026-04-09
   - consolidated Swiss config logic into `src/mcap/configs/ch-unified-full.ts`
   - documented fixed Swiss title with subtype-driven runtime behavior

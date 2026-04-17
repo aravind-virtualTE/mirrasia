@@ -3,13 +3,9 @@ import React from "react";
 import type { McapConfig, McapField, McapStep } from "./types";
 import CommonServiceAgrementTxt from "@/pages/Company/CommonServiceAgrementTxt";
 import { HK_FULL_CONFIG } from "./hk-full";
-import { UAE_IFZA_CONFIG } from "./uae-ifza";
-import { UAE_FREEZONE_CONFIGS } from "./uae-freezones";
 import {
   createUaeUnifiedFullConfig,
   UAE_UNIFIED_CONFIG_ID,
-  UAE_UNIFIED_FLOW_VERSION,
-  UAE_UNIFIED_FLOW_VERSION_FIELD,
 } from "./uae-unified-full";
 import { US_FULL_CONFIG } from "./us-full";
 import { SG_FULL_CONFIG } from "./sg-full";
@@ -262,14 +258,7 @@ const IE_CONFIG = normalizeConfig(IE_FULL_CONFIG);
 const AU_CONFIG = normalizeConfig(AU_FULL_CONFIG);
 const GE_CONFIG = normalizeConfig(GE_FULL_CONFIG);
 const BVI_CONFIG = normalizeConfig(BVI_FULL_CONFIG);
-const UAE_IFZA_NORMALIZED_CONFIG = { ...normalizeConfig(UAE_IFZA_CONFIG), launcherEnabled: false };
-const UAE_FREEZONE_NORMALIZED_CONFIGS = UAE_FREEZONE_CONFIGS.map((cfg) => ({
-  ...normalizeConfig(cfg),
-  launcherEnabled: false,
-}));
-const UAE_UNIFIED_CONFIG = normalizeConfig(
-  createUaeUnifiedFullConfig({ baseConfig: UAE_IFZA_NORMALIZED_CONFIG })
-);
+const UAE_UNIFIED_CONFIG = normalizeConfig(createUaeUnifiedFullConfig());
 
 const SWISS_LEGACY_CONFIGS_BY_COUNTRY_CODE: Record<string, McapConfig> = {
   CH: CH_AG_CONFIG,
@@ -297,8 +286,6 @@ export const MCAP_RUNTIME_CONFIGS: McapConfig[] = [
   GE_CONFIG,
   BVI_CONFIG,
   UAE_UNIFIED_CONFIG,
-  UAE_IFZA_NORMALIZED_CONFIG,
-  ...UAE_FREEZONE_NORMALIZED_CONFIGS,
 ];
 
 export const MCAP_CONFIGS: McapConfig[] = MCAP_RUNTIME_CONFIGS.filter(
@@ -322,9 +309,6 @@ type ResolveMcapConfigForCompanyInput = {
 const hasUnifiedSwissMarker = (data: Record<string, any> | null | undefined) =>
   String(data?.[CH_UNIFIED_FLOW_VERSION_FIELD] || "") === CH_UNIFIED_FLOW_VERSION;
 
-const hasUnifiedUaeMarker = (data: Record<string, any> | null | undefined) =>
-  String(data?.[UAE_UNIFIED_FLOW_VERSION_FIELD] || "") === UAE_UNIFIED_FLOW_VERSION;
-
 export const resolveMcapConfigForCompany = ({
   id,
   countryCode,
@@ -341,13 +325,7 @@ export const resolveMcapConfigForCompany = ({
   }
 
   if (normalizedCountryCode === "UAE") {
-    if (hasUnifiedUaeMarker(data)) {
-      return MCAP_CONFIG_MAP[UAE_UNIFIED_CONFIG_ID] || null;
-    }
-    if (normalizedId && MCAP_CONFIG_MAP[normalizedId]) {
-      return MCAP_CONFIG_MAP[normalizedId];
-    }
-    return UAE_IFZA_NORMALIZED_CONFIG;
+    return MCAP_CONFIG_MAP[UAE_UNIFIED_CONFIG_ID] || null;
   }
 
   if (normalizedId && MCAP_CONFIG_MAP[normalizedId]) {

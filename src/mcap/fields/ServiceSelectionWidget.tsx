@@ -37,6 +37,7 @@ type QuantityScope = "totalParties" | "dcpParties";
 interface QuantityControlMeta {
     enabled?: boolean;
     min?: number;
+    max?: number;
     maxBy?: QuantityScope;
     unitLabel?: string;
 }
@@ -115,14 +116,26 @@ export function ServiceSelectionWidget({
         [additionalExecutiveUsdToBaseRate, config?.countryCode, parties]
     );
 
-    const govItems = useMemo(
-        () => (Array.isArray(feesMeta?.government) ? feesMeta.government : []),
-        [feesMeta?.government]
+    const resolvedServiceItems = useMemo(
+        () => (Array.isArray(resolvedItems) ? resolvedItems : []),
+        [resolvedItems]
     );
+    const hasResolvedServiceItems = resolvedServiceItems.length > 0;
+    const isGovernmentItem = (item: any) => String(item?.kind || "").toLowerCase() === "government";
+    const govItems = useMemo(() => {
+        if (hasResolvedServiceItems) {
+            return resolvedServiceItems.filter((item: any) => isGovernmentItem(item));
+        }
+        return Array.isArray(feesMeta?.government) ? feesMeta.government : [];
+    }, [feesMeta?.government, hasResolvedServiceItems, resolvedServiceItems]);
     const svcSource = useMemo(
-        () => (((resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []))
-            .filter((item: any) => !ADDITIONAL_EXECUTIVE_ITEM_IDS.has(String(item?.id || "")))),
-        [feesMeta?.service, resolvedItems]
+        () => {
+            const source = hasResolvedServiceItems
+                ? resolvedServiceItems.filter((item: any) => !isGovernmentItem(item))
+                : (Array.isArray(feesMeta?.service) ? feesMeta.service : []);
+            return source.filter((item: any) => !ADDITIONAL_EXECUTIVE_ITEM_IDS.has(String(item?.id || "")));
+        },
+        [feesMeta?.service, hasResolvedServiceItems, resolvedServiceItems]
     );
     const svcItemsMeta = useMemo(() => [...svcSource, ...additionalExecutiveItems], [additionalExecutiveItems, svcSource]);
     const servicePricingSignature = useMemo(
@@ -152,6 +165,10 @@ export function ServiceSelectionWidget({
     const getQuantityCap = (item: any) => {
         const meta = getQuantityMeta(item);
         if (!meta.enabled) return 1;
+        const fixedMax = Number(meta.max);
+        if (Number.isFinite(fixedMax) && fixedMax > 0) {
+            return Math.max(1, Math.floor(fixedMax));
+        }
         const maxBy = meta.maxBy || "totalParties";
         const rawCap = maxBy === "dcpParties" ? dcpPartyCount : totalPartyCount;
         return Math.max(0, Number(rawCap || 0));
@@ -164,7 +181,7 @@ export function ServiceSelectionWidget({
         const cap = getQuantityCap(item);
         if (cap <= 0) return 0;
 
-        const minQty = Math.max(1, Number(getQuantityMeta(item).min || 1));
+        const minQty = Math.max(1, Math.floor(Number(getQuantityMeta(item).min || 1)));
         const parsed = Number(rawValue);
         const hasPositiveRawQty = Number.isFinite(parsed) && parsed > 0;
         const shouldInclude = selected || hasPositiveRawQty;
@@ -783,6 +800,7 @@ export function ServiceSelectionWidget({
     // Group items by category
     const govItemsWithFees = govItems.map((f: any) => ({
         ...f,
+        mandatory: true,
         category: "government",
         checked: true, // always checked
     }));
@@ -980,14 +998,88 @@ export function ServiceSelectionWidget({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {/* Unified view: all items in one list */}
-                                {[
-                                    ...govItemsWithFees,
-                                    ...mandatorySvcWithFees,
-                                    ...optionalSvcWithFees,
-                                ].map((item) => (
-                                    <Row key={item.id} item={item} />
-                                ))}
+                                {/* Government Fees Section */}
+                                {govItemsWithFees.length > 0 && (
+                                    <>
+                                        <TableRow className="bg-muted/30 hover:bg-muted/30">
+                                            <TableCell colSpan={4} className="py-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-sm">
+                                                        {t("service.sections.government.title", "Government Fees")}
+                                                    </span>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                                                        {t("service.sections.government.badge", "Mandatory")}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {govItemsWithFees.map((item: any) => (
+                                            <Row key={item.id} item={item} />
+                                        ))}
+                                        <TableRow className="bg-muted/10 hover:bg-muted/10">
+                                            <TableCell colSpan={2} className="text-right text-sm font-semibold text-muted-foreground">
+                                                {t("service.sections.subtotal", "Subtotal")}
+                                            </TableCell>
+                                            <TableCell className="text-right text-sm font-semibold">
+                                                {formatPrice(govSubtotalConverted, selectedCurrency)}
+                                            </TableCell>
+                                            <TableCell />
+                                        </TableRow>
+                                    </>
+                                )}
+
+                                {/* Mandatory Service Fees Section */}
+                                {mandatorySvcWithFees.length > 0 && (
+                                    <>
+                                        <TableRow className="bg-muted/30 hover:bg-muted/30">
+                                            <TableCell colSpan={4} className="py-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-sm">
+                                                        {t("service.sections.service.title", "Our Service Fees")}
+                                                    </span>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                                                        {t("service.sections.service.badge", "Service")}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {mandatorySvcWithFees.map((item: any) => (
+                                            <Row key={item.id} item={item} />
+                                        ))}
+                                    </>
+                                )}
+
+                                {/* Optional Add-On Services Section */}
+                                {optionalSvcWithFees.length > 0 && (
+                                    <>
+                                        <TableRow className="bg-muted/30 hover:bg-muted/30">
+                                            <TableCell colSpan={4} className="py-2">
+                                                <span className="font-semibold text-sm">
+                                                    {t("service.sections.optionalAddons.title", "Optional Add-On Services")}
+                                                </span>
+                                            </TableCell>
+                                        </TableRow>
+                                        {optionalSvcWithFees.map((item: any) => (
+                                            <Row key={item.id} item={item} />
+                                        ))}
+                                    </>
+                                )}
+
+                                {/* Service Subtotal (mandatory + optional combined) */}
+                                {(mandatorySvcWithFees.length > 0 || optionalSvcWithFees.length > 0) && (
+                                    <TableRow className="bg-muted/10 hover:bg-muted/10">
+                                        <TableCell colSpan={2} className="text-right text-sm font-semibold text-muted-foreground">
+                                            {t("service.sections.subtotal", "Subtotal")}
+                                        </TableCell>
+                                        <TableCell className="text-right text-sm font-semibold">
+                                            {formatPrice(
+                                                mandatorySvcSubtotalConverted + managedSvcSubtotalConverted + optionalSvcSubtotalConverted,
+                                                selectedCurrency
+                                            )}
+                                        </TableCell>
+                                        <TableCell />
+                                    </TableRow>
+                                )}
 
                                 {/* Grand Total Row */}
                                 <TableRow className="bg-primary/10 hover:bg-primary/10">
