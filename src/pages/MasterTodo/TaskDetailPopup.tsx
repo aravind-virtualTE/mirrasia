@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from "jotai";
 import { format, endOfDay, isBefore } from "date-fns"; //startOfDay
-import { Flag, X, MoreHorizontal, Trash2, Download, Eye, FileText } from "lucide-react";
+import { Flag, X, MoreHorizontal, Trash2, Download, Eye, FileText, CheckSquare, CalendarPlus, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,9 @@ import {
 import ChatInput from "@/common/ChatInput";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatToDDMMYYYY } from "@/middleware";
+import { googleIntegrationAtom } from "@/store/googleIntegrationAtom";
+import { addTaskToGoogleTasks, addTaskToGoogleCalendar } from "@/services/googleIntegration";
+import { toast } from "@/hooks/use-toast";
 
 /* --------------------------- small helpers / UI --------------------------- */
 
@@ -113,6 +116,9 @@ const TaskDetailPopup = ({
   const [tasks, setTasks] = useAtom(tasksAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [users] = useAtom(usersAtom);
+  const [{ connected: googleConnected }] = useAtom(googleIntegrationAtom);
+  const [syncingTasks, setSyncingTasks] = useState(false);
+  const [syncingCalendar, setSyncingCalendar] = useState(false);
   const task = tasks.find((t) => t._id === taskId);
   const createdUser = users.find((u) => u._id === task?.userId);
   const commentingUser = localStorage.getItem("user")
@@ -243,6 +249,38 @@ const TaskDetailPopup = ({
       // setTasks((prev) => prev.map((t) => (t._id === oldTask._id ? oldTask : t)));
     }
   };
+  const handleAddToGoogleTasks = async (taskId: string) => {
+    setSyncingTasks(true);
+    try {
+      const { googleTaskId } = await addTaskToGoogleTasks(taskId);
+      setTasks((prev) => prev.map((t) => (t._id === taskId ? { ...t, googleTaskId } : t)));
+      toast({ title: "Added to Google Tasks" });
+    } catch (err: any) {
+      const msg = err?.response?.data?.error === "GOOGLE_DISCONNECTED"
+        ? "Google disconnected. Please reconnect."
+        : "Failed to add to Google Tasks";
+      toast({ title: msg, variant: "destructive" });
+    } finally {
+      setSyncingTasks(false);
+    }
+  };
+
+  const handleAddToGoogleCalendar = async (taskId: string) => {
+    setSyncingCalendar(true);
+    try {
+      const { googleCalendarEventId } = await addTaskToGoogleCalendar(taskId);
+      setTasks((prev) => prev.map((t) => (t._id === taskId ? { ...t, googleCalendarEventId } : t)));
+      toast({ title: "Added to Google Calendar" });
+    } catch (err: any) {
+      const msg = err?.response?.data?.error === "GOOGLE_DISCONNECTED"
+        ? "Google disconnected. Please reconnect."
+        : "Failed to add to Google Calendar";
+      toast({ title: msg, variant: "destructive" });
+    } finally {
+      setSyncingCalendar(false);
+    }
+  };
+
   const renderFilePreview = (fileValue?: string | File | null,) => {
     if (!fileValue) return null;
 
@@ -499,6 +537,43 @@ const TaskDetailPopup = ({
                 {descExpanded ? "Show less" : "Show more"}
               </button>
             </div>
+
+            {/* Google sync buttons */}
+            {googleConnected && (
+              <>
+                <Separator className="my-3" />
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-[11px]"
+                    disabled={!!task.googleTaskId || syncingTasks}
+                    onClick={() => handleAddToGoogleTasks(task._id!)}
+                  >
+                    {syncingTasks ? (
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    ) : (
+                      <CheckSquare className="mr-1 h-3 w-3" />
+                    )}
+                    {task.googleTaskId ? "Synced to Google Tasks" : "Add to Google Tasks"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-[11px]"
+                    disabled={!!task.googleCalendarEventId || syncingCalendar}
+                    onClick={() => handleAddToGoogleCalendar(task._id!)}
+                  >
+                    {syncingCalendar ? (
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    ) : (
+                      <CalendarPlus className="mr-1 h-3 w-3" />
+                    )}
+                    {task.googleCalendarEventId ? "Synced to Calendar" : "Add to Google Calendar"}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Resize handle */}
@@ -649,6 +724,43 @@ const TaskDetailPopup = ({
                   {descExpanded ? "Show less" : "Show more"}
                 </button>
               </div>
+
+              {/* Google sync buttons (mobile) */}
+              {googleConnected && (
+                <>
+                  <Separator className="my-3" />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-[11px]"
+                      disabled={!!task.googleTaskId || syncingTasks}
+                      onClick={() => handleAddToGoogleTasks(task._id!)}
+                    >
+                      {syncingTasks ? (
+                        <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                      ) : (
+                        <CheckSquare className="mr-1 h-3 w-3" />
+                      )}
+                      {task.googleTaskId ? "Synced to Tasks" : "Add to Google Tasks"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-[11px]"
+                      disabled={!!task.googleCalendarEventId || syncingCalendar}
+                      onClick={() => handleAddToGoogleCalendar(task._id!)}
+                    >
+                      {syncingCalendar ? (
+                        <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                      ) : (
+                        <CalendarPlus className="mr-1 h-3 w-3" />
+                      )}
+                      {task.googleCalendarEventId ? "Synced to Calendar" : "Add to Calendar"}
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <div className="flex h-[calc(100vh-140px)] flex-col">

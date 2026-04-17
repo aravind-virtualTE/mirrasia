@@ -46,6 +46,8 @@ export interface Task {
   startedAt?: Date | string;
   reminderSent?: boolean;
   dailyReminderSent?: boolean;
+  googleTaskId?: string | null;
+  googleCalendarEventId?: string | null;
 }
 
 export interface PaginationMeta {
