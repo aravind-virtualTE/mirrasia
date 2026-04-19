@@ -651,6 +651,36 @@ export const getMcapCompanies = async (params?: {
   }
 };
 
+export const softDeleteMcapCompany = async (companyId: string) => {
+  const response = await api.patch(`mcap/companies/${companyId}/soft-delete`);
+  return response.data;
+};
+
+export const restoreMcapCompany = async (companyId: string) => {
+  const response = await api.patch(`mcap/companies/${companyId}/restore`);
+  return response.data;
+};
+
+export const permanentDeleteMcapCompany = async (companyId: string) => {
+  const response = await api.delete(`mcap/companies/${companyId}/permanent`);
+  return response.data;
+};
+
+export const getDeletedMcapCompanies = async (params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  withMeta?: boolean;
+}) => {
+  try {
+    const response = await api.get("mcap/companies/deleted", { params });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching deleted MCAP companies:", error);
+    return [];
+  }
+};
+
 export const fetchDetailedUsersUnified = async (role?: string, q?: string) => {
   try {
     const response = await api.get(`user/getDetailedUsersUnified`, {

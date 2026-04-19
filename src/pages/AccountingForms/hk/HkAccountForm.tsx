@@ -335,24 +335,6 @@ const TransactionalInfo: React.FC = () => {
                 : formState.costOfGoodsSold.filter((item) => item !== id)
         });
     };
-    // const countries = [
-    //     { code: 'HK', name: 'Hong Kong' },
-    //     { code: 'SG', name: 'Singapore' },
-    //     { code: 'US', name: 'United States' },
-    //     { code: 'UK', name: 'United Kingdom' },
-    //     // Add more countries as needed
-    // ];
-
-    // const updateCountry = (countryCode: string) => {
-    //     const selectedCountry = countries.find(country => country.code === countryCode);
-    //     if (selectedCountry) {
-    //         setCountryState({
-    //             code: selectedCountry.code,
-    //             name: selectedCountry.name
-    //         });
-    //     }
-    // };
-
 
     return (
         <div className="flex w-full p-4">

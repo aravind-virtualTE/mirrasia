@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -34,8 +34,14 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, HelpCircle, Loader2, Pencil, Search } from "lucide-react";
-import { getMcapCompanies } from "@/services/dataFetch";
+import { ChevronLeft, ChevronRight, HelpCircle, Loader2, Pencil, RotateCcw, Search, Trash2 } from "lucide-react";
+import { getMcapCompanies, softDeleteMcapCompany, restoreMcapCompany, permanentDeleteMcapCompany, getDeletedMcapCompanies } from "@/services/dataFetch";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
 import api from "@/services/fetch";
 import { formatDateTime } from "@/pages/dashboard/Admin/utils";
@@ -138,6 +144,7 @@ const resolveCompanyName = (entry: any, untitledLabel: string) => {
 };
 
 const isAdminRole = (role: string) => role === "admin" || role === "master";
+const isMasterRole = (role: string) => role === "master";
 
 const formatDateOnly = (value: string | Date | null | undefined, emptyLabel: string) => {
   if (!value) return emptyLabel;
@@ -318,6 +325,21 @@ export default function McapUserDashboard() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingInvites, setIsLoadingInvites] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Soft-delete / trash state (master only)
+  const [activeTab, setActiveTab] = useState<"active" | "deleted">("active");
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletedItems, setDeletedItems] = useState<any[]>([]);
+  const [deletedTotal, setDeletedTotal] = useState(0);
+  const [deletedPage, setDeletedPage] = useState(1);
+  const [deletedPageSize, setDeletedPageSize] = useState(10);
+  const [isLoadingDeleted, setIsLoadingDeleted] = useState(false);
+  const [permanentDeleteTarget, setPermanentDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [isPermanentDeleting, setIsPermanentDeleting] = useState(false);
+  const [restoreTarget, setRestoreTarget] = useState<{ id: string; name: string } | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
 
   const token = useMemo(() => ((localStorage.getItem("token") as string) ?? ""), []);
   const { userId, role } = useMemo(() => {
@@ -329,6 +351,7 @@ export default function McapUserDashboard() {
     }
   }, [token]);
   const isAdminView = isAdminRole(role);
+  const isMaster = isMasterRole(role);
   const tasks = parseStoredUser()?.tasks ?? [];
   const canOpenCompanyDetail = true;
   const companyDetailMode = isAdminView ? "edit" : "detail";
@@ -349,9 +372,9 @@ export default function McapUserDashboard() {
           sortKey === "none"
             ? {}
             : {
-                sortBy: sortKey as Exclude<DashboardSortKey, "none">,
-                sortOrder: sortDirection,
-              };
+              sortBy: sortKey as Exclude<DashboardSortKey, "none">,
+              sortOrder: sortDirection,
+            };
         const requestParams = {
           ...(role === "user" ? { userId } : {}),
           withMeta: true,
@@ -376,7 +399,7 @@ export default function McapUserDashboard() {
     return () => {
       active = false;
     };
-  }, [userId, role, currentPage, pageSize, activeFilter, debouncedSearch, sortKey, sortDirection]);
+  }, [userId, role, currentPage, pageSize, activeFilter, debouncedSearch, sortKey, sortDirection, refreshKey]);
 
   useEffect(() => {
     let active = true;
@@ -524,288 +547,493 @@ export default function McapUserDashboard() {
     }
   }, [inviteCurrentPage, inviteTotalPages]);
 
+  // Fetch deleted companies (master only, lazy on tab switch)
+  useEffect(() => {
+    if (!isMaster || activeTab !== "deleted") return;
+    let active = true;
+    (async () => {
+      setIsLoadingDeleted(true);
+      try {
+        const res = await getDeletedMcapCompanies({
+          page: deletedPage,
+          limit: deletedPageSize,
+          withMeta: true,
+        });
+        const payload = res?.data || {};
+        const pageItems = Array.isArray(payload?.items) ? payload.items : [];
+        const total = Number(payload?.total);
+        if (active) {
+          setDeletedItems(pageItems);
+          setDeletedTotal(Number.isFinite(total) ? total : 0);
+        }
+      } catch {
+        if (active) {
+          setDeletedItems([]);
+          setDeletedTotal(0);
+        }
+      } finally {
+        if (active) setIsLoadingDeleted(false);
+      }
+    })();
+    return () => { active = false; };
+  }, [isMaster, activeTab, deletedPage, deletedPageSize, refreshKey]);
+
+  const deletedTotalPages = Math.max(1, Math.ceil(deletedTotal / deletedPageSize));
+  const deletedPageStart = deletedTotal === 0 ? 0 : (deletedPage - 1) * deletedPageSize + 1;
+  const deletedPageEnd = deletedTotal === 0 ? 0 : Math.min(deletedPageStart + deletedItems.length - 1, deletedTotal);
+
+  const refreshAll = useCallback(() => setRefreshKey((k) => k + 1), []);
+
+  const handleSoftDelete = useCallback(async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await softDeleteMcapCompany(deleteTarget.id);
+      setDeleteTarget(null);
+      refreshAll();
+    } catch (err) {
+      console.error("Soft delete failed:", err);
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [deleteTarget, refreshAll]);
+
+  const handleRestore = useCallback(async () => {
+    if (!restoreTarget) return;
+    setIsRestoring(true);
+    try {
+      await restoreMcapCompany(restoreTarget.id);
+      setRestoreTarget(null);
+      refreshAll();
+    } catch (err) {
+      console.error("Restore failed:", err);
+    } finally {
+      setIsRestoring(false);
+    }
+  }, [restoreTarget, refreshAll]);
+
+  const handlePermanentDelete = useCallback(async () => {
+    if (!permanentDeleteTarget) return;
+    setIsPermanentDeleting(true);
+    try {
+      await permanentDeleteMcapCompany(permanentDeleteTarget.id);
+      setPermanentDeleteTarget(null);
+      refreshAll();
+    } catch (err) {
+      console.error("Permanent delete failed:", err);
+    } finally {
+      setIsPermanentDeleting(false);
+    }
+  }, [permanentDeleteTarget, refreshAll]);
+
   return (
     <div className="max-width mx-auto p-3 md:p-4 space-y-4">
       <RoleTopBlock isAdminView={isAdminView} role={role} tasks={tasks} />
 
-      <Card className="border shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle>{t("mcap.dashboard.title", "Incorporation Applications")}</CardTitle>
-          <CardDescription>{t("mcap.dashboard.desc", "Track and continue your unified incorporation and onboarding applications.")}</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0">
-          {!isLoading && totalAll > 0 && (
-            <div className="mb-3 space-y-2">
-              <div className="flex flex-wrap gap-1.5">
-                {filters.map((filter) => {
-                  const isActive = activeFilter === filter.key;
-                  return (
-                    <Button
-                      key={filter.key}
-                      type="button"
-                      variant={isActive ? "default" : "outline"}
-                      size="sm"
-                      className="h-7 gap-1.5 rounded-full px-2.5"
-                      onClick={() => {
-                        setActiveFilter(filter.key);
+      {isMaster && (
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "active" | "deleted")} className="w-full">
+          <TabsList>
+            <TabsTrigger value="active">{t("mcap.dashboard.tabs.active", "Active Companies")}</TabsTrigger>
+            <TabsTrigger value="deleted">{t("mcap.dashboard.tabs.deleted", "Deleted Companies")}{deletedTotal > 0 ? ` (${deletedTotal})` : ""}</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      )}
+
+      {(!isMaster || activeTab === "active") && (
+        <Card className="border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle>{t("mcap.dashboard.title", "Incorporation Applications")}</CardTitle>
+            <CardDescription>{t("mcap.dashboard.desc", "Track and continue your unified incorporation and onboarding applications.")}</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {!isLoading && totalAll > 0 && (
+              <div className="mb-3 space-y-2">
+                <div className="flex flex-wrap gap-1.5">
+                  {filters.map((filter) => {
+                    const isActive = activeFilter === filter.key;
+                    return (
+                      <Button
+                        key={filter.key}
+                        type="button"
+                        variant={isActive ? "default" : "outline"}
+                        size="sm"
+                        className="h-7 gap-1.5 rounded-full px-2.5"
+                        onClick={() => {
+                          setActiveFilter(filter.key);
+                          setCurrentPage(1);
+                        }}
+                      >
+                        <span className="text-[11px]">{filter.label}</span>
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[11px] leading-none ${isActive ? "bg-white/20 text-white" : "bg-muted text-foreground"
+                            }`}
+                        >
+                          {serverFilterCounts[filter.key] ?? 0}
+                        </span>
+                      </Button>
+                    );
+                  })}
+                </div>
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                  <div className="space-y-2">
+                    <div className="relative w-full md:w-[360px]">
+                      <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") setCurrentPage(1);
+                        }}
+                        placeholder={t("mcap.dashboard.search.placeholder", "Search by company or applicant name")}
+                        className="h-9 pl-8 text-sm"
+                      />
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("mcap.dashboard.filters.showing", "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)", {
+                        start: pageStart,
+                        end: pageEnd,
+                        filtered: totalFiltered,
+                        total: totalAll,
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start md:self-auto">
+                    <span className="text-xs text-muted-foreground">
+                      {t("mcap.dashboard.sort.by", "Sort")}
+                    </span>
+                    <Select
+                      value={sortKey}
+                      onValueChange={(v) => setSortKey(v as DashboardSortKey)}
+                    >
+                      <SelectTrigger className="h-8 w-[130px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{t("mcap.dashboard.sort.none", "None")}</SelectItem>
+                        <SelectItem value="country">{t("mcap.dashboard.sort.country", "Country")}</SelectItem>
+                        <SelectItem value="status">{t("mcap.dashboard.sort.status", "Status")}</SelectItem>
+                        <SelectItem value="payment">{t("mcap.dashboard.sort.payment", "Payment")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={sortDirection}
+                      onValueChange={(v) => setSortDirection(v as "asc" | "desc")}
+                      disabled={sortKey === "none"}
+                    >
+                      <SelectTrigger className="h-8 w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="asc">{t("mcap.dashboard.sort.asc", "Asc")}</SelectItem>
+                        <SelectItem value="desc">{t("mcap.dashboard.sort.desc", "Desc")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <span className="text-xs text-muted-foreground">
+                      {t("mcap.dashboard.pagination.rows", "Rows")}
+                    </span>
+                    <Select
+                      value={String(pageSize)}
+                      onValueChange={(v) => {
+                        setPageSize(Number(v));
                         setCurrentPage(1);
                       }}
                     >
-                      <span className="text-[11px]">{filter.label}</span>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[11px] leading-none ${
-                          isActive ? "bg-white/20 text-white" : "bg-muted text-foreground"
-                        }`}
+                      <SelectTrigger className="h-8 w-[78px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PAGE_SIZE_OPTIONS.map((size) => (
+                          <SelectItem key={size} value={String(size)}>
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2"
+                        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                        disabled={currentPage <= 1}
                       >
-                        {serverFilterCounts[filter.key] ?? 0}
-                      </span>
-                    </Button>
-                  );
-                })}
-              </div>
-              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div className="space-y-2">
-                  <div className="relative w-full md:w-[360px]">
-                    <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") setCurrentPage(1);
-                      }}
-                      placeholder={t("mcap.dashboard.search.placeholder", "Search by company or applicant name")}
-                      className="h-9 pl-8 text-sm"
-                    />
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {t("mcap.dashboard.filters.showing", "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)", {
-                      start: pageStart,
-                      end: pageEnd,
-                      filtered: totalFiltered,
-                      total: totalAll,
-                    })}
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <div className="min-w-[74px] text-center text-xs text-muted-foreground">
+                        {t("mcap.dashboard.pagination.page", "Page {{page}}/{{pages}}", {
+                          page: currentPage,
+                          pages: totalPages,
+                        })}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2"
+                        onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage >= totalPages}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
+              </div>
+            )}
 
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t("mcap.dashboard.loading", "Loading applications...")}
+              </div>
+            ) : totalAll === 0 ? (
+              <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                {t("mcap.dashboard.empty", "No Incorporation applications yet.")}
+              </div>
+            ) : totalFiltered === 0 ? (
+              <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground space-y-3">
+                <div>
+                  {searchQuery.trim()
+                    ? t("mcap.dashboard.search.empty", "No applications found for this search in {{filter}}.", {
+                      filter: activeFilterMeta.label,
+                    })
+                    : t("mcap.dashboard.filters.empty", "No applications found for {{filter}}.", {
+                      filter: activeFilterMeta.label,
+                    })}
+                </div>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {searchQuery.trim() && (
+                    <Button variant="outline" size="sm" onClick={() => setSearchQuery("")}>
+                      {t("mcap.dashboard.search.clear", "Clear search")}
+                    </Button>
+                  )}
+                  {activeFilter !== "all" && (
+                    <Button variant="outline" size="sm" onClick={() => setActiveFilter("all")}>
+                      {t("mcap.dashboard.filters.reset", "Show all applications")}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-md border">
+                <Table className={isAdminView ? "min-w-[1200px]" : "min-w-[860px]"}>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.company", "Company")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.country", "Country")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.status", "Status")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.payment", "Payment")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.incorporationDate", "Incorporation Date")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.createdAt", "Created At")}</TableHead>
+                      {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.assignedTo", "Assigned To")}</TableHead>}
+                      {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.filledBy", "Filled By")}</TableHead>}
+                      {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.userLastLogin", "User Latest Login")}</TableHead>}
+                      <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.columns.actions", "Actions")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedItems.map((entry) => {
+                      const config = MCAP_CONFIG_MAP[entry?.countryCode] || MCAP_CONFIG_MAP[entry?.id];
+                      const ownerUser = getOwnerUser(entry);
+                      // const canEdit = entry?.paymentStatus !== "paid";
+                      return (
+                        <TableRow
+                          key={entry?._id}
+                          onClick={canOpenCompanyDetail ? () => navigate(`/incorporation-detail/${entry._id}?mode=${companyDetailMode}`) : undefined}
+                          className={canOpenCompanyDetail ? "h-11 cursor-pointer hover:bg-muted/40" : "h-11"}
+                        >
+                          <TableCell className="py-2 font-medium">
+                            {resolveCompanyName(entry, untitledLabel)}
+                          </TableCell>
+
+                          <TableCell className="py-2">
+                            {entry?.countryName || config?.countryName || entry?.countryCode}
+                          </TableCell>
+
+                          <TableCell className="py-2">
+                            <Badge variant="secondary">
+                              {entry?.status || draftLabel}
+                            </Badge>
+                          </TableCell>
+
+                          <TableCell className="py-2">
+                            <Badge variant={entry?.paymentStatus === "paid" ? "default" : "outline"}>
+                              {entry?.paymentStatus || unpaidLabel}
+                            </Badge>
+                          </TableCell>
+
+                          <TableCell className="py-2 text-xs tabular-nums">
+                            {formatDateOnly(entry?.incorporationDate, notAvailableLabel)}
+                          </TableCell>
+
+                          <TableCell className="py-2 text-xs tabular-nums">
+                            {formatDateOnly(entry?.createdAt, notAvailableLabel)}
+                          </TableCell>
+
+                          {isAdminView && (
+                            <TableCell className="py-2 text-xs text-muted-foreground">
+                              {entry?.assignedTo || notAvailableLabel}
+                            </TableCell>
+                          )}
+
+                          {isAdminView && (
+                            <TableCell className="py-2 text-xs text-muted-foreground">
+                              {resolveFilledBy(entry, notAvailableLabel)}
+                            </TableCell>
+                          )}
+
+                          {isAdminView && (
+                            <TableCell className="py-2 text-xs tabular-nums text-muted-foreground">
+                              {ownerUser?.lastLogin ? formatDateTime(ownerUser.lastLogin) : notAvailableLabel}
+                            </TableCell>
+                          )}
+
+                          <TableCell className="py-2 text-right">
+                            <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 gap-1.5"
+                                // disabled={!canEdit}
+                                onClick={() => navigate(`/incorporation?companyId=${entry._id}`)}
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                                {t("mcap.dashboard.actions.edit", "Edit")}
+                              </Button>
+                              {isMaster && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                  onClick={() => setDeleteTarget({ id: entry._id, name: resolveCompanyName(entry, untitledLabel) })}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {isMaster && activeTab === "deleted" && (
+        <Card className="border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle>{t("mcap.dashboard.trash.title", "Deleted Companies")}</CardTitle>
+            <CardDescription>{t("mcap.dashboard.trash.desc", "Soft-deleted companies. Restore or permanently remove them.")}</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {!isLoadingDeleted && deletedTotal > 0 && (
+              <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div className="text-xs text-muted-foreground">
+                  {t("mcap.dashboard.filters.showing", "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)", {
+                    start: deletedPageStart,
+                    end: deletedPageEnd,
+                    filtered: deletedTotal,
+                    total: deletedTotal,
+                  })}
+                </div>
                 <div className="flex items-center gap-2 self-start md:self-auto">
-                  <span className="text-xs text-muted-foreground">
-                    {t("mcap.dashboard.sort.by", "Sort")}
-                  </span>
+                  <span className="text-xs text-muted-foreground">{t("mcap.dashboard.pagination.rows", "Rows")}</span>
                   <Select
-                    value={sortKey}
-                    onValueChange={(v) => setSortKey(v as DashboardSortKey)}
+                    value={String(deletedPageSize)}
+                    onValueChange={(v) => { setDeletedPageSize(Number(v)); setDeletedPage(1); }}
                   >
-                    <SelectTrigger className="h-8 w-[130px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{t("mcap.dashboard.sort.none", "None")}</SelectItem>
-                      <SelectItem value="country">{t("mcap.dashboard.sort.country", "Country")}</SelectItem>
-                      <SelectItem value="status">{t("mcap.dashboard.sort.status", "Status")}</SelectItem>
-                      <SelectItem value="payment">{t("mcap.dashboard.sort.payment", "Payment")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={sortDirection}
-                    onValueChange={(v) => setSortDirection(v as "asc" | "desc")}
-                    disabled={sortKey === "none"}
-                  >
-                    <SelectTrigger className="h-8 w-[100px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="asc">{t("mcap.dashboard.sort.asc", "Asc")}</SelectItem>
-                      <SelectItem value="desc">{t("mcap.dashboard.sort.desc", "Desc")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <span className="text-xs text-muted-foreground">
-                    {t("mcap.dashboard.pagination.rows", "Rows")}
-                  </span>
-                  <Select
-                    value={String(pageSize)}
-                    onValueChange={(v) => {
-                      setPageSize(Number(v));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger className="h-8 w-[78px]">
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger className="h-8 w-[78px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {PAGE_SIZE_OPTIONS.map((size) => (
-                        <SelectItem key={size} value={String(size)}>
-                          {size}
-                        </SelectItem>
+                        <SelectItem key={size} value={String(size)}>{size}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-
                   <div className="flex items-center gap-1">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-2"
-                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                      disabled={currentPage <= 1}
-                    >
+                    <Button type="button" variant="outline" size="sm" className="h-8 px-2" onClick={() => setDeletedPage((p) => Math.max(1, p - 1))} disabled={deletedPage <= 1}>
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <div className="min-w-[74px] text-center text-xs text-muted-foreground">
-                      {t("mcap.dashboard.pagination.page", "Page {{page}}/{{pages}}", {
-                        page: currentPage,
-                        pages: totalPages,
-                      })}
+                      {t("mcap.dashboard.pagination.page", "Page {{page}}/{{pages}}", { page: deletedPage, pages: deletedTotalPages })}
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-2"
-                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                      disabled={currentPage >= totalPages}
-                    >
+                    <Button type="button" variant="outline" size="sm" className="h-8 px-2" onClick={() => setDeletedPage((p) => Math.min(deletedTotalPages, p + 1))} disabled={deletedPage >= deletedTotalPages}>
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8 text-muted-foreground">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("mcap.dashboard.loading", "Loading applications...")}
-            </div>
-          ) : totalAll === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-              {t("mcap.dashboard.empty", "No Incorporation applications yet.")}
-            </div>
-          ) : totalFiltered === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground space-y-3">
-              <div>
-                {searchQuery.trim()
-                  ? t("mcap.dashboard.search.empty", "No applications found for this search in {{filter}}.", {
-                    filter: activeFilterMeta.label,
-                  })
-                  : t("mcap.dashboard.filters.empty", "No applications found for {{filter}}.", {
-                    filter: activeFilterMeta.label,
-                  })}
+            {isLoadingDeleted ? (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t("mcap.dashboard.loading", "Loading applications...")}
               </div>
-              <div className="flex flex-wrap justify-center gap-2">
-                {searchQuery.trim() && (
-                  <Button variant="outline" size="sm" onClick={() => setSearchQuery("")}>
-                    {t("mcap.dashboard.search.clear", "Clear search")}
-                  </Button>
-                )}
-                {activeFilter !== "all" && (
-                  <Button variant="outline" size="sm" onClick={() => setActiveFilter("all")}>
-                    {t("mcap.dashboard.filters.reset", "Show all applications")}
-                  </Button>
-                )}
+            ) : deletedTotal === 0 ? (
+              <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                {t("mcap.dashboard.trash.empty", "Trash is empty.")}
               </div>
-            </div>
-          ) : (
-            <div className="overflow-x-auto rounded-md border">
-            <Table className={isAdminView ? "min-w-[1200px]" : "min-w-[860px]"}>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.company", "Company")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.country", "Country")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.status", "Status")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.payment", "Payment")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.incorporationDate", "Incorporation Date")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.createdAt", "Created At")}</TableHead>
-                  {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.assignedTo", "Assigned To")}</TableHead>}
-                  {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.filledBy", "Filled By")}</TableHead>}
-                  {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.userLastLogin", "User Latest Login")}</TableHead>}
-                  <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.columns.actions", "Actions")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedItems.map((entry) => {
-                  const config = MCAP_CONFIG_MAP[entry?.countryCode] || MCAP_CONFIG_MAP[entry?.id];
-                  const ownerUser = getOwnerUser(entry);
-                  // const canEdit = entry?.paymentStatus !== "paid";
-                  return (
-                    <TableRow
-                      key={entry?._id}
-                      onClick={canOpenCompanyDetail ? () => navigate(`/incorporation-detail/${entry._id}?mode=${companyDetailMode}`) : undefined}
-                      className={canOpenCompanyDetail ? "h-11 cursor-pointer hover:bg-muted/40" : "h-11"}
-                    >
-                      <TableCell className="py-2 font-medium">
-                        {resolveCompanyName(entry, untitledLabel)}
-                      </TableCell>
-
-                      <TableCell className="py-2">
-                        {entry?.countryName || config?.countryName || entry?.countryCode}
-                      </TableCell>
-
-                      <TableCell className="py-2">
-                        <Badge variant="secondary">
-                          {entry?.status || draftLabel}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="py-2">
-                        <Badge variant={entry?.paymentStatus === "paid" ? "default" : "outline"}>
-                          {entry?.paymentStatus || unpaidLabel}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="py-2 text-xs tabular-nums">
-                        {formatDateOnly(entry?.incorporationDate, notAvailableLabel)}
-                      </TableCell>
-
-                      <TableCell className="py-2 text-xs tabular-nums">
-                        {formatDateOnly(entry?.createdAt, notAvailableLabel)}
-                      </TableCell>
-
-                      {isAdminView && (
-                        <TableCell className="py-2 text-xs text-muted-foreground">
-                          {entry?.assignedTo || notAvailableLabel}
-                        </TableCell>
-                      )}
-
-                      {isAdminView && (
-                        <TableCell className="py-2 text-xs text-muted-foreground">
-                          {resolveFilledBy(entry, notAvailableLabel)}
-                        </TableCell>
-                      )}
-
-                      {isAdminView && (
-                        <TableCell className="py-2 text-xs tabular-nums text-muted-foreground">
-                          {ownerUser?.lastLogin ? formatDateTime(ownerUser.lastLogin) : notAvailableLabel}
-                        </TableCell>
-                      )}
-
-                      <TableCell className="py-2 text-right">
-                        <div onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8 gap-1.5"
-                            // disabled={!canEdit}
-                            onClick={() => navigate(`/incorporation?companyId=${entry._id}`)}
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                            {t("mcap.dashboard.actions.edit", "Edit")}
-                          </Button>
-                        </div>
-                      </TableCell>
+            ) : (
+              <div className="overflow-x-auto rounded-md border">
+                <Table className="min-w-[900px]">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.company", "Company")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.country", "Country")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.status", "Status")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.payment", "Payment")}</TableHead>
+                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.trash.columns.deletedAt", "Deleted At")}</TableHead>
+                      <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.columns.actions", "Actions")}</TableHead>
                     </TableRow>
-
-                  );
-                })}
-              </TableBody>
-            </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {deletedItems.map((entry) => (
+                      <TableRow key={entry?._id} className="h-11">
+                        <TableCell className="py-2 font-medium">{resolveCompanyName(entry, untitledLabel)}</TableCell>
+                        <TableCell className="py-2">{entry?.countryName || entry?.countryCode}</TableCell>
+                        <TableCell className="py-2"><Badge variant="secondary">{entry?.status || draftLabel}</Badge></TableCell>
+                        <TableCell className="py-2"><Badge variant={entry?.paymentStatus === "paid" ? "default" : "outline"}>{entry?.paymentStatus || unpaidLabel}</Badge></TableCell>
+                        <TableCell className="py-2 text-xs tabular-nums">{formatDateOnly(entry?.updatedAt, notAvailableLabel)}</TableCell>
+                        <TableCell className="py-2 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 gap-1.5"
+                              onClick={() => setRestoreTarget({ id: entry._id, name: resolveCompanyName(entry, untitledLabel) })}
+                            >
+                              <RotateCcw className="h-3.5 w-3.5" />
+                              {t("mcap.dashboard.trash.actions.restore", "Restore")}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                              onClick={() => setPermanentDeleteTarget({ id: entry._id, name: resolveCompanyName(entry, untitledLabel) })}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
@@ -886,76 +1114,124 @@ export default function McapUserDashboard() {
             </div>
           ) : (
             <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.company", "Company")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.country", "Country")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.roles", "Roles")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.kyc", "KYC")}</TableHead>
-                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.expires", "Expires")}</TableHead>
-                  <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.invitations.columns.action", "Action")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {invites.map((inv) => {
-                  const company = inv.company || {};
-                  const isDcp = (inv.roles || []).includes("dcp");
-                  return (
-                    <TableRow
-                      key={inv._id}
-                      className="h-11 cursor-pointer hover:bg-muted/40"
-                      onClick={() => navigate(`/incorporation-parties?partyId=${inv._id}&mode=detail`)}
-                    >
-                      <TableCell className="py-2 font-medium">{company.companyName || company.countryName || invitationCompanyLabel}</TableCell>
-                      <TableCell className="py-2">{company.countryName || company.countryCode || "-"}</TableCell>
-                      <TableCell className="py-2 text-xs text-muted-foreground">{(inv.roles || []).join(", ")}</TableCell>
-                      <TableCell className="py-2">
-                        <Badge variant={inv.kycStatus === "approved" ? "default" : "outline"} className="capitalize">
-                          {inv.kycStatus || invitationPendingLabel}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="py-2 text-xs text-muted-foreground">
-                        {inv.kycExpiresAt ? new Date(inv.kycExpiresAt).toISOString().slice(0, 10) : "-"}
-                      </TableCell>
-                      <TableCell className="py-2 text-right">
-                        <div className="flex flex-wrap justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/incorporation-parties?partyId=${inv._id}&mode=edit`);
-                            }}
-                          >
-                            {t("mcap.dashboard.invitations.actions.completeKyc", "Complete KYC")}
-                          </Button>
-                          {isDcp && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.company", "Company")}</TableHead>
+                    <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.country", "Country")}</TableHead>
+                    <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.roles", "Roles")}</TableHead>
+                    <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.kyc", "KYC")}</TableHead>
+                    <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.expires", "Expires")}</TableHead>
+                    <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.invitations.columns.action", "Action")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {invites.map((inv) => {
+                    const company = inv.company || {};
+                    const isDcp = (inv.roles || []).includes("dcp");
+                    return (
+                      <TableRow
+                        key={inv._id}
+                        className="h-11 cursor-pointer hover:bg-muted/40"
+                        onClick={() => navigate(`/incorporation-parties?partyId=${inv._id}&mode=detail`)}
+                      >
+                        <TableCell className="py-2 font-medium">{company.companyName || company.countryName || invitationCompanyLabel}</TableCell>
+                        <TableCell className="py-2">{company.countryName || company.countryCode || "-"}</TableCell>
+                        <TableCell className="py-2 text-xs text-muted-foreground">{(inv.roles || []).join(", ")}</TableCell>
+                        <TableCell className="py-2">
+                          <Badge variant={inv.kycStatus === "approved" ? "default" : "outline"} className="capitalize">
+                            {inv.kycStatus || invitationPendingLabel}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="py-2 text-xs text-muted-foreground">
+                          {inv.kycExpiresAt ? new Date(inv.kycExpiresAt).toISOString().slice(0, 10) : "-"}
+                        </TableCell>
+                        <TableCell className="py-2 text-right">
+                          <div className="flex flex-wrap justify-end gap-2">
                             <Button
                               size="sm"
+                              variant="outline"
                               className="h-8"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/incorporation?companyId=${company._id || company.id || ""}`);
+                                navigate(`/incorporation-parties?partyId=${inv._id}&mode=edit`);
                               }}
                             >
-                              {t("mcap.dashboard.invitations.actions.openIncorporation", "Open Incorporation")}
+                              {t("mcap.dashboard.invitations.actions.completeKyc", "Complete KYC")}
                             </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                            {isDcp && (
+                              <Button
+                                size="sm"
+                                className="h-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/incorporation?companyId=${company._id || company.id || ""}`);
+                                }}
+                              >
+                                {t("mcap.dashboard.invitations.actions.openIncorporation", "Open Incorporation")}
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>
       </Card>
 
       <RoleBottomBlock role={role} />
+
+      {/* Soft-delete confirmation */}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={() => setDeleteTarget(null)}
+        title={t("mcap.dashboard.trash.confirmSoftDelete.title", "Delete the Record?")}
+        description={
+          <>
+            {t("mcap.dashboard.trash.confirmSoftDelete.description", "Are you sure you want to delete")} <strong>{deleteTarget?.name}</strong> {t("mcap.dashboard.trash.confirmSoftDelete.descriptionSuffix", "?")}
+          </>
+        }
+        confirmText={t("mcap.dashboard.trash.confirmSoftDelete.confirm", "Delete")}
+        isLoading={isDeleting}
+        onConfirm={handleSoftDelete}
+        confirmVariant="destructive"
+      />
+
+      {/* Restore confirmation */}
+      <ConfirmDialog
+        open={!!restoreTarget}
+        onOpenChange={() => setRestoreTarget(null)}
+        title={t("mcap.dashboard.trash.confirmRestore.title", "Restore Company?")}
+        description={
+          <>
+            {t("mcap.dashboard.trash.confirmRestore.description", "Restore")} <strong>{restoreTarget?.name}</strong> {t("mcap.dashboard.trash.confirmRestore.descriptionSuffix", "back to active companies?")}
+          </>
+        }
+        confirmText={t("mcap.dashboard.trash.confirmRestore.confirm", "Restore")}
+        isLoading={isRestoring}
+        onConfirm={handleRestore}
+        confirmVariant="default"
+      />
+
+      {/* Permanent delete confirmation */}
+      <ConfirmDialog
+        open={!!permanentDeleteTarget}
+        onOpenChange={() => setPermanentDeleteTarget(null)}
+        title={t("mcap.dashboard.trash.confirmPermanentDelete.title", "Permanently Delete?")}
+        description={
+          <>
+            {t("mcap.dashboard.trash.confirmPermanentDelete.description", "This action cannot be undone.")} <strong>{permanentDeleteTarget?.name}</strong> {t("mcap.dashboard.trash.confirmPermanentDelete.descriptionSuffix", "will be permanently removed along with all associated parties.")}
+          </>
+        }
+        confirmText={t("mcap.dashboard.trash.confirmPermanentDelete.confirm", "Delete Forever")}
+        isLoading={isPermanentDeleting}
+        onConfirm={handlePermanentDelete}
+        confirmVariant="destructive"
+      />
     </div>
   );
 }

@@ -320,20 +320,19 @@ const ReqForQuotation: React.FC = () => {
 
     const renderField = (field: FieldConfig) => {
         const baseId = field.id as keyof VaspFormState;
-        // helper to resolve label/placeholder safely
-        // const resolveText = (key?: string) => (key ? t(key) : "");
 
         if (field.type === "text" || field.type === "email" || field.type === "tel")
             return (
-                <div key={field.id} className="space-y-1">
-                    <Label htmlFor={field.id}>
+                <div key={field.id} className="space-y-2">
+                    <Label htmlFor={field.id} className="text-sm font-medium text-foreground/80">
                         {field.label && t(field.label)}
-                        {field.required && <span className="text-red-500 ml-0.5">*</span>}
+                        {field.required && <span className="text-destructive ml-1">*</span>}
                     </Label>
                     <Input
                         id={field.id}
                         type={field.type === "text" ? "text" : field.type}
                         value={(form[baseId] as string) || ""}
+                        className="bg-background/50 border-border/50 focus-visible:ring-primary/30 h-11 transition-all shadow-sm rounded-lg"
                         placeholder={
                             field.placeholder
                                 ? t(field.placeholder)
@@ -348,14 +347,15 @@ const ReqForQuotation: React.FC = () => {
 
         if (field.type === "textarea")
             return (
-                <div key={field.id} className="space-y-1">
-                    <Label htmlFor={field.id}>
+                <div key={field.id} className="space-y-2">
+                    <Label htmlFor={field.id} className="text-sm font-medium text-foreground/80">
                         {field.label && t(field.label)}
-                        {field.required && <span className="text-red-500 ml-0.5">*</span>}
+                        {field.required && <span className="text-destructive ml-1">*</span>}
                     </Label>
                     <Textarea
                         id={field.id}
                         rows={4}
+                        className="bg-background/50 border-border/50 focus-visible:ring-primary/30 transition-all shadow-sm rounded-lg resize-y"
                         value={(form[baseId] as string) || ""}
                         placeholder={
                             field.placeholder
@@ -371,14 +371,14 @@ const ReqForQuotation: React.FC = () => {
 
         if (field.type === "checkbox-group")
             return (
-                <div key={field.id} className="space-y-2">
+                <div key={field.id} className="space-y-4">
                     {field.label && (
-                        <Label className="font-medium">
+                        <Label className="text-sm font-medium text-foreground/80 block mb-1">
                             {t(field.label)}
-                            {field.required && <span className="text-red-500 ml-0.5">*</span>}
+                            {field.required && <span className="text-destructive ml-1">*</span>}
                         </Label>
                     )}
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {field.options?.map((opt) => {
                             const selected = Array.isArray(form[baseId])
                                 ? (form[baseId] as string[]).includes(opt.value)
@@ -386,24 +386,30 @@ const ReqForQuotation: React.FC = () => {
                             const otherTextId = opt.otherFieldId as keyof VaspFormState | undefined;
 
                             return (
-                                <div key={opt.value} className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-2">
-                                        <Checkbox
-                                            id={`${field.id}-${opt.value}`}
-                                            checked={selected}
-                                            onCheckedChange={(c) => handleCheckboxChange(baseId, opt.value, c)}
-                                        />
-                                        <Label
-                                            className="cursor-pointer"
-                                            htmlFor={`${field.id}-${opt.value}`}
-                                        >
+                                <div key={opt.value} className="flex flex-col gap-2">
+                                    <Label
+                                        htmlFor={`${field.id}-${opt.value}`}
+                                        className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer shadow-sm hover:shadow-md ${selected
+                                                ? 'border-primary/60 bg-primary/5 ring-1 ring-primary/20'
+                                                : 'border-border/60 bg-background/50 hover:bg-accent/40 hover:border-border'
+                                            }`}
+                                    >
+                                        <div className="mt-0.5">
+                                            <Checkbox
+                                                id={`${field.id}-${opt.value}`}
+                                                checked={selected}
+                                                onCheckedChange={(c) => handleCheckboxChange(baseId, opt.value, c)}
+                                            />
+                                        </div>
+                                        <span className="font-normal leading-tight text-sm text-foreground/90">
                                             {t(opt.label)}
-                                        </Label>
-                                    </div>
+                                        </span>
+                                    </Label>
                                     {opt.withText && otherTextId && selected && (
-                                        <div className="pl-7">
+                                        <div className="pl-1 text-sm animate-in fade-in slide-in-from-top-2 duration-300">
                                             <Input
-                                                placeholder={t("usa.AppInfo.namePlaceholder")}
+                                                className="h-10 bg-background shadow-sm border-primary/30"
+                                                placeholder={t("usa.AppInfo.namePlaceholder", "Please specify...")}
                                                 value={(form[otherTextId] as string) || ""}
                                                 onChange={(e) => setValue(otherTextId, e.target.value)}
                                             />
@@ -418,42 +424,48 @@ const ReqForQuotation: React.FC = () => {
 
         if (field.type === "radio-group")
             return (
-                <div key={field.id} className="space-y-2">
+                <div key={field.id} className="space-y-4">
                     {field.label && (
-                        <Label className="font-medium">
+                        <Label className="text-sm font-medium text-foreground/80 block mb-1">
                             {t(field.label)}
-                            {field.required && <span className="text-red-500 ml-0.5">*</span>}
+                            {field.required && <span className="text-destructive ml-1">*</span>}
                         </Label>
                     )}
                     {field.helperText && (
-                        <p className="text-xs text-muted-foreground max-w-3xl">
+                        <p className="text-[13px] text-muted-foreground/80 leading-relaxed mb-4 max-w-3xl">
                             {t(field.helperText)}
                         </p>
                     )}
                     <RadioGroup
                         value={(form[baseId] as string) || ""}
                         onValueChange={(v) => setValue(baseId, v)}
-                        className="space-y-2"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
                     >
                         {field.options?.map((opt) => {
                             const otherTextId = opt.otherFieldId as keyof VaspFormState | undefined;
                             const isSelected = form[baseId] === opt.value;
 
                             return (
-                                <div key={opt.value} className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-2">
-                                        <RadioGroupItem id={`${field.id}-${opt.value}`} value={opt.value} />
-                                        <Label
-                                            className="cursor-pointer"
-                                            htmlFor={`${field.id}-${opt.value}`}
-                                        >
+                                <div key={opt.value} className="flex flex-col gap-2">
+                                    <Label
+                                        htmlFor={`${field.id}-${opt.value}`}
+                                        className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer shadow-sm hover:shadow-md ${isSelected
+                                                ? 'border-primary/60 bg-primary/5 ring-1 ring-primary/20'
+                                                : 'border-border/60 bg-background/50 hover:bg-accent/40 hover:border-border'
+                                            }`}
+                                    >
+                                        <div className="mt-0.5">
+                                            <RadioGroupItem id={`${field.id}-${opt.value}`} value={opt.value} />
+                                        </div>
+                                        <span className="font-normal leading-tight text-sm text-foreground/90">
                                             {t(opt.label)}
-                                        </Label>
-                                    </div>
+                                        </span>
+                                    </Label>
                                     {opt.withText && otherTextId && isSelected && (
-                                        <div className="pl-7">
+                                        <div className="pl-1 text-sm animate-in fade-in slide-in-from-top-2 duration-300">
                                             <Input
-                                                placeholder={t("usa.AppInfo.namePlaceholder")}
+                                                className="h-10 bg-background shadow-sm border-primary/30"
+                                                placeholder={t("usa.AppInfo.namePlaceholder", "Please specify...")}
                                                 value={(form[otherTextId] as string) || ""}
                                                 onChange={(e) => setValue(otherTextId, e.target.value)}
                                             />
@@ -478,26 +490,61 @@ const ReqForQuotation: React.FC = () => {
         if (result) {
             toast({
                 title: "Success",
-                description : "Details saved successfully"
+                description: "Details saved successfully"
             })
             setReset("reset")
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-2">
-            {formSections.map((section) => (
-                <Card key={section.id}>
-                    <CardContent className="pt-6 space-y-4">
-                        <h2 className="text-lg font-semibold">{t(section.title)}</h2>
-                        {section.fields.map((f) => renderField(f))}
-                    </CardContent>
-                </Card>
-            ))}
-            <div className="flex justify-end mt-4">
-                <Button type="submit">{t("newHk.payment.bankUpload.submit")}</Button>
+        <div className="max-width mx-auto px-4 py-8 md:py-12">
+            <div className="mb-10 lg:mb-14 text-center max-w-3xl mx-auto space-y-4">
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground bg-clip-text">
+                    {t("reqForQuote.pageTitle", "Request a Quotation")}
+                </h1>
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                    {t("reqForQuote.pageDescription", "Please provide your project requirements and details. We will review your application and respond with a comprehensive, customized quotation.")}
+                </p>
             </div>
-        </form>
+
+            <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10">
+                {formSections.map((section) => (
+                    <Card
+                        key={section.id}
+                        className="border-border/40 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl overflow-hidden bg-card/60 backdrop-blur-xl"
+                    >
+                        <CardContent className="p-6 md:p-8 lg:p-10">
+                            <div className="mb-8 pb-5 border-b border-border/40 flex items-center gap-4">
+                                <div className="h-8 w-1.5 bg-gradient-to-b from-primary to-primary/60 rounded-full"></div>
+                                <h2 className="text-xl md:text-2xl font-medium tracking-tight text-foreground">
+                                    {t(section.title)}
+                                </h2>
+                            </div>
+
+                            {section.id === "contact" ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+                                    {section.fields.map((f) => renderField(f))}
+                                </div>
+                            ) : (
+                                <div className="space-y-8">
+                                    {section.fields.map((f) => renderField(f))}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                ))}
+
+                <div className="flex justify-end mt-8 pt-4">
+                    <Button
+                        type="submit"
+                        size="lg"
+                        className="px-10 h-14 rounded-xl text-base font-medium shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 bg-primary hover:bg-primary/90 text-primary-foreground"
+                    >
+                        {t("newHk.payment.bankUpload.submit", "Submit Request")}
+                    </Button>
+                </div>
+            </form>
+        </div>
     );
 };
 export default ReqForQuotation;
