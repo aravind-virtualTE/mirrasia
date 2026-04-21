@@ -353,7 +353,6 @@ export const resolveMcapRuntimeConfig = (
   const resolvedParties = Array.isArray(parties) ? parties : [];
   const resolvedJourneyType = resolveMcapJourneyType(journeyType);
   const journeyConfig = resolveMcapConfigForJourney(config, resolvedJourneyType);
-
   const runtimeBaseConfig = journeyConfig.resolveRuntimeConfig
     ? journeyConfig.resolveRuntimeConfig({
       data: resolvedData,
@@ -362,7 +361,15 @@ export const resolveMcapRuntimeConfig = (
     }) || journeyConfig
     : journeyConfig;
 
-  const runtimeConfig = resolveMcapConfigForJourney(runtimeBaseConfig, resolvedJourneyType);
+  // Re-run normalization on any runtime-resolved config so that
+  // common steps (service-agreement, review, ordering, and legal-term
+  // stripping) are applied to configs that mutate their `steps` at runtime.
+  const runtimeBaseConfigNormalized = normalizeConfig(
+    // normalizeConfig respects `skipNormalization` on the config
+    (runtimeBaseConfig as McapConfig)
+  );
+
+  const runtimeConfig = resolveMcapConfigForJourney(runtimeBaseConfigNormalized, resolvedJourneyType);
   const preludeSteps = journeyConfig.getPreludeSteps
     ? journeyConfig.getPreludeSteps({
       data: resolvedData,
