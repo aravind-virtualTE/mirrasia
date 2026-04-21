@@ -28,7 +28,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Flag, X, Check, ChevronDown } from 'lucide-react';
+import { Flag, X, Check, ChevronDown, CheckSquare, CalendarPlus } from 'lucide-react';
 import { useState, useRef, useEffect, forwardRef } from 'react';
 import { allCompNameAtom } from '@/services/state';
 import { fetchUsers } from '@/services/dataFetch';
@@ -37,6 +37,7 @@ import { RichTextEditor } from '@/components/rich-text-editor';
 import CustomLoader from '@/components/ui/customLoader';
 import { Switch } from '@/components/ui/switch';
 import SearchSelectNew from '@/components/SearchSelect2';
+import { googleIntegrationAtom } from '@/store/googleIntegrationAtom';
 import DatePicker from 'react-datepicker'; // Import react-datepicker
 import 'react-datepicker/dist/react-datepicker.css'; // Import styles
 
@@ -108,6 +109,7 @@ export const CreateTaskDialog = ({
     const [allList] = useAtom(allCompNameAtom);
     const [projects] = useAtom(projectsAtom);
     const [isLoading, setIsLoading] = useState(false);
+    const [{ connected: googleConnected }] = useAtom(googleIntegrationAtom);
     const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null;
 
     // dropdown state
@@ -294,6 +296,8 @@ export const CreateTaskDialog = ({
                     company: formState.selectedCompany,
                     project: formState.selectedProject,
                     shareWithClient: formState.shareWithClient,
+                    addToGoogleTasks: formState.addToGoogleTasks,
+                    addToGoogleCalendar: formState.addToGoogleCalendar,
                     duration,
                     durationUnit,
                     createdAt: new Date(),
@@ -586,6 +590,36 @@ export const CreateTaskDialog = ({
                             disabled={!formState.selectedCompany?.id}
                         />
                     </div>
+
+                    {/* Google Integration Toggles (only when connected) */}
+                    {googleConnected && !isEditMode && (
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between p-2 border rounded-lg">
+                                <div className="flex items-center gap-2">
+                                    <CheckSquare className="h-4 w-4 text-blue-600" />
+                                    <label className="text-sm font-medium text-gray-900">Add to Google Tasks</label>
+                                </div>
+                                <Switch
+                                    checked={formState.addToGoogleTasks}
+                                    onCheckedChange={(value) =>
+                                        setFormState({ ...formState, addToGoogleTasks: value })
+                                    }
+                                />
+                            </div>
+                            <div className="flex items-center justify-between p-2 border rounded-lg">
+                                <div className="flex items-center gap-2">
+                                    <CalendarPlus className="h-4 w-4 text-green-600" />
+                                    <label className="text-sm font-medium text-gray-900">Add to Google Calendar</label>
+                                </div>
+                                <Switch
+                                    checked={formState.addToGoogleCalendar}
+                                    onCheckedChange={(value) =>
+                                        setFormState({ ...formState, addToGoogleCalendar: value })
+                                    }
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {formState.selectedUsers.length > 0 && (
                         <div className="pt-2">

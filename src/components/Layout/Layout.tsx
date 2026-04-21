@@ -18,7 +18,7 @@ import {
   UserPlus,
   Building2,
   FileText,
-  Tag,
+  Tag, DollarSign,
   type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -36,7 +36,7 @@ import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
 import { McapBotWidget } from '@/mcap/bot/McapBotWidget';
-import {PayoneerIcon} from "./Payoneer";
+import { PayoneerIcon } from "./Payoneer";
 
 type Role = "user" | "admin" | "master"
 type DecodedToken = { role?: Role };
@@ -159,14 +159,14 @@ const Layout: React.FC = () => {
             id: "switch-services",
             icon: RefreshCw,
             label: t("sideItems.switchServices"),
-            roles: [ "admin", "master"],
+            roles: ["admin", "master"],
             to: "/switch-services-list",
           },
-           {
+          {
             id: "accounting-form",
             icon: Briefcase,
             label: t("sideItems.accountForm", "Accounting Form"),
-            roles: [ "admin", "master"],
+            roles: ["admin", "master"],
             to: "/accounting-services",
           },
           {
@@ -220,7 +220,7 @@ const Layout: React.FC = () => {
           },
 
         ],
-      },     
+      },
       {
         id: "legacy-services",
         icon: Briefcase,
@@ -256,19 +256,19 @@ const Layout: React.FC = () => {
           },
         ],
       },
-       {
+      {
         id: "incorporation-services",
         icon: Briefcase,
         label: "MCAP",
         roles: ["admin", "master"],
         children: [
-          // {
-          //   id: "incorporation-pricing",
-          //   icon: DollarSign,
-          //   label: "Incorporation Pricing",
-          //   roles: ["admin", "master"],
-          //   to: "/incorporation-pricing",
-          // },
+          {
+            id: "incorporation-pricing",
+            icon: DollarSign,
+            label: "Incorporation Pricing",
+            roles: ["admin", "master"],
+            to: "/incorporation-pricing",
+          },
           {
             id: "incorporation-migrations",
             icon: FileCheck,
@@ -339,7 +339,7 @@ const Layout: React.FC = () => {
         roles: ["user", "admin", "master"],
         to: "/incorporation-documents",
       },
-       {
+      {
         id: "incorporation-payoneer",
         icon: PayoneerIcon,
         label: t("sideItems.payoneer"),

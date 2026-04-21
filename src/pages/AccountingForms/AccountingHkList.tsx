@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { fetchAccountingServices } from './hk/accountingServiceFetch';
+import { fetchAccountingServices, deleteAccountingService } from './hk/accountingServiceFetch';
 import { format } from "date-fns"
-import { FileIcon, ImageIcon, FileTextIcon, ExternalLinkIcon } from "lucide-react"
+import { FileIcon, ImageIcon, FileTextIcon, ExternalLinkIcon, TrashIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -9,17 +9,46 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AccountingServiceItem, DetailDialogProps } from './types/accTypes';
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 
 
 const AccountingHkList: React.FC = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<AccountingServiceItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<AccountingServiceItem | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<AccountingServiceItem | null>(null)
+  const [isPermanentDelete, setIsPermanentDelete] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleRowClick = (item: AccountingServiceItem) => {
     setSelectedItem(item)
     setDialogOpen(true)
+  }
+
+  const handleDeleteClick = (e: React.MouseEvent, item: AccountingServiceItem) => {
+    e.stopPropagation()
+    setItemToDelete(item)
+    setIsPermanentDelete(false)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return
+    setIsDeleting(true)
+    try {
+      await deleteAccountingService(itemToDelete._id, isPermanentDelete)
+      setData(prev => prev.filter(item => item._id !== itemToDelete._id))
+      setDeleteDialogOpen(false)
+      setItemToDelete(null)
+    } catch (error) {
+      console.error("Failed to delete", error)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -51,21 +80,24 @@ const AccountingHkList: React.FC = () => {
           <Table className="w-full">
             <TableHeader>
               <TableRow className="bg-muted/50">
+                <TableHead className="w-[60px]">Sr No.</TableHead>
                 <TableHead className="w-[100px]">ID</TableHead>
                 <TableHead>Company</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Country</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Industry</TableHead>
+                <TableHead className="w-[80px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item: AccountingServiceItem) => (
+              {data.map((item: AccountingServiceItem, index: number) => (
                 <TableRow
                   key={item._id}
                   className="cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => handleRowClick(item)}
                 >
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-mono text-xs">{item._id.substring(0, 8)}...</TableCell>
                   <TableCell className="font-medium">{item.companyName}</TableCell>
                   <TableCell>{item.email}</TableCell>
@@ -83,11 +115,46 @@ const AccountingHkList: React.FC = () => {
                       ))}
                     </div>
                   </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={(e) => handleDeleteClick(e, item)}
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <DetailDialog open={dialogOpen} onOpenChange={setDialogOpen} data={selectedItem} />
+          
+          <ConfirmDialog
+            open={deleteDialogOpen}
+            onOpenChange={setDeleteDialogOpen}
+            title="Delete Accounting Form"
+            description={
+              <div className="space-y-4">
+                <p>Are you sure you want to delete the form for <strong>{itemToDelete?.companyName}</strong>?</p>
+                <div className="flex items-center space-x-2 bg-muted/50 p-3 rounded-md">
+                  <Checkbox 
+                    id="permanent-delete" 
+                    checked={isPermanentDelete}
+                    onCheckedChange={(checked) => setIsPermanentDelete(checked === true)}
+                  />
+                  <Label htmlFor="permanent-delete" className="font-normal cursor-pointer text-destructive">
+                    Permanently delete (this action cannot be undone)
+                  </Label>
+                </div>
+              </div>
+            }
+            confirmText="Delete"
+            loadingText="Deleting..."
+            isLoading={isDeleting}
+            onConfirm={handleConfirmDelete}
+          />
         </div>
       </CardContent>
     </Card>

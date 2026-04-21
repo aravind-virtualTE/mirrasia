@@ -73,6 +73,8 @@ import CouponManagement from './mcap/admin/CouponManagement';
 import MobileUpload from './pages/MobileUpload/MobileUpload';
 import VersionUpdateBanner from './components/system/VersionUpdateBanner';
 import PayoneerMirrAsiaIntegration from './pages/Payoneer/Payoneer';
+import GoogleCallback from './pages/GoogleCallback';
+import TermsOfService from './components/TermsService';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -120,6 +122,8 @@ const App: React.FC = () => {
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-service" element={<TermsOfService />} />
+                  <Route path="/google-callback" element={<GoogleCallback />} />
 
 
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master", "hk_shdr", 'us_shdr', 'pa_shdr']} />}>
@@ -162,8 +166,8 @@ const App: React.FC = () => {
                         <Route path="/incorporation-detail/:id" element={<McapCompanyDetail />} />
                         <Route path="/incorporation-documents" element={<McapDocumentsHub />} />
                         <Route path="/payoneer" element={<PayoneerMirrAsiaIntegration />} />
-                        
-                        
+
+
                       </Route>
                     </Route>
                   </Route>

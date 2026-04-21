@@ -42,6 +42,16 @@ export const getSwitchServicesList = async (id?: string) => {
   }
 };
 
+export const deleteSwitchService = async (id: string, isPermanent?: boolean) => {
+  try {
+    const response = await api.delete(`/switch/${id}${isPermanent ? '?permanent=true' : ''}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting switch service:", error);
+    throw error;
+  }
+};
+
 // export const createOrUpdateMemo = async (memoData: {
 //   text: string;
 //   author: string;

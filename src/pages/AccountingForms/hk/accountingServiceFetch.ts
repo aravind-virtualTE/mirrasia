@@ -73,9 +73,9 @@ export const fetchAccountingServicesById = async (id?: string) => {
 };
 
 
-export const deleteAccountingService = async (id: string) => {
+export const deleteAccountingService = async (id: string, isPermanent?: boolean) => {
     try {
-        const response = await api.delete(`/acountingServices/${id}`);
+        const response = await api.delete(`/acountingServices/${id}${isPermanent ? '?permanent=true' : ''}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting accounting service:", error);

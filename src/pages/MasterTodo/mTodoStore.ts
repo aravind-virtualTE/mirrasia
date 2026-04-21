@@ -46,6 +46,8 @@ export interface Task {
   startedAt?: Date | string;
   reminderSent?: boolean;
   dailyReminderSent?: boolean;
+  googleTaskId?: string | null;
+  googleCalendarEventId?: string | null;
 }
 
 export interface PaginationMeta {
@@ -76,6 +78,9 @@ export interface CreateTaskFormState {
   durationPreset?: string | null;
   customDuration?: number | null;
   customDurationUnit?: DurationUnit;
+  // Google integration opt-in (only used during creation, not stored in DB)
+  addToGoogleTasks?: boolean;
+  addToGoogleCalendar?: boolean;
 }
 
 export const defaultFormState: CreateTaskFormState = {
@@ -93,6 +98,8 @@ export const defaultFormState: CreateTaskFormState = {
   durationPreset: null,
   customDuration: null,
   customDurationUnit: 'hours',
+  addToGoogleTasks: false,
+  addToGoogleCalendar: false,
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);
