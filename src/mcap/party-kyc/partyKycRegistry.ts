@@ -5019,6 +5019,41 @@ const BVI_ENTITY_CONFIG = buildBviEntityConfigFromUk();
 const GE_PERSON_CONFIG = buildGeorgiaPersonConfigFromUk();
 const GE_ENTITY_CONFIG = buildGeEntityConfigFromUk();
 
+const buildPpifPersonConfig = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "PA_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  return {
+    ...source,
+    id: "PPIF_PERSON",
+    title: "Panama Private Interest Foundation Party KYC",
+    countryCode: "PPIF",
+    partyType: "person",
+    steps: source.steps.map(cloneStep),
+  };
+};
+
+const buildPpifEntityConfig = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "PA_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  return {
+    ...source,
+    id: "PPIF_ENTITY",
+    title: "Panama Private Interest Foundation Corporate Party KYC",
+    countryCode: "PPIF",
+    partyType: "entity",
+    steps: source.steps.map(cloneStep),
+  };
+};
+
+const PPIF_PERSON_CONFIG = buildPpifPersonConfig();
+const PPIF_ENTITY_CONFIG = buildPpifEntityConfig();
+
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
   ...(CH_PERSON_CONFIG ? [CH_PERSON_CONFIG] : []),
@@ -5037,6 +5072,8 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...(BVI_ENTITY_CONFIG ? [BVI_ENTITY_CONFIG] : []),
   ...(GE_PERSON_CONFIG ? [GE_PERSON_CONFIG] : []),
   ...(GE_ENTITY_CONFIG ? [GE_ENTITY_CONFIG] : []),
+  ...(PPIF_PERSON_CONFIG ? [PPIF_PERSON_CONFIG] : []),
+  ...(PPIF_ENTITY_CONFIG ? [PPIF_ENTITY_CONFIG] : []),
 ];
 
 export const resolvePartyKycConfig = ({
