@@ -354,13 +354,13 @@ const Layout: React.FC = () => {
         roles: ["user", "admin", "master"],
         to: "/payoneer",
       },
-      {
-        id: "referral-dashboard",
-        icon: Wallet,
-        label: "Referral Dashboard",
-        roles: ["user", "admin", "master"],
-        to: "/referral-dashboard",
-      },
+      // {
+      //   id: "referral-dashboard",
+      //   icon: Wallet,
+      //   label: "Referral Dashboard",
+      //   roles: ["user", "admin", "master"],
+      //   to: "/referral-dashboard",
+      // },
       {
         id: "users",
         icon: Users,
