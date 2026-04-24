@@ -18,7 +18,12 @@ import {
   UserPlus,
   Building2,
   FileText,
-  Tag, DollarSign,
+  Tag,
+  DollarSign,
+  Wallet,
+  BarChart3,
+  ShieldBan,
+  Landmark,
   type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -134,12 +139,26 @@ const Layout: React.FC = () => {
     } catch {
       /* no-op */
     }
-  }, [resetAllForms, setUS, setPA, setSG, setHK]);
+  }, [resetAllForms, setUS, setPA, setSG, setHK, setCR]);
 
   const baseItem =
     "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
   const baseItemChild =
     "w-full inline-flex items-center h-9 rounded-md px-2 text-sm text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
+  const isReferralDashboard = location.pathname.startsWith("/referral-dashboard");
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  let role: Role = "user";
+  let isTokenValid = true;
+  if (!token) {
+    isTokenValid = false;
+  } else {
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      role = decoded.role ?? "user";
+    } catch {
+      isTokenValid = false;
+    }
+  }
   const grouped: SidebarGroupCfg[] = useMemo(
     () => [
       {
@@ -294,20 +313,9 @@ const Layout: React.FC = () => {
         ],
       }
     ],
-    [t]
+    [t, hardReset, navigate, role]
   );
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (!token) return <Navigate to="/" replace />;
-
-  let role: Role = "user";
-  try {
-    const decoded = jwtDecode<DecodedToken>(token);
-    role = decoded.role ?? "user";
-  } catch {
-    return <Navigate to="/" replace />;
-  }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const singleItems: SidebarItemCfg[] = useMemo(
     () => [
 
@@ -347,6 +355,13 @@ const Layout: React.FC = () => {
         to: "/payoneer",
       },
       {
+        id: "referral-dashboard",
+        icon: Wallet,
+        label: "Referral Dashboard",
+        roles: ["user", "admin", "master"],
+        to: "/referral-dashboard",
+      },
+      {
         id: "users",
         icon: Users,
         label: t("sideItems.userList"),
@@ -383,10 +398,89 @@ const Layout: React.FC = () => {
       },
 
     ],
-    [t, role, navigate, hardReset]
+    [t]
   );
-  const filteredSingles = singleItems.filter((i) => i.roles.includes(role));
-  const filteredGroups = grouped
+  const referralSingles: SidebarItemCfg[] = useMemo(
+    () => [
+      {
+        id: "referral-overview",
+        icon: Home,
+        label: "Referral Overview",
+        roles: ["user", "admin", "master"],
+        to: "/referral-dashboard",
+      },
+      {
+        id: "referral-companies",
+        icon: Building2,
+        label: "Referral Companies",
+        roles: ["user", "admin", "master"],
+        to: "/referral-dashboard/companies",
+      },
+      {
+        id: "referral-commissions",
+        icon: BarChart3,
+        label: "Commissions",
+        roles: ["user", "admin", "master"],
+        to: "/referral-dashboard/commissions",
+      },
+      {
+        id: "referral-withdrawals",
+        icon: Wallet,
+        label: "Withdrawals",
+        roles: ["user", "admin", "master"],
+        to: "/referral-dashboard/withdrawals",
+      },
+      {
+        id: "referral-home",
+        icon: FileSignature,
+        label: "Back to Incorporation",
+        roles: ["user", "admin", "master"],
+        to: "/incorporation-dashboard",
+      },
+    ],
+    []
+  );
+
+  const referralGroups: SidebarGroupCfg[] = useMemo(
+    () => [
+      {
+        id: "referral-master-controls",
+        icon: Landmark,
+        label: "Master Controls",
+        roles: ["master"],
+        children: [
+          {
+            id: "referral-rules",
+            icon: DollarSign,
+            label: "Commission Rules",
+            roles: ["master"],
+            to: "/referral-dashboard/rules",
+          },
+          {
+            id: "referral-adhoc",
+            icon: Tag,
+            label: "Adhoc Rules",
+            roles: ["master"],
+            to: "/referral-dashboard/adhoc-rules",
+          },
+          {
+            id: "referral-blacklist",
+            icon: ShieldBan,
+            label: "Blacklist",
+            roles: ["master"],
+            to: "/referral-dashboard/blacklist",
+          },
+        ],
+      },
+    ],
+    []
+  );
+
+  const activeSingles = isReferralDashboard ? referralSingles : singleItems;
+  const activeGroups = isReferralDashboard ? referralGroups : grouped;
+
+  const filteredSingles = activeSingles.filter((i) => i.roles.includes(role));
+  const filteredGroups = activeGroups
     .map((g) => ({ ...g, children: g.children.filter((c) => c.roles.includes(role)) }))
     .filter((g) => g.roles.includes(role) && g.children.length > 0);
 
@@ -485,6 +579,8 @@ const Layout: React.FC = () => {
       </div>
     </div>
   );
+
+  if (!isTokenValid) return <Navigate to="/" replace />;
 
   return (
     <div className="grid h-screen grid-rows-[auto,1fr] bg-white dark:bg-gray-900">

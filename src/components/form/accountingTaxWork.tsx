@@ -890,8 +890,8 @@ const AccountingTaxForm = () => {
           </Button>
           <p className="text-sm text-gray-500">
             You can upload up to 10 files. If exceeded, email to{" "}
-            <a href="mailto:biz.support@mirrasia.com" className="text-blue-600 underline">
-              biz.support@mirrasia.com
+            <a href="mailto:biz.cs@mirrasia.com" className="text-blue-600 underline">
+              biz.cs@mirrasia.com
             </a>
           </p>
         </div>
@@ -1060,10 +1060,10 @@ const AccountingTaxForm = () => {
           <p className="text-sm text-gray-600">
             *Maximum file count: 10. If files exceed this limit, please send them to{" "}
             <a
-              href="mailto:biz.support@mirrasia.com"
+              href="mailto:biz.cs@mirrasia.com"
               className="text-blue-600 underline"
             >
-              biz.support@mirrasia.com
+              biz.cs@mirrasia.com
             </a>
             .
           </p>
@@ -1078,10 +1078,10 @@ const AccountingTaxForm = () => {
             Please send additional documents to our email.
           </Label>
           <a
-            href="mailto:biz.support@mirrasia.com"
+            href="mailto:biz.cs@mirrasia.com"
             className="text-blue-600 underline block"
           >
-            biz.support@mirrasia.com
+            biz.cs@mirrasia.com
           </a>
           <p className="text-sm text-gray-600">Thank you.</p>
         </div>

@@ -19,6 +19,7 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const idToken = searchParams.get("token");
+  const referralFromQuery = searchParams.get("ref") || "";
   const [isValidToken, setIsValidToken] = useState(false);
 
   const [auth, setAuth] = useAtom(authAtom);
@@ -27,6 +28,7 @@ const SignupPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    referralCode: referralFromQuery,
     // phone: "",
   });
 
@@ -195,7 +197,9 @@ const SignupPage = () => {
       const response = await signupWithEmail(
         formData.fullName,
         formData.email,
-        formData.password
+        formData.password,
+        null,
+        formData.referralCode || null,
       );
 
       // console.log("Signup response:", response);
@@ -238,7 +242,11 @@ const SignupPage = () => {
     onSuccess: async (tokenResponse) => {
       try {
         setAuth((prev) => ({ ...prev, loading: true }));
-        const response = await signupWithGoogle(tokenResponse.access_token, idToken!);
+        const response = await signupWithGoogle(
+          tokenResponse.access_token,
+          idToken!,
+          formData.referralCode || null
+        );
         const { token, user } = response;
         localStorage.setItem("token", token);
         localStorage.setItem("isAuthenticated", "true");
@@ -368,6 +376,18 @@ const SignupPage = () => {
             )}
 
             {otpError.email && <div className="text-red-500">{otpError.email}</div>}
+
+            <div className="space-y-2">
+              <Input
+                type="text"
+                name="referralCode"
+                value={formData.referralCode}
+                onChange={handleInputChange}
+                placeholder="Referral Code (Optional)"
+                className="w-full"
+                autoComplete="off"
+              />
+            </div>
 
             {/* Password with eye toggle */}
             <div className="relative">

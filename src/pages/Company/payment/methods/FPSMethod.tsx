@@ -7,7 +7,7 @@ export function FPSMethod() {
   const { toast } = useToast();
   const fpsDetails = {
     proxyId: '9400086',
-    email: 'biz.support@mirrasia.com',
+    email: 'biz.cs@mirrasia.com',
     mobile: '90218363'
   };
 
