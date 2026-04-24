@@ -288,6 +288,49 @@ const renderDetailField = ({
   );
 };
 
+const renderRepeatableSectionDetail = (config: any, data: Record<string, any>, t: any) => {
+  if (!config) return null;
+  const modeValue = config.modeField ? data?.[config.modeField] : undefined;
+  let sections = config.sections || [];
+  if (config.modes && config.modes.length > 0 && config.modeField) {
+    const match = config.modes.find((m: any) => m.value === modeValue);
+    if (match) sections = match.sections || [];
+  }
+
+  if (sections.length === 0) return null;
+
+  return (
+    <div className="grid gap-6">
+      {sections.map((section: any, sIdx: number) => {
+        if (section.condition && !section.condition(data)) return null;
+        
+        const list = section.kind === "object" 
+          ? (data?.[section.fieldName] ? [data[section.fieldName]] : [])
+          : (Array.isArray(data?.[section.fieldName]) ? data[section.fieldName] : []);
+        
+        if (list.length === 0) return null;
+
+        return (
+          <div key={`${section.fieldName}-${sIdx}`} className="space-y-3">
+            <h4 className="text-sm font-semibold">{t(section.title || section.fieldName, section.title || section.fieldName)}</h4>
+            <div className="grid grid-cols-1 gap-4">
+              {list.map((item: any, idx: number) => (
+                <div key={idx} className="rounded-md border p-3 bg-muted/20">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {section.itemFields?.map((field: any) => (
+                      renderDetailField({ field, data: item, t })
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const McapCompanyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -592,10 +635,15 @@ const McapCompanyDetail: React.FC = () => {
       || /\bpayment\b/i.test(String(step?.title || ""));
 
     return config.steps
-      .filter((step) => Array.isArray(step.fields) && step.fields.length > 0)
+      .filter((step) => (Array.isArray(step.fields) && step.fields.length > 0) || step.widget === "RepeatableSection")
       .filter((step) => !isPaymentStep(step))
       .filter((step) => step.id !== "compliance")
       .map((step) => {
+        if (step.widget === "RepeatableSection") {
+          const content = renderRepeatableSectionDetail(step.widgetConfig, data, t);
+          return { step, isRepeatable: true, content };
+        }
+
         const fields = (step.fields || [])
           .filter((field) => !(
             shouldLiftOnboardingSummaryFields
@@ -605,7 +653,7 @@ const McapCompanyDetail: React.FC = () => {
           .filter(Boolean);
         return { step, fields };
       })
-      .filter((group) => group.fields.length > 0);
+      .filter((group) => (group.fields && group.fields.length > 0) || group.isRepeatable);
   }, [config?.steps, company?.data, company?.journeyType, t]);
 
   const complianceGroup = useMemo(() => {
@@ -930,18 +978,25 @@ const McapCompanyDetail: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {stepGroups.map((group) => (
-                <Card key={group.step.id} className="min-w-0">
-                  <CardHeader>
-                    <CardTitle className="text-base">{t(group.step.title, group.step.title)}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {group.fields}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              {stepGroups.map((group) => {
+                if (group.isRepeatable && !group.content) return null; // skip if nothing rendered
+                return (
+                  <Card key={group.step.id} className="min-w-0">
+                    <CardHeader>
+                      <CardTitle className="text-base">{t(group.step.title, group.step.title)}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {group.isRepeatable ? (
+                        group.content
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {group.fields}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
 
               <Card>
                 <CardHeader>

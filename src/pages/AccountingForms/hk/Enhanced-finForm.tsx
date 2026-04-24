@@ -39,8 +39,8 @@ export default function EnhancedFinancialForm() {
               sales/purchase invoices, expense receipts, pay statements, import/export invoices, B/Ls,
               contracts, etc. The number of files is limited to 10. If the number exceeds this number,
               please submit them to{' '}
-              <a href="mailto:biz.support@mirrasia.com" className="text-primary hover:underline">
-                biz.support@mirrasia.com
+              <a href="mailto:biz.cs@mirrasia.com" className="text-primary hover:underline">
+                biz.cs@mirrasia.com
               </a>
               .
             </p>
@@ -200,8 +200,8 @@ export default function EnhancedFinancialForm() {
 
             <p className="text-sm font-bold">
               *The maximum number of files is 10, so if you exceed 10 files, submit them to{' '}
-              <a href="mailto:biz.support@mirrasia.com" className="text-primary hover:underline">
-                biz.support@mirrasia.com
+              <a href="mailto:biz.cs@mirrasia.com" className="text-primary hover:underline">
+                biz.cs@mirrasia.com
               </a>
             </p>
 

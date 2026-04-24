@@ -42,9 +42,10 @@ export const signupWithEmail = async (
   email: string,
   password: string,
   phone: string | null = null,
+  referralCode: string | null = null,
 ) => {
   try {
-    const response = await api.post('auth/signup', { fullName, email, password, phone });
+    const response = await api.post('auth/signup', { fullName, email, password, phone, referralCode });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -55,12 +56,14 @@ export const signupWithEmail = async (
 export const signupWithGoogle = async (
   tokenId: string,
   idToken?: string,
+  referralCode?: string | null,
 ) => {
   try {
     const response = await api.post('auth/google', {
       tokenId,
       inviteToken: idToken,
       authIntent: 'signup',
+      referralCode,
     });
     console.log("response-->", response)
     return response.data;

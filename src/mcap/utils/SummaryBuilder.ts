@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapConfig, McapStep, McapField } from "../configs/types";
 
 export interface SummaryItem {

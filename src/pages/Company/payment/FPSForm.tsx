@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 export function FPSForm() {
   const fpsDetails = {
     proxyId: '9400086',
-    email: 'biz.support@mirrasia.com',
+    email: 'biz.cs@mirrasia.com',
     mobile: '90218363'
   };
 

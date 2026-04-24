@@ -97,7 +97,7 @@ export default function PaymentForm() {
                 <AlertDescription>
                   <div className="space-y-2 mt-2">
                     <p><strong>Proxy ID:</strong> 9400086</p>
-                    <p><strong>Email:</strong> biz.support@mirrasia.com</p>
+                    <p><strong>Email:</strong> biz.cs@mirrasia.com</p>
                     <p><strong>Mobile:</strong> 90218363</p>
                   </div>
                 </AlertDescription>

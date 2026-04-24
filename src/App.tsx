@@ -75,6 +75,13 @@ import VersionUpdateBanner from './components/system/VersionUpdateBanner';
 import PayoneerMirrAsiaIntegration from './pages/Payoneer/Payoneer';
 import GoogleCallback from './pages/GoogleCallback';
 import TermsOfService from './components/TermsService';
+import ReferralDashboardPage from './pages/referral/ReferralDashboardPage';
+import ReferralCompaniesPage from './pages/referral/ReferralCompaniesPage';
+import ReferralCommissionsPage from './pages/referral/ReferralCommissionsPage';
+import ReferralWithdrawalsPage from './pages/referral/ReferralWithdrawalsPage';
+import ReferralCommissionRulesPage from './pages/referral/ReferralCommissionRulesPage';
+import ReferralAdhocRulesPage from './pages/referral/ReferralAdhocRulesPage';
+import ReferralBlacklistPage from './pages/referral/ReferralBlacklistPage';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -129,6 +136,23 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master", "hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
                       <Route path="/profile" element={<Profile />} />
+                    </Route>
+                  </Route>
+
+                  <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
+                    <Route element={<Layout />}>
+                      <Route path="/referral-dashboard" element={<ReferralDashboardPage />} />
+                      <Route path="/referral-dashboard/companies" element={<ReferralCompaniesPage />} />
+                      <Route path="/referral-dashboard/commissions" element={<ReferralCommissionsPage />} />
+                      <Route path="/referral-dashboard/withdrawals" element={<ReferralWithdrawalsPage />} />
+                    </Route>
+                  </Route>
+
+                  <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
+                    <Route element={<Layout />}>
+                      <Route path="/referral-dashboard/rules" element={<ReferralCommissionRulesPage />} />
+                      <Route path="/referral-dashboard/adhoc-rules" element={<ReferralAdhocRulesPage />} />
+                      <Route path="/referral-dashboard/blacklist" element={<ReferralBlacklistPage />} />
                     </Route>
                   </Route>
 
