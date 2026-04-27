@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ export default function ReferralBlacklistPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [search, setSearch] = useState("");
 
   const loadData = async () => {
     setLoading(true);
@@ -57,6 +58,7 @@ export default function ReferralBlacklistPage() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!window.confirm("Remove this entry from the blacklist?")) return;
     setError("");
     try {
       await deleteBlacklistEntry(id);
@@ -66,6 +68,18 @@ export default function ReferralBlacklistPage() {
       setError(message);
     }
   };
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((item) => {
+      return (
+        (item.email || "").toLowerCase().includes(q)
+        || (item.phone || "").toLowerCase().includes(q)
+        || (item.notes || "").toLowerCase().includes(q)
+      );
+    });
+  }, [items, search]);
 
   return (
     <div className="space-y-6">
@@ -91,7 +105,17 @@ export default function ReferralBlacklistPage() {
       {!loading && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Entries</CardTitle>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <CardTitle className="text-base">
+                Entries {items.length > 0 && <span className="text-muted-foreground font-normal">({filtered.length} / {items.length})</span>}
+              </CardTitle>
+              <Input
+                placeholder="Search email, phone, or notes..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="h-8 w-72 text-xs"
+              />
+            </div>
           </CardHeader>
           <CardContent className="overflow-x-auto">
             <table className="w-full min-w-[700px] text-sm">
@@ -105,7 +129,14 @@ export default function ReferralBlacklistPage() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => (
+                {filtered.length === 0 && (
+                  <tr>
+                    <td className="py-4 text-center text-muted-foreground" colSpan={5}>
+                      {items.length === 0 ? "No blacklist entries yet." : "No entries match your search."}
+                    </td>
+                  </tr>
+                )}
+                {filtered.map((item) => (
                   <tr key={item._id} className="border-b">
                     <td className="py-2">{item.email || "-"}</td>
                     <td className="py-2">{item.phone || "-"}</td>
