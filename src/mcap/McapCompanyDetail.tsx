@@ -95,6 +95,7 @@ type McapCompany = {
   incorporationDate?: string | Date;
   paymentStatus?: string;
   assignedTo?: string;
+  assignedAgentId?: string | null;
   stepIdx?: number;
   kycStatus?: string;
   data?: Record<string, any>;
@@ -338,7 +339,8 @@ const McapCompanyDetail: React.FC = () => {
   const { t } = useTranslation();
   const dashboardPath = "/incorporation-dashboard";
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-  const isAdmin = user?.role !== "user";
+  const isAdmin = user?.role === "admin" || user?.role === "master";
+  const isMaster = user?.role === "master";
   const isDashboardDetailView = searchParams.get("mode") === "detail";
   const canEdit = isAdmin && !isDashboardDetailView;
   const [company, setCompany] = useState<McapCompany | null>(null);
@@ -347,7 +349,9 @@ const McapCompanyDetail: React.FC = () => {
   const [emailSubject, setEmailSubject] = useState("MIRR ASIA - Application Follow-up");
   const [emailMessage, setEmailMessage] = useState("");
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
+  const [agentUsers, setAgentUsers] = useState<AdminUser[]>([]);
   const [adminAssigned, setAdminAssigned] = useState("");
+  const [agentAssigned, setAgentAssigned] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [partyModalOpen, setPartyModalOpen] = useState(false);
   const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null);
@@ -365,6 +369,7 @@ const McapCompanyDetail: React.FC = () => {
       const payload = res.data.data as McapCompany;
       setCompany(payload);
       setAdminAssigned(payload.assignedTo || "");
+      setAgentAssigned(payload.assignedAgentId ? String(payload.assignedAgentId) : "");
       const primaryEmail = getEmail(payload);
       setEmailTo(primaryEmail || "");
     }
@@ -377,8 +382,9 @@ const McapCompanyDetail: React.FC = () => {
   useEffect(() => {
     if (!canEdit) return;
     fetchUsers().then((users) => {
-      const list = (users || []).filter((u: AdminUser) => u.role === "admin" || u.role === "master");
-      setAdminUsers(list);
+      const all: AdminUser[] = users || [];
+      setAdminUsers(all.filter((u) => u.role === "admin" || u.role === "master"));
+      setAgentUsers(all.filter((u) => u.role === "agent"));
     });
   }, [canEdit]);
 
@@ -398,7 +404,10 @@ const McapCompanyDetail: React.FC = () => {
     if (!company || !canEdit) return;
     setIsSaving(true);
     try {
-      const payload = { ...company, assignedTo: adminAssigned };
+      const payload: Record<string, any> = { ...company, assignedTo: adminAssigned };
+      if (isMaster) {
+        payload.assignedAgentId = agentAssigned || null;
+      }
       const res = await api.post("/mcap/companies", payload);
       if (res?.data?.success) {
         toast({ title: "Saved", description: "MCAP record updated." });
@@ -748,6 +757,28 @@ const McapCompanyDetail: React.FC = () => {
                   <SelectContent>
                     {adminUsers.map((u) => (
                       <SelectItem key={u._id} value={u.fullName || ""}>
+                        {u.fullName || u.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {canEdit && isMaster && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium">Assign Agent:</span>
+                <Select value={agentAssigned} onValueChange={setAgentAssigned}>
+                  <SelectTrigger className="w-60 h-8 text-xs">
+                    <SelectValue placeholder="Assign Agent to..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {agentUsers.length === 0 && (
+                      <SelectItem value="" disabled>
+                        No agents available
+                      </SelectItem>
+                    )}
+                    {agentUsers.map((u) => (
+                      <SelectItem key={u._id} value={u._id}>
                         {u.fullName || u.email}
                       </SelectItem>
                     ))}

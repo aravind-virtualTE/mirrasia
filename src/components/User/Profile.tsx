@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { toast } from "@/hooks/use-toast"
 import { KYCVerificationCard } from "./KYCVerificationCard"
 import { SettingsCard } from "./SettingsCard"
+import ReferralCard from "./ReferralCard"
 import { useTranslation } from "react-i18next"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
@@ -736,6 +737,8 @@ export default function Profile() {
                   </div>
                 </CardContent>
               </Card>
+
+              <ReferralCard />
             </div>
           </TabsContent>
 

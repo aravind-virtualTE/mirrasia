@@ -354,13 +354,13 @@ const Layout: React.FC = () => {
         roles: ["user", "admin", "master"],
         to: "/payoneer",
       },
-      // {
-      //   id: "referral-dashboard",
-      //   icon: Wallet,
-      //   label: "Referral Dashboard",
-      //   roles: ["user", "admin", "master"],
-      //   to: "/referral-dashboard",
-      // },
+      {
+        id: "referral-dashboard",
+        icon: Wallet,
+        label: "Referral Dashboard",
+        roles: ["admin", "master"],
+        to: "/referral-dashboard",
+      },
       {
         id: "users",
         icon: Users,
@@ -402,13 +402,6 @@ const Layout: React.FC = () => {
   );
   const referralSingles: SidebarItemCfg[] = useMemo(
     () => [
-      {
-        id: "referral-overview",
-        icon: Home,
-        label: "Referral Overview",
-        roles: ["user", "admin", "master"],
-        to: "/referral-dashboard",
-      },
       {
         id: "referral-companies",
         icon: Building2,

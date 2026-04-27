@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -75,7 +75,6 @@ import VersionUpdateBanner from './components/system/VersionUpdateBanner';
 import PayoneerMirrAsiaIntegration from './pages/Payoneer/Payoneer';
 import GoogleCallback from './pages/GoogleCallback';
 import TermsOfService from './components/TermsService';
-import ReferralDashboardPage from './pages/referral/ReferralDashboardPage';
 import ReferralCompaniesPage from './pages/referral/ReferralCompaniesPage';
 import ReferralCommissionsPage from './pages/referral/ReferralCommissionsPage';
 import ReferralWithdrawalsPage from './pages/referral/ReferralWithdrawalsPage';
@@ -133,15 +132,15 @@ const App: React.FC = () => {
                   <Route path="/google-callback" element={<GoogleCallback />} />
 
 
-                  <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master", "hk_shdr", 'us_shdr', 'pa_shdr']} />}>
+                  <Route element={<ProtectedRoute allowedRoles={["admin", "agent", "user", "master", "hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
                       <Route path="/profile" element={<Profile />} />
                     </Route>
                   </Route>
 
-                  <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
+                  <Route element={<ProtectedRoute allowedRoles={["admin", "agent", "user", "master"]} />}>
                     <Route element={<Layout />}>
-                      <Route path="/referral-dashboard" element={<ReferralDashboardPage />} />
+                      <Route path="/referral-dashboard" element={<Navigate to="/referral-dashboard/commissions" replace />} />
                       <Route path="/referral-dashboard/companies" element={<ReferralCompaniesPage />} />
                       <Route path="/referral-dashboard/commissions" element={<ReferralCommissionsPage />} />
                       <Route path="/referral-dashboard/withdrawals" element={<ReferralWithdrawalsPage />} />
@@ -156,7 +155,7 @@ const App: React.FC = () => {
                     </Route>
                   </Route>
 
-                  <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
+                  <Route element={<ProtectedRoute allowedRoles={["admin", "agent", "user", "master"]} />}>
                     <Route element={<KycGuard />}>
                       <Route element={<Layout />}>
                         <Route path="/company-register/" element={<CompanyRegistration />} />
