@@ -773,9 +773,9 @@ const McapCompanyDetail: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {agentUsers.length === 0 && (
-                      <SelectItem value="" disabled>
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
                         No agents available
-                      </SelectItem>
+                      </div>
                     )}
                     {agentUsers.map((u) => (
                       <SelectItem key={u._id} value={u._id}>
