@@ -69,13 +69,6 @@ const buildAgreementStep = (): McapStep => ({
       required: true,
       colSpan: 2,
     },
-  ],
-});
-
-const buildReviewStep = (): McapStep => ({
-  id: "review",
-  title: "newHk.steps.review.title",
-  fields: [
     {
       type: "checkbox",
       name: "truthfulnessDeclaration",
@@ -88,6 +81,13 @@ const buildReviewStep = (): McapStep => ({
       label: "newHk.review.declarations.compliance",
       required: true,
     },
+  ],
+});
+
+const buildReviewStep = (): McapStep => ({
+  id: "review",
+  title: "newHk.steps.review.title",
+  fields: [
     {
       type: "signature",
       name: "eSign",
@@ -135,6 +135,27 @@ const stripLegalTermsOutsideAgreement = (steps: McapStep[]) =>
   steps.map((step) => {
     if (step.id === "service-agreement" || !step.fields?.length) return step;
     const filtered = step.fields.filter((field) => !isLegalTermsField(field));
+    if (filtered.length === step.fields.length) return step;
+    return { ...step, fields: filtered };
+  });
+
+/** Field names that now live exclusively in the service-agreement step. */
+const declarationFieldNames = new Set([
+  "truthfulnessDeclaration",
+  "compliancePreconditionAcknowledgment",
+]);
+
+/**
+ * Strip declaration checkboxes from all steps except service-agreement.
+ * Individual configs may still define them in their review step — this
+ * normalizer ensures a single source of truth (buildAgreementStep).
+ */
+const stripDeclarationsFromReview = (steps: McapStep[]) =>
+  steps.map((step) => {
+    if (step.id === "service-agreement" || !step.fields?.length) return step;
+    const filtered = step.fields.filter(
+      (field) => !declarationFieldNames.has(field.name ?? "")
+    );
     if (filtered.length === step.fields.length) return step;
     return { ...step, fields: filtered };
   });
@@ -224,6 +245,7 @@ const normalizeConfig = (config: McapConfig): McapConfig => {
   let steps = config.steps.map((s) => ({ ...s }));
   steps = stripLegalTermsOutsideAgreement(steps);
   steps = ensureCommonServiceAgreement(steps);
+  steps = stripDeclarationsFromReview(steps);
 
   if (STANDARD_FLOW_COUNTRIES.has(config.countryCode)) {
     steps = mergePartiesIntoCompany(steps);
