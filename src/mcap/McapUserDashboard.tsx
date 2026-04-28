@@ -51,6 +51,7 @@ import EnquiryCard from "@/pages/dashboard/Admin/Enquiry/EnquiryCard";
 import ReqForQuoteCard from "@/pages/dashboard/Admin/ReqForQuote/ReqForQuoteCard";
 import ServiceCarousel from "@/pages/dashboard/ServiceCarousel";
 import { parseStoredUser } from "@/lib/kyc";
+import { useResizableColumns } from "@/hooks/useResizableColumns";
 
 interface TokenData {
   userId: string;
@@ -309,6 +310,45 @@ const RoleBottomBlock = ({ role }: { role: string }) => {
 export default function McapUserDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Resizable columns hook for the active applications table
+  const { widths, getWidth, startResize } = useResizableColumns({
+    storageKey: "mcap-active-companies",
+    columns: [
+      { key: "company", defaultWidth: 250, minWidth: 150 },
+      { key: "country", defaultWidth: 120, minWidth: 80 },
+      { key: "status", defaultWidth: 120, minWidth: 80 },
+      { key: "payment", defaultWidth: 100, minWidth: 80 },
+      { key: "incorporationDate", defaultWidth: 130, minWidth: 100 },
+      { key: "createdAt", defaultWidth: 130, minWidth: 100 },
+      { key: "assignedTo", defaultWidth: 150, minWidth: 100 },
+      { key: "filledBy", defaultWidth: 150, minWidth: 100 },
+      { key: "userLastLogin", defaultWidth: 150, minWidth: 100 },
+      { key: "actions", defaultWidth: 120, minWidth: 80 },
+    ],
+  });
+  console.log("widths", widths)
+
+  const ResizableHeader = useCallback(
+    ({ colKey, children, className }: { colKey: string; children: React.ReactNode; className?: string }) => (
+      <TableHead
+        className={`h-9 text-xs relative select-none group border-r border-transparent hover:border-border transition-colors ${className || ""}`}
+        style={{ width: getWidth(colKey), minWidth: getWidth(colKey), maxWidth: getWidth(colKey) }}
+      >
+        <div className="flex w-full items-center truncate">
+          {children}
+        </div>
+        <div
+          className="absolute right-0 top-0 h-full w-2 cursor-col-resize flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          onMouseDown={(e) => startResize(colKey, e)}
+        >
+          <div className="h-1/2 w-0.5 bg-primary/40 rounded-full" />
+        </div>
+      </TableHead>
+    ),
+    [getWidth, startResize]
+  );
+
   const [items, setItems] = useState<any[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [serverFilterCounts, setServerFilterCounts] = useState<Record<DashboardFilterKey, number>>(EMPTY_FILTER_COUNTS);
@@ -821,19 +861,19 @@ export default function McapUserDashboard() {
               </div>
             ) : (
               <div className="overflow-x-auto rounded-md border">
-                <Table className={isAdminView ? "min-w-[1200px]" : "min-w-[860px]"}>
+                <Table className="table-fixed min-w-max w-full">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.company", "Company")}</TableHead>
-                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.country", "Country")}</TableHead>
-                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.status", "Status")}</TableHead>
-                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.payment", "Payment")}</TableHead>
-                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.incorporationDate", "Incorporation Date")}</TableHead>
-                      <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.createdAt", "Created At")}</TableHead>
-                      {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.assignedTo", "Assigned To")}</TableHead>}
-                      {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.filledBy", "Filled By")}</TableHead>}
-                      {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.userLastLogin", "User Latest Login")}</TableHead>}
-                      <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.columns.actions", "Actions")}</TableHead>
+                      <ResizableHeader colKey="company">{t("mcap.dashboard.columns.company", "Company")}</ResizableHeader>
+                      <ResizableHeader colKey="country">{t("mcap.dashboard.columns.country", "Country")}</ResizableHeader>
+                      <ResizableHeader colKey="status">{t("mcap.dashboard.columns.status", "Status")}</ResizableHeader>
+                      <ResizableHeader colKey="payment">{t("mcap.dashboard.columns.payment", "Payment")}</ResizableHeader>
+                      <ResizableHeader colKey="incorporationDate">{t("mcap.dashboard.columns.incorporationDate", "Incorporation Date")}</ResizableHeader>
+                      <ResizableHeader colKey="createdAt">{t("mcap.dashboard.columns.createdAt", "Created At")}</ResizableHeader>
+                      {isAdminView && <ResizableHeader colKey="assignedTo">{t("mcap.dashboard.columns.assignedTo", "Assigned To")}</ResizableHeader>}
+                      {isAdminView && <ResizableHeader colKey="filledBy">{t("mcap.dashboard.columns.filledBy", "Filled By")}</ResizableHeader>}
+                      {isAdminView && <ResizableHeader colKey="userLastLogin">{t("mcap.dashboard.columns.userLastLogin", "User Latest Login")}</ResizableHeader>}
+                      <ResizableHeader colKey="actions" className="text-right pr-4">{t("mcap.dashboard.columns.actions", "Actions")}</ResizableHeader>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
