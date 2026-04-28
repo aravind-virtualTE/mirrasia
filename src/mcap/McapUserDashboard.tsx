@@ -327,6 +327,7 @@ export default function McapUserDashboard() {
       { key: "actions", defaultWidth: 120, minWidth: 80 },
     ],
   });
+  console.log("widths", widths)
 
   const ResizableHeader = useCallback(
     ({ colKey, children, className }: { colKey: string; children: React.ReactNode; className?: string }) => (
