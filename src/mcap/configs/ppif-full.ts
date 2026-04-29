@@ -648,18 +648,7 @@ export const PPIF_FULL_CONFIG: McapConfig = {
         { type: "checkbox", name: "pa_optCbi", label: "ppif.invoice.setup.optional.cbi" },
       ],
     },
-    {
-      id: "declarations",
-      title: "ppif.section16",
-      fields: [
-        { type: "checkbox", name: "taxOk", label: "ppif.declarations.checks.taxOk", required: true },
-        { type: "checkbox", name: "truthOk", label: "ppif.declarations.checks.truthOk", required: true },
-        { type: "checkbox", name: "privacyOk", label: "ppif.declarations.checks.privacyOk", required: true },
-        { type: "text", name: "signName", label: "ppif.declarations.fields.signName.label", required: true, colSpan: 2 },
-        { type: "text", name: "signDate", label: "ppif.declarations.fields.signDate.label", required: true, colSpan: 2 },
-        { type: "text", name: "signTitle", label: "ppif.declarations.fields.signTitle.label", colSpan: 2 },
-      ],
-    },
+
     {
       id: "invoice",
       title: "ppif.section14",
