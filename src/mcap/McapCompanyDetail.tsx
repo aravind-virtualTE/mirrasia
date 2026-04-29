@@ -143,7 +143,7 @@ const isExistingCompanyOnboardingSummaryField = (stepId?: string, fieldName?: st
 };
 
 const getCompanyName = (company: McapCompany) => {
-  return company.companyName || company.data?.companyName1 || company.data?.companyName_1 || company.data?.name1 || company.data?.companyName || company.data?.desiredCompanyName || company.data?.companyNamePrimary || "";
+  return company.data?.companyName1 || company.data?.companyName_1 || company.data?.name1 || company.data?.companyName || company.data?.desiredCompanyName || company.data?.companyNamePrimary || company.companyName || "";
 };
 
 const getAltCompanyNames = (data: Record<string, any>) => {
@@ -304,11 +304,11 @@ const renderRepeatableSectionDetail = (config: any, data: Record<string, any>, t
     <div className="grid gap-6">
       {sections.map((section: any, sIdx: number) => {
         if (section.condition && !section.condition(data)) return null;
-        
-        const list = section.kind === "object" 
+
+        const list = section.kind === "object"
           ? (data?.[section.fieldName] ? [data[section.fieldName]] : [])
           : (Array.isArray(data?.[section.fieldName]) ? data[section.fieldName] : []);
-        
+
         if (list.length === 0) return null;
 
         return (
