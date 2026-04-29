@@ -123,10 +123,10 @@ const isNewIncorporationCompany = (entry: any) => {
 const resolveCompanyName = (entry: any, untitledLabel: string) => {
   const data = entry?.data || {};
   return (
+    data.companyName1 ||
     data.companyName_1 ||
     data.name1 ||
     data.foundationNameEn ||
-    data.companyName1 ||
     data.companyName2 ||
     data.companyName3 ||
     data.companyName_2 ||
@@ -696,11 +696,10 @@ export default function McapUserDashboard() {
                       <button
                         key={filter.key}
                         type="button"
-                        className={`inline-flex items-center gap-1.5 h-7 rounded-full px-2.5 text-[11px] font-medium transition-colors ${
-                          isActive
+                        className={`inline-flex items-center gap-1.5 h-7 rounded-full px-2.5 text-[11px] font-medium transition-colors ${isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "bg-muted text-muted-foreground hover:text-foreground"
-                        }`}
+                          }`}
                         onClick={() => {
                           setActiveFilter(filter.key);
                           setCurrentPage(1);
@@ -708,9 +707,8 @@ export default function McapUserDashboard() {
                       >
                         {filter.label}
                         <span
-                          className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none font-semibold ${
-                            isActive ? "bg-white/20 text-white" : "bg-background text-foreground"
-                          }`}
+                          className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none font-semibold ${isActive ? "bg-white/20 text-white" : "bg-background text-foreground"
+                            }`}
                         >
                           {serverFilterCounts[filter.key] ?? 0}
                         </span>

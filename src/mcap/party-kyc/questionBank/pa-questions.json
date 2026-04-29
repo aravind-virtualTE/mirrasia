@@ -464,7 +464,7 @@
     },
     {
       "id": "isPoliticallyProminentFig",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.isPoliticallyProminentFig.question",
       "infoText": "panamaShrInvite.questions.isPoliticallyProminentFig.info",
       "options": [
@@ -551,7 +551,7 @@
     },
     {
       "id": "isCrimeConvitted",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.isCrimeConvitted.question",
       "options": [
         {
@@ -567,7 +567,7 @@
     },
     {
       "id": "lawEnforced",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.lawEnforced.question",
       "options": [
         {
@@ -583,7 +583,7 @@
     },
     {
       "id": "isMoneyLaundered",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.isMoneyLaundered.question",
       "options": [
         {
@@ -599,7 +599,7 @@
     },
     {
       "id": "isBankRupted",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.isBankRupted.question",
       "options": [
         {
@@ -615,7 +615,7 @@
     },
     {
       "id": "isInvolvedBankRuptedOfficer",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.question",
       "options": [
         {
@@ -631,7 +631,7 @@
     },
     {
       "id": "isPartnerOfOtherComp",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.isPartnerOfOtherComp.question",
       "infoText": "panamaShrInvite.questions.isPartnerOfOtherComp.info",
       "options": [
@@ -664,7 +664,7 @@
     },
     {
       "id": "declarationAgreement",
-      "type": "select",
+      "type": "radio",
       "question": "panamaShrInvite.questions.declarationAgreement.question",
       "options": [
         {
