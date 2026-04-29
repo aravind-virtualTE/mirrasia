@@ -26,13 +26,13 @@ const computePpifFees = (data: Record<string, any>) => {
   const convert = (amountUsd: number) => Number((amountUsd * rate).toFixed(2));
 
   const itemsUsd = [
-    { id: "base", label: "ppif.invoice.setup.entity.label", amount: PIF_PRICES.base, kind: "service" as const },
-    { id: "ndSetup", label: "ppif.invoice.setup.ndSetup.label", amount: PIF_PRICES.nd[ndSetup], kind: "service" as const },
-    ...(nsSetup ? [{ id: "nsSetup", label: "ppif.invoice.setup.nsSetup.label", amount: PIF_PRICES.ns, kind: "optional" as const }] : []),
-    ...(optEmi ? [{ id: "optEmi", label: "ppif.invoice.setup.optional.emi", amount: PIF_PRICES.emi, kind: "optional" as const }] : []),
-    ...(optBank ? [{ id: "optBank", label: "ppif.invoice.setup.optional.bank", amount: PIF_PRICES.bank, kind: "optional" as const }] : []),
-    ...(optCbi ? [{ id: "optCbi", label: "ppif.invoice.setup.optional.cbi", amount: PIF_PRICES.cbi, kind: "optional" as const }] : []),
-    ...(recordStorage ? [{ id: "recordStorage", label: "ppif.accounting.fields.useMirr.label", amount: PIF_PRICES.recordStorage, kind: "optional" as const }] : []),
+    { id: "base", label: "incorporation:ppif.invoice.setup.entity.label", amount: PIF_PRICES.base, kind: "service" as const },
+    { id: "ndSetup", label: "incorporation:ppif.invoice.setup.ndSetup.label", amount: PIF_PRICES.nd[ndSetup], kind: "service" as const },
+    ...(nsSetup ? [{ id: "nsSetup", label: "incorporation:ppif.invoice.setup.nsSetup.label", amount: PIF_PRICES.ns, kind: "optional" as const }] : []),
+    ...(optEmi ? [{ id: "optEmi", label: "incorporation:ppif.invoice.setup.optional.emi", amount: PIF_PRICES.emi, kind: "optional" as const }] : []),
+    ...(optBank ? [{ id: "optBank", label: "incorporation:ppif.invoice.setup.optional.bank", amount: PIF_PRICES.bank, kind: "optional" as const }] : []),
+    ...(optCbi ? [{ id: "optCbi", label: "incorporation:ppif.invoice.setup.optional.cbi", amount: PIF_PRICES.cbi, kind: "optional" as const }] : []),
+    ...(recordStorage ? [{ id: "recordStorage", label: "incorporation:ppif.accounting.fields.useMirr.label", amount: PIF_PRICES.recordStorage, kind: "optional" as const }] : []),
   ];
   const items = itemsUsd.map((item) => ({ ...item, amount: convert(item.amount) }));
 
