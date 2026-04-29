@@ -10,13 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -34,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, HelpCircle, Loader2, Pencil, RotateCcw, Search, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, HelpCircle, Layers, Loader2, Pencil, RotateCcw, Search, Trash2, Building2, Mail, Globe, Phone } from "lucide-react";
 import { getMcapCompanies, softDeleteMcapCompany, restoreMcapCompany, permanentDeleteMcapCompany, getDeletedMcapCompanies } from "@/services/dataFetch";
 import {
   Tabs,
@@ -129,10 +123,10 @@ const isNewIncorporationCompany = (entry: any) => {
 const resolveCompanyName = (entry: any, untitledLabel: string) => {
   const data = entry?.data || {};
   return (
+    data.companyName1 ||
     data.companyName_1 ||
     data.name1 ||
     data.foundationNameEn ||
-    data.companyName1 ||
     data.companyName2 ||
     data.companyName3 ||
     data.companyName_2 ||
@@ -188,11 +182,11 @@ const AdminOverviewCardsBlock = () => {
 const UserOutstandingTasksBlock = ({ tasks }: { tasks: UserTask[] }) => {
   return (
     <Accordion type="multiple" className="w-full" defaultValue={["outstanding-tasks"]}>
-      <AccordionItem value="outstanding-tasks" className="rounded-lg border">
+      <AccordionItem value="outstanding-tasks" className="rounded-xl border border-primary/20 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
         <AccordionTrigger className="px-4 py-3 hover:no-underline">
           <div className="flex w-full items-center justify-between">
-            <h3 className="text-left font-semibold text-primary">Outstanding Tasks</h3>
-            <span className="mr-4 text-sm text-muted-foreground">
+            <h3 className="text-left font-bold text-sm text-foreground">Outstanding Tasks</h3>
+            <span className="mr-4 text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
               {tasks.length > 0 ? `${tasks.length} task${tasks.length > 1 ? "s" : ""}` : "No tasks"}
             </span>
           </div>
@@ -202,21 +196,21 @@ const UserOutstandingTasksBlock = ({ tasks }: { tasks: UserTask[] }) => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">S.No</TableHead>
-                  <TableHead>Task Name</TableHead>
+                  <TableHead className="w-[50px] h-8 text-xs">S.No</TableHead>
+                  <TableHead className="h-8 text-xs">Task Name</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {tasks.map((task, index) => (
-                  <TableRow key={task._id || `${task.label}-${index}`}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{task.label}</TableCell>
+                  <TableRow key={task._id || `${task.label}-${index}`} className="hover:bg-muted/40 transition-colors">
+                    <TableCell className="text-xs tabular-nums text-muted-foreground">{index + 1}</TableCell>
+                    <TableCell className="text-sm">{task.label}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           ) : (
-            <p className="py-4 text-muted-foreground">No outstanding tasks</p>
+            <p className="py-4 text-sm text-muted-foreground">No outstanding tasks</p>
           )}
         </AccordionContent>
       </AccordionItem>
@@ -239,54 +233,41 @@ const UserFeaturedServicesBlock = () => {
 const UserSupportCardBlock = () => {
   const { t } = useTranslation();
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center space-x-4">
-            <HelpCircle className="h-8 w-8" />
-            <div>
-              <h3 className="text-lg font-semibold">{t("dashboard.needHelp")}</h3>
-              <p className="text-sm text-muted-foreground">{t("dashboard.expIssue")}</p>
-            </div>
+    <div className="rounded-xl border border-blue-500/20 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
+      <div className="h-1 w-full bg-gradient-to-r from-blue-500/30 via-indigo-500/20 to-violet-500/10" />
+      <div className="p-5">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 border border-blue-500/20">
+            <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
-          <div className="mt-4 grid gap-2 text-sm">
-            <p>
-              <strong>{t("ApplicantInfoForm.email")}:</strong> cs@mirrasia.com
-            </p>
-            <p>
-              <strong>{t("ApplicantInfoForm.phoneNum")}:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187
-            </p>
-            <p>
-              <strong>{t("dashboard.kakaoT")}:</strong> mirrasia
-            </p>
-            <p>
-              <strong>{t("dashboard.wechat")}:</strong> mirrasia_hk
-            </p>
-            <p>
-              <strong>{t("dashboard.kakaChannel")}:</strong>{" "}
-              <a
-                href="https://pf.kakao.com/_KxmnZT"
-                className="text-primary underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("dashboard.clickHere")}
-              </a>
-            </p>
-            <p>
-              <strong>{t("dashboard.Website")}:</strong>{" "}
-              <a
-                href="https://www.mirrasia.com"
-                className="text-primary underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                www.mirrasia.com
-              </a>
-            </p>
+          <div>
+            <h3 className="text-sm font-bold text-foreground">{t("dashboard.needHelp")}</h3>
+            <p className="text-xs text-muted-foreground">{t("dashboard.expIssue")}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        <div className="grid gap-2 text-xs">
+          <div className="flex items-center gap-2 py-1.5 px-2 rounded-md hover:bg-accent/40 transition-colors">
+            <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">{t("ApplicantInfoForm.email")}:</span>
+            <span className="font-medium text-foreground">cs@mirrasia.com</span>
+          </div>
+          <div className="flex items-center gap-2 py-1.5 px-2 rounded-md hover:bg-accent/40 transition-colors">
+            <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">{t("ApplicantInfoForm.phoneNum")}:</span>
+            <span className="font-medium text-foreground">(HK) +852-2187-2428 | (KR) +82-2-543-6187</span>
+          </div>
+          <div className="flex items-center gap-2 py-1.5 px-2 rounded-md hover:bg-accent/40 transition-colors">
+            <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">{t("dashboard.Website")}:</span>
+            <a href="https://www.mirrasia.com" className="font-medium text-primary hover:underline" target="_blank" rel="noopener noreferrer">www.mirrasia.com</a>
+          </div>
+          <div className="flex items-center gap-2 py-1.5 px-2 rounded-md hover:bg-accent/40 transition-colors">
+            <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">{t("dashboard.kakaChannel")}:</span>
+            <a href="https://pf.kakao.com/_KxmnZT" className="font-medium text-primary hover:underline" target="_blank" rel="noopener noreferrer">{t("dashboard.clickHere")}</a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -327,7 +308,7 @@ export default function McapUserDashboard() {
       { key: "actions", defaultWidth: 120, minWidth: 80 },
     ],
   });
-  console.log("widths", widths)
+  void widths; // consumed by getWidth
 
   const ResizableHeader = useCallback(
     ({ colKey, children, className }: { colKey: string; children: React.ReactNode; className?: string }) => (
@@ -667,7 +648,30 @@ export default function McapUserDashboard() {
   }, [permanentDeleteTarget, refreshAll]);
 
   return (
-    <div className="max-width mx-auto p-3 md:p-4 space-y-4">
+    <div className="max-w-[1400px] mx-auto p-3 md:p-4 space-y-4">
+      {/* ─── Page header ──────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
+            <Layers className="h-5 w-5 text-primary" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold text-foreground leading-tight">
+              {t("mcap.dashboard.title", "Incorporation Applications")}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {t("mcap.dashboard.desc", "Track and continue your unified incorporation and onboarding applications.")}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 sm:ml-auto flex-wrap">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-xs text-muted-foreground">
+            <Building2 className="h-3 w-3" />
+            <span className="font-semibold text-foreground">{totalAll}</span> companies
+          </div>
+        </div>
+      </div>
+
       <RoleTopBlock isAdminView={isAdminView} role={role} tasks={tasks} />
 
       {isMaster && (
@@ -680,37 +684,35 @@ export default function McapUserDashboard() {
       )}
 
       {(!isMaster || activeTab === "active") && (
-        <Card className="border shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle>{t("mcap.dashboard.title", "Incorporation Applications")}</CardTitle>
-            <CardDescription>{t("mcap.dashboard.desc", "Track and continue your unified incorporation and onboarding applications.")}</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
+        <div className="rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
+          <div className="h-1 w-full bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-red-500/10" />
+          <div className="p-4">
             {!isLoading && totalAll > 0 && (
               <div className="mb-3 space-y-2">
                 <div className="flex flex-wrap gap-1.5">
                   {filters.map((filter) => {
                     const isActive = activeFilter === filter.key;
                     return (
-                      <Button
+                      <button
                         key={filter.key}
                         type="button"
-                        variant={isActive ? "default" : "outline"}
-                        size="sm"
-                        className="h-7 gap-1.5 rounded-full px-2.5"
+                        className={`inline-flex items-center gap-1.5 h-7 rounded-full px-2.5 text-[11px] font-medium transition-colors ${isActive
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "bg-muted text-muted-foreground hover:text-foreground"
+                          }`}
                         onClick={() => {
                           setActiveFilter(filter.key);
                           setCurrentPage(1);
                         }}
                       >
-                        <span className="text-[11px]">{filter.label}</span>
+                        {filter.label}
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[11px] leading-none ${isActive ? "bg-white/20 text-white" : "bg-muted text-foreground"
+                          className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none font-semibold ${isActive ? "bg-white/20 text-white" : "bg-background text-foreground"
                             }`}
                         >
                           {serverFilterCounts[filter.key] ?? 0}
                         </span>
-                      </Button>
+                      </button>
                     );
                   })}
                 </div>
@@ -860,7 +862,7 @@ export default function McapUserDashboard() {
                 </div>
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-md border">
+              <div className="overflow-x-auto rounded-lg border border-border/50">
                 <Table className="table-fixed min-w-max w-full">
                   <TableHeader>
                     <TableRow>
@@ -885,7 +887,7 @@ export default function McapUserDashboard() {
                         <TableRow
                           key={entry?._id}
                           onClick={canOpenCompanyDetail ? () => navigate(`/incorporation-detail/${entry._id}?mode=${companyDetailMode}`) : undefined}
-                          className={canOpenCompanyDetail ? "h-11 cursor-pointer hover:bg-muted/40" : "h-11"}
+                          className={canOpenCompanyDetail ? "h-11 cursor-pointer hover:bg-muted/40 transition-colors" : "h-11"}
                         >
                           <TableCell className="py-2 font-medium">
                             {resolveCompanyName(entry, untitledLabel)}
@@ -965,17 +967,16 @@ export default function McapUserDashboard() {
                 </Table>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {isMaster && activeTab === "deleted" && (
-        <Card className="border shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle>{t("mcap.dashboard.trash.title", "Deleted Companies")}</CardTitle>
-            <CardDescription>{t("mcap.dashboard.trash.desc", "Soft-deleted companies. Restore or permanently remove them.")}</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
+        <div className="rounded-xl border border-destructive/20 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
+          <div className="h-1 w-full bg-gradient-to-r from-red-500/30 via-red-500/10 to-transparent" />
+          <div className="p-4">
+            <h3 className="text-sm font-bold text-foreground mb-0.5">{t("mcap.dashboard.trash.title", "Deleted Companies")}</h3>
+            <p className="text-xs text-muted-foreground mb-3">{t("mcap.dashboard.trash.desc", "Soft-deleted companies. Restore or permanently remove them.")}</p>
             {!isLoadingDeleted && deletedTotal > 0 && (
               <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div className="text-xs text-muted-foreground">
@@ -1024,7 +1025,7 @@ export default function McapUserDashboard() {
                 {t("mcap.dashboard.trash.empty", "Trash is empty.")}
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-md border">
+              <div className="overflow-x-auto rounded-lg border border-border/50">
                 <Table className="min-w-[900px]">
                   <TableHeader>
                     <TableRow>
@@ -1071,16 +1072,15 @@ export default function McapUserDashboard() {
                 </Table>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card className="border shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle>{t("mcap.dashboard.invitations.title", "My Invitations")}</CardTitle>
-          <CardDescription>{t("mcap.dashboard.invitations.desc", "Complete KYC for companies that invited you.")}</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0">
+      <div className="rounded-xl border border-emerald-500/20 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
+        <div className="h-1 w-full bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-cyan-500/10" />
+        <div className="p-4">
+          <h3 className="text-sm font-bold text-foreground mb-0.5">{t("mcap.dashboard.invitations.title", "My Invitations")}</h3>
+          <p className="text-xs text-muted-foreground mb-3">{t("mcap.dashboard.invitations.desc", "Complete KYC for companies that invited you.")}</p>
           {!isLoadingInvites && inviteTotal > 0 && (
             <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div className="text-xs text-muted-foreground">
@@ -1153,7 +1153,7 @@ export default function McapUserDashboard() {
               {t("mcap.dashboard.invitations.empty", "No pending invitations.")}
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-lg border border-border/50">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -1220,8 +1220,8 @@ export default function McapUserDashboard() {
               </Table>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <RoleBottomBlock role={role} />
 

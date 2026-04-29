@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
-import { Building, Clock, Loader2, Mail, Pencil, Phone, Save, Send, Trash2, User } from "lucide-react"
+import { ArrowUpDown, Building, Clock, Loader2, Mail, Pencil, Phone, Save, Send, Trash2, User, Users } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { useNavigate } from "react-router-dom";
@@ -445,7 +445,10 @@ const UsersList = () => {
     const getVal = (u: User, key: SortKey): string => {
         if (key === "fullName") return u.fullName || "";
         if (key === "email") return u.email || "";
-        return u.role || "";
+        if (key === "role") return u.role || "";
+        if (key === "createdAt") return u.createdAt || "";
+        if (key === "updatedAt") return u.updatedAt || "";
+        return "";
     };
 
     const sortedUsers = useMemo(() => {
@@ -499,240 +502,248 @@ const UsersList = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex justify-end space-x-2 mr-4">
-                <SearchBox
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    onSearch={handleSearch}
-                    isFocused={isFocused}
-                    setIsFocused={setIsFocused}
-                    placeText="Search With User Name/ Email"
-                />
-                <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
-                    <DialogTrigger asChild>
-                        <Button>Add User</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add New User</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleAddUser} className="space-y-4">
-                            <div>
-                                <Label htmlFor="fullName">Name</Label>
-                                <Input
-                                    id="fullName"
-                                    value={newUser.fullName}
-                                    onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={newUser.email}
-                                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Label htmlFor="role">Role</Label>
-                                <Select
-                                    value={newUser.role}
-                                    onValueChange={(value) => setNewUser({ ...newUser, role: value })}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="user">User</SelectItem>
-                                        <SelectItem value="admin">Admin</SelectItem>
-                                        {/* <SelectItem value="hk_shdr">SH Dir</SelectItem> */}
-                                        <SelectItem value="master">Master</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <Button type="submit" disabled={addUserLoading}>
-                                {addUserLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Adding...
-                                    </>
-                                ) : (
-                                    "Add User"
-                                )}
-                            </Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+            {/* Page header */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
+                        <Users className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                        <h1 className="text-lg font-bold text-foreground leading-tight">User Management</h1>
+                        <p className="text-xs text-muted-foreground">Manage users, roles, and permissions</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 sm:ml-auto flex-wrap">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-xs text-muted-foreground">
+                        <Users className="h-3 w-3" />
+                        <span className="font-semibold text-foreground">{users.length}</span> users
+                    </div>
+                    <SearchBox
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        onSearch={handleSearch}
+                        isFocused={isFocused}
+                        setIsFocused={setIsFocused}
+                        placeText="Search With User Name/ Email"
+                    />
+                    <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
+                        <DialogTrigger asChild>
+                            <Button size="sm" className="h-8 text-xs">Add User</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add New User</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleAddUser} className="space-y-4">
+                                <div>
+                                    <Label htmlFor="fullName">Name</Label>
+                                    <Input
+                                        id="fullName"
+                                        value={newUser.fullName}
+                                        onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={newUser.email}
+                                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="role">Role</Label>
+                                    <Select
+                                        value={newUser.role}
+                                        onValueChange={(value) => setNewUser({ ...newUser, role: value })}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a role" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="user">User</SelectItem>
+                                            <SelectItem value="admin">Admin</SelectItem>
+                                            {/* <SelectItem value="hk_shdr">SH Dir</SelectItem> */}
+                                            <SelectItem value="master">Master</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <Button type="submit" disabled={addUserLoading}>
+                                    {addUserLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Adding...
+                                        </>
+                                    ) : (
+                                        "Add User"
+                                    )}
+                                </Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
-            <div className="border rounded-md">
-                <Table className="w-full border border-muted/60 rounded-md overflow-hidden">
-                    <TableHeader className="[&_tr]:border-b [&_tr]:border-muted/60">
-                        <TableRow className="bg-muted/60 hover:bg-muted/60 sticky top-0 z-10">
-                            <TableHead
-                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
-                                onClick={() => handleSort("fullName")}
-                                aria-sort={ariaSort("fullName")}
-                                title="Sort by name"
-                            >
-                                <span className="inline-flex items-center gap-1">
-                                    Name
-                                    <span className="text-[10px] opacity-70">
-                                        {sortBy === "fullName" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+            <div className="rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
+                <div className="h-1 w-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-violet-500/10" />
+                <div className="overflow-x-auto">
+                    <Table className="w-full">
+                        <TableHeader>
+                            <TableRow className="bg-muted/40 hover:bg-muted/40">
+                                <TableHead
+                                    className="h-9 px-3 py-1.5 text-xs font-semibold whitespace-nowrap cursor-pointer select-none transition-colors hover:bg-muted/60"
+                                    onClick={() => handleSort("fullName")}
+                                    aria-sort={ariaSort("fullName")}
+                                    title="Sort by name"
+                                >
+                                    <span className="inline-flex items-center gap-1.5">
+                                        Name
+                                        <ArrowUpDown className={`h-3 w-3 ${sortBy === "fullName" ? "text-primary" : "text-muted-foreground/50"}`} />
+                                        {sortBy === "fullName" && <span className="text-[10px] text-primary font-bold">{sortDir === "asc" ? "▲" : "▼"}</span>}
                                     </span>
-                                </span>
-                            </TableHead>
+                                </TableHead>
 
-                            <TableHead
-                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
-                                onClick={() => handleSort("email")}
-                                aria-sort={ariaSort("email")}
-                                title="Sort by email"
-                            >
-                                <span className="inline-flex items-center gap-1">
-                                    Email
-                                    <span className="text-[10px] opacity-70">
-                                        {sortBy === "email" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                <TableHead
+                                    className="h-9 px-3 py-1.5 text-xs font-semibold whitespace-nowrap cursor-pointer select-none transition-colors hover:bg-muted/60"
+                                    onClick={() => handleSort("email")}
+                                    aria-sort={ariaSort("email")}
+                                    title="Sort by email"
+                                >
+                                    <span className="inline-flex items-center gap-1.5">
+                                        Email
+                                        <ArrowUpDown className={`h-3 w-3 ${sortBy === "email" ? "text-primary" : "text-muted-foreground/50"}`} />
+                                        {sortBy === "email" && <span className="text-[10px] text-primary font-bold">{sortDir === "asc" ? "▲" : "▼"}</span>}
                                     </span>
-                                </span>
-                            </TableHead>
+                                </TableHead>
 
-                            <TableHead
-                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
-                                onClick={() => handleSort("role")}
-                                aria-sort={ariaSort("role")}
-                                title="Sort by role"
-                            >
-                                <span className="inline-flex items-center gap-1">
-                                    Role
-                                    <span className="text-[10px] opacity-70">
-                                        {sortBy === "role" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                <TableHead
+                                    className="h-9 px-3 py-1.5 text-xs font-semibold whitespace-nowrap cursor-pointer select-none transition-colors hover:bg-muted/60"
+                                    onClick={() => handleSort("role")}
+                                    aria-sort={ariaSort("role")}
+                                    title="Sort by role"
+                                >
+                                    <span className="inline-flex items-center gap-1.5">
+                                        Role
+                                        <ArrowUpDown className={`h-3 w-3 ${sortBy === "role" ? "text-primary" : "text-muted-foreground/50"}`} />
+                                        {sortBy === "role" && <span className="text-[10px] text-primary font-bold">{sortDir === "asc" ? "▲" : "▼"}</span>}
                                     </span>
-                                </span>
-                            </TableHead>
+                                </TableHead>
 
-                            <TableHead
-                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
-                                onClick={() => handleSort("createdAt")}
-                                aria-sort={ariaSort("createdAt")}
-                                title="Sort by created date"
-                            >
-                                <span className="inline-flex items-center gap-1">
-                                    Created
-                                    <span className="text-[10px] opacity-70">
-                                        {sortBy === "createdAt" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                <TableHead
+                                    className="h-9 px-3 py-1.5 text-xs font-semibold whitespace-nowrap cursor-pointer select-none transition-colors hover:bg-muted/60"
+                                    onClick={() => handleSort("createdAt")}
+                                    aria-sort={ariaSort("createdAt")}
+                                    title="Sort by created date"
+                                >
+                                    <span className="inline-flex items-center gap-1.5">
+                                        Created
+                                        <ArrowUpDown className={`h-3 w-3 ${sortBy === "createdAt" ? "text-primary" : "text-muted-foreground/50"}`} />
+                                        {sortBy === "createdAt" && <span className="text-[10px] text-primary font-bold">{sortDir === "asc" ? "▲" : "▼"}</span>}
                                     </span>
-                                </span>
-                            </TableHead>
+                                </TableHead>
 
-                            <TableHead
-                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
-                                onClick={() => handleSort("updatedAt")}
-                                aria-sort={ariaSort("updatedAt")}
-                                title="Sort by last login"
-                            >
-                                <span className="inline-flex items-center gap-1">
-                                    Last login
-                                    <span className="text-[10px] opacity-70">
-                                        {sortBy === "updatedAt" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                <TableHead
+                                    className="h-9 px-3 py-1.5 text-xs font-semibold whitespace-nowrap cursor-pointer select-none transition-colors hover:bg-muted/60"
+                                    onClick={() => handleSort("updatedAt")}
+                                    aria-sort={ariaSort("updatedAt")}
+                                    title="Sort by last login"
+                                >
+                                    <span className="inline-flex items-center gap-1.5">
+                                        Last login
+                                        <ArrowUpDown className={`h-3 w-3 ${sortBy === "updatedAt" ? "text-primary" : "text-muted-foreground/50"}`} />
+                                        {sortBy === "updatedAt" && <span className="text-[10px] text-primary font-bold">{sortDir === "asc" ? "▲" : "▼"}</span>}
                                     </span>
-                                </span>
-                            </TableHead>
+                                </TableHead>
 
-                            <TableHead className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap w-[68px]">
-                                Actions
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-
-                    <TableBody className="[&_tr]:border-b [&_tr]:border-muted/60">
-                        {sortedUsers.map((user) => (
-                            <TableRow
-                                key={user._id}
-                                onClick={() => openUserDetails(user)}
-                                className={[
-                                    "cursor-pointer",
-                                    "odd:bg-muted/20",
-                                    "hover:bg-muted/40",
-                                    "data-[state=selected]:bg-muted/60",
-                                ].join(" ")}
-                            >
-                                <TableCell className="px-2 py-1 text-[12px] leading-4 border-r border-muted/60">
-                                    <div className="max-w-[220px] truncate" title={user.fullName}>
-                                        {user.fullName}
-                                    </div>
-                                </TableCell>
-
-                                <TableCell className="px-2 py-1 text-[12px] leading-4 border-r border-muted/60">
-                                    <div className="max-w-[280px] truncate" title={user.email}>
-                                        {user.email}
-                                    </div>
-                                </TableCell>
-
-                                <TableCell className="px-2 py-1 text-[12px] leading-4 border-r border-muted/60">
-                                    <div className="max-w-[140px] truncate" title={user.role}>
-                                        {user.role}
-                                    </div>
-                                </TableCell>
-
-                                <TableCell className="px-2 py-1 text-[11px] leading-4 whitespace-nowrap tabular-nums border-r border-muted/60">
-                                    {user.createdAt
-                                        ? new Date(user.createdAt).toLocaleDateString("en-GB", {
-                                            year: "numeric",
-                                            month: "2-digit",
-                                            day: "2-digit",
-                                        })
-                                        : "-"}
-                                </TableCell>
-
-                                <TableCell className="px-2 py-1 text-[11px] leading-4 whitespace-nowrap tabular-nums border-r border-muted/60">
-                                    {user.updatedAt
-                                        ? new Date(user.updatedAt).toLocaleDateString("en-GB", {
-                                            year: "numeric",
-                                            month: "2-digit",
-                                            day: "2-digit",
-                                        })
-                                        : "-"}
-                                </TableCell>
-
-                                <TableCell className="px-1 py-1">
-                                    <div className="flex items-center justify-end gap-0.5">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-7 w-7"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openEditRoleDialog(user);
-                                            }}
-                                            title="Edit"
-                                        >
-                                            <Pencil className="h-3.5 w-3.5" />
-                                        </Button>
-
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-7 w-7 text-destructive hover:text-destructive/90"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setUserToDelete(user);
-                                                setDeleteUserDialogOpen(true);
-                                            }}
-                                            title="Delete"
-                                        >
-                                            <Trash2 className="h-3.5 w-3.5" />
-                                        </Button>
-                                    </div>
-                                </TableCell>
+                                <TableHead className="h-9 px-3 py-1.5 text-xs font-semibold whitespace-nowrap w-[80px]">
+                                    Actions
+                                </TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
 
+                        <TableBody>
+                            {sortedUsers.map((user) => (
+                                <TableRow
+                                    key={user._id}
+                                    onClick={() => openUserDetails(user)}
+                                    className="cursor-pointer hover:bg-muted/40 transition-colors"
+                                >
+                                    <TableCell className="px-3 py-2 text-xs">
+                                        <div className="max-w-[220px] truncate font-medium" title={user.fullName}>
+                                            {user.fullName}
+                                        </div>
+                                    </TableCell>
+
+                                    <TableCell className="px-3 py-2 text-xs">
+                                        <div className="max-w-[280px] truncate text-muted-foreground" title={user.email}>
+                                            {user.email}
+                                        </div>
+                                    </TableCell>
+
+                                    <TableCell className="px-3 py-2 text-xs">
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary capitalize">
+                                            {user.role}
+                                        </span>
+                                    </TableCell>
+
+                                    <TableCell className="px-3 py-2 text-xs tabular-nums text-muted-foreground whitespace-nowrap">
+                                        {user.createdAt
+                                            ? new Date(user.createdAt).toLocaleDateString("en-GB", {
+                                                year: "numeric",
+                                                month: "2-digit",
+                                                day: "2-digit",
+                                            })
+                                            : "-"}
+                                    </TableCell>
+
+                                    <TableCell className="px-3 py-2 text-xs tabular-nums text-muted-foreground whitespace-nowrap">
+                                        {user.updatedAt
+                                            ? new Date(user.updatedAt).toLocaleDateString("en-GB", {
+                                                year: "numeric",
+                                                month: "2-digit",
+                                                day: "2-digit",
+                                            })
+                                            : "-"}
+                                    </TableCell>
+
+                                    <TableCell className="px-1 py-1">
+                                        <div className="flex items-center justify-end gap-0.5">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-7 w-7"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openEditRoleDialog(user);
+                                                }}
+                                                title="Edit"
+                                            >
+                                                <Pencil className="h-3.5 w-3.5" />
+                                            </Button>
+
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-7 w-7 text-destructive hover:text-destructive/90"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setUserToDelete(user);
+                                                    setDeleteUserDialogOpen(true);
+                                                }}
+                                                title="Delete"
+                                            >
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
 
             <Dialog open={isEditRoleOpen} onOpenChange={setIsEditRoleOpen}>
@@ -902,7 +913,7 @@ const UsersList = () => {
                                 onReviewUpdate={handleReviewUpdate}
                                 isSubmitting={reviewLoading}
                             />
-                             <UserOtherDocumentsCard docs={(selectedUser as any)?.otherDocuments || []} />
+                            <UserOtherDocumentsCard docs={(selectedUser as any)?.otherDocuments || []} />
                         </TabsContent>
 
                         <TabsContent value="companies" className="space-y-4">

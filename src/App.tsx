@@ -69,6 +69,7 @@ import McapAdditionalExecutivePricingDocs from './mcap/docs/McapAdditionalExecut
 import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLetterGenerator';
 import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
+import ServiceCatalog from './mcap/pricing/ServiceCatalog';
 import CouponManagement from './mcap/admin/CouponManagement';
 import MobileUpload from './pages/MobileUpload/MobileUpload';
 import VersionUpdateBanner from './components/system/VersionUpdateBanner';
@@ -216,6 +217,7 @@ const App: React.FC = () => {
                       <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
                       <Route path="/incorporation-pricing" element={<PricingDashboard />} />
                       <Route path="/incorporation-coupons" element={<CouponManagement />} />
+                      <Route path="/incorporation-catalog" element={<ServiceCatalog />} />
 
                     </Route>
                   </Route>

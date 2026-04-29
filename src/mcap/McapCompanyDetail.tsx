@@ -143,7 +143,7 @@ const isExistingCompanyOnboardingSummaryField = (stepId?: string, fieldName?: st
 };
 
 const getCompanyName = (company: McapCompany) => {
-  return company.companyName || company.data?.companyName1 || company.data?.companyName_1 || company.data?.name1 || company.data?.companyName || company.data?.desiredCompanyName || company.data?.companyNamePrimary || "";
+  return company.data?.companyName1 || company.data?.companyName_1 || company.data?.name1 || company.data?.companyName || company.data?.desiredCompanyName || company.data?.companyNamePrimary || company.companyName || "";
 };
 
 const getAltCompanyNames = (data: Record<string, any>) => {
@@ -304,11 +304,11 @@ const renderRepeatableSectionDetail = (config: any, data: Record<string, any>, t
     <div className="grid gap-6">
       {sections.map((section: any, sIdx: number) => {
         if (section.condition && !section.condition(data)) return null;
-        
-        const list = section.kind === "object" 
+
+        const list = section.kind === "object"
           ? (data?.[section.fieldName] ? [data[section.fieldName]] : [])
           : (Array.isArray(data?.[section.fieldName]) ? data[section.fieldName] : []);
-        
+
         if (list.length === 0) return null;
 
         return (
@@ -692,9 +692,9 @@ const McapCompanyDetail: React.FC = () => {
   const applicantPhone = getPhone(company);
   const onboardingBrnNo = String(data?.[EXISTING_COMPANY_ONBOARDING_BRN_FIELD] || "").trim();
   const onboardingIncorporationDate = String(company?.incorporationDate || "").trim().slice(0, 10);
-  const companyNameKey = resolveFieldKey(data, ["companyName_1", "name1"], "companyName_1");
-  const companyAlt1Key = resolveFieldKey(data, ["companyName_2", "name2"], "companyName_2");
-  const companyAlt2Key = resolveFieldKey(data, ["companyName_3", "name3"], "companyName_3");
+  const companyNameKey = resolveFieldKey(data, ["companyName1", "companyName_1", "name1"], "companyName1");
+  const companyAlt1Key = resolveFieldKey(data, ["companyName2", "companyName_2", "name2"], "companyName2");
+  const companyAlt2Key = resolveFieldKey(data, ["companyName3", "companyName_3", "name3"], "companyName3");
   const applicantNameKey = resolveFieldKey(data, ["applicantName", "name", "contactName", "primaryContactName"], "applicantName");
   const applicantEmailKey = resolveFieldKey(data, ["email", "applicantEmail", "applicantEmailAddress", "contactEmail"], "email");
   const applicantPhoneKey = resolveFieldKey(data, ["phone", "phoneNum", "contactPhone"], "phone");
