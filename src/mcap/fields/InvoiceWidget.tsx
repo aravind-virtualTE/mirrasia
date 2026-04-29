@@ -269,7 +269,7 @@ export function InvoiceWidget({
     onChange,
     companyId,
 }: InvoiceWidgetProps) {
-    const { t: i18nT } = useTranslation();
+    const { t: i18nT } = useTranslation(["common", "incorporation"]);
     const [hintOpen, setHintOpen] = useState<Record<string, boolean>>({});
 
     const initialCouponCode = data?.couponCode || data?.data?.couponCode || "";
