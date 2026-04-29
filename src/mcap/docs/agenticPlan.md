@@ -1,6 +1,6 @@
 # MCAP Unified Form Engine: Agentic Plan
 
-Last updated: 2026-04-16
+Last updated: 2026-04-28
 
 ## 1. Purpose
 This document is the implementation-level reference for how MCAP incorporation and onboarding flows are built, resolved, priced, validated, and debugged.
@@ -134,18 +134,34 @@ Admin updates, step changes, and status changes must not transfer ownership of a
 `src/mcap/configs/registry.ts` applies normalization in this order:
 1. `stripLegalTermsOutsideAgreement`
 2. `ensureCommonServiceAgreement`
-3. `mergePartiesIntoCompany` for standard-flow countries
-4. `ensureReviewStep`
-5. `reorderSteps`
-6. `attachComplianceGuard`
+3. `stripDeclarationsFromReview`
+4. `mergePartiesIntoCompany` for standard-flow countries
+5. `ensureReviewStep`
+6. `reorderSteps`
+7. `attachComplianceGuard`
 
 Standard-flow countries currently include:
-- `HK`, `US`, `SG`, `PA`, `PPIF`, `CR`, `UK`, `UAE`, `CH`, `CH_LLC`, `CH_FOUNDATION`, `EE`, `LT`, `IE`, `AU`, `HU`, `BVI`
+- `HK`, `US`, `SG`, `PA`, `PPIF`, `CR`, `UK`, `UAE`, `CH`, `CH_LLC`, `CH_FOUNDATION`, `EE`, `LT`, `IE`, `AU`, `HU`, `BVI`, `GE`
 
 Notes:
 - Swiss AG runtime code is `CH`
 - Swiss GmbH runtime code is `CH_LLC`
 - registry must not overwrite an already-defined `step.nextGuard`
+
+### Declaration ownership rule
+The following declaration checkboxes are owned exclusively by the **service-agreement** step (via `buildAgreementStep`):
+- `truthfulnessDeclaration`
+- `compliancePreconditionAcknowledgment`
+
+`stripDeclarationsFromReview` automatically removes these fields from **any step other than `service-agreement`** during normalization. This means:
+- individual country configs **do not need to remove** these fields from their review steps manually
+- any new config that accidentally defines them in review will have them auto-stripped
+- the single source of truth is `buildAgreementStep()` in `registry.ts`
+
+The review step should only contain:
+- country-specific review fields (e.g. `applicationAgreement`, `agreeToTerms`)
+- `eSign` signature field
+- info blocks
 
 ## 6. Fee Source Of Truth
 Preferred model:
@@ -265,6 +281,11 @@ Preferred behavior:
 - render translated option labels, not raw stored values
 - render service labels from `computedFees.items` or service metadata
 
+### Declaration fields
+Do **not** put `truthfulnessDeclaration` or `compliancePreconditionAcknowledgment` in the review step.
+These are centrally managed in the **service-agreement** step via `buildAgreementStep()`.
+See §5 "Declaration ownership rule" for details.
+
 ### Signature field
 Use `type: "signature"` for `eSign`.
 
@@ -346,6 +367,11 @@ Every core behavior change should include:
    - one extended flow such as `PA` or `PPIF`
 
 ## 14. Changelog
+- 2026-04-28
+  - moved `truthfulnessDeclaration` and `compliancePreconditionAcknowledgment` declaration checkboxes from review step to service-agreement step (`buildAgreementStep`)
+  - added `stripDeclarationsFromReview` normalizer in `registry.ts` that auto-strips these fields from any step other than `service-agreement`
+  - individual country configs (HK, UK, EE, LT, HU, IE, CH, BVI) no longer need to define these in their review steps — they are handled centrally
+  - review step now only contains country-specific fields and the `eSign` signature
 - 2026-04-16
   - `ServiceSelectionWidget` now renders section headers and subtotals when items have `kind` tags:
     - "Government Fees" section with mandatory badge and subtotal row
