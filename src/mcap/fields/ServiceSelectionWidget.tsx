@@ -52,7 +52,7 @@ export function ServiceSelectionWidget({
     supportedCurrencies,
     computeFees,
 }: ServiceSelectionWidgetProps) {
-    const { t } = useTranslation();
+    const { t } = useTranslation(["common", "incorporation"]);
     const optionalIds: string[] = Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : [];
     const serviceIds: string[] = Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : [];
     const selectedIds: string[] = Array.from(new Set([...optionalIds, ...serviceIds]));
@@ -1127,11 +1127,11 @@ export function ServiceSelectionWidget({
                                                     ? "EUR (Euro)"
                                                     : code === "USD"
                                                         ? "USD ($)"
-                                                    : code === "HKD"
-                                                        ? "HKD (HK$)"
-                                                        : code === "EUR"
-                                                            ? "EUR (€)"
-                                                            : code}
+                                                        : code === "HKD"
+                                                            ? "HKD (HK$)"
+                                                            : code === "EUR"
+                                                                ? "EUR (€)"
+                                                                : code}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -1143,12 +1143,12 @@ export function ServiceSelectionWidget({
                         {effectiveComputedFees?.exchangeRateUsed
                             && computedFeesSourceCurrency !== selectedCurrency
                             && computedFeesCurrency === selectedCurrency && (
-                            <div className="px-3 py-1 bg-primary/10 rounded-md border border-primary/20">
-                                <p className="text-[10px] text-primary font-medium">
-                                    1 {computedFeesSourceCurrency} = {effectiveComputedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
-                                </p>
-                            </div>
-                        )}
+                                <div className="px-3 py-1 bg-primary/10 rounded-md border border-primary/20">
+                                    <p className="text-[10px] text-primary font-medium">
+                                        1 {computedFeesSourceCurrency} = {effectiveComputedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
+                                    </p>
+                                </div>
+                            )}
                     </div>
 
                     <p className="text-[10px] text-muted-foreground max-w-xs text-center md:text-right">

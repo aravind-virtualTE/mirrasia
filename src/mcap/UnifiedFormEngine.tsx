@@ -195,7 +195,7 @@ export const UnifiedFormEngine = ({
     initialStepIdx?: number;
     isLoading?: boolean;
 }) => {
-    const { t } = useTranslation();
+    const { t } = useTranslation(["common", "incorporation"]);
     const navigate = useNavigate();
     const [currentStepIdx, setCurrentStepIdx] = useState(0);
     const [formData, setFormData] = useState<any>({}); // Stores the dynamic 'data' field

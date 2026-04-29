@@ -51,7 +51,8 @@ const toCurrency = (amount: number, currency: string) => (
 export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }: PanamaServiceSetupWidgetProps) {
     const basePrice = config?.basePrice ?? BASE_SETUP_CORP;
     const tPrefix = config?.tPrefix ?? "panama.quoteSetup";
-    const { t } = useTranslation();
+    const setupPrefix = `${tPrefix}.setup`;
+    const { t } = useTranslation(["common", "incorporation"]);
     const isLocked = data.paymentStatus === "paid";
     const selectedCurrency = String(data.paymentCurrency || data.stripeCurrency || "USD").toUpperCase();
     const useMirrStorage = Boolean(data.recordStorageUseMirr);
@@ -275,45 +276,45 @@ export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }
                 <CardContent className="space-y-3 pt-4">
                     <div className="flex items-center justify-between border-b pb-2">
                         <div className="text-sm font-medium">
-                            {t(`${tPrefix}.base.label`, "Panama Incorporation Base Setup")}
+                            {t(`${setupPrefix}.entity.label`, "Panama Incorporation Base Setup")}
                             <span className="ml-1 text-xs text-muted-foreground">
-                                {t(`${tPrefix}.base.note`, "(includes government fees, Resident Agent, Registered Office)")}
+                                {t(`${setupPrefix}.entity.tooltip.body`, "(includes government fees, Resident Agent, Registered Office)")}
                             </span>
                         </div>
                         <div className="text-sm font-semibold">{formatAmount(basePrice)}</div>
                     </div>
 
                     <div className="grid gap-2 md:grid-cols-[1fr_240px] md:items-center">
-                        <Label className="text-sm">{t(`${tPrefix}.ndSetup.label`)}</Label>
+                        <Label className="text-sm">{t(`${setupPrefix}.ndSetup.label`)}</Label>
                         <Select
                             value={String(data.pa_ndSetup ?? "0")}
                             onValueChange={(v) => setField("pa_ndSetup", v)}
                             disabled={isLocked}
                         >
                             <SelectTrigger className="h-9">
-                                <SelectValue placeholder={t(`${tPrefix}.ndSetup.placeholder`, "Select")} />
+                                <SelectValue placeholder={t(`${setupPrefix}.ndSetup.placeholder`, "Select")} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="0">{t(`${tPrefix}.ndSetup.options.0`)}</SelectItem>
-                                <SelectItem value="1">{t(`${tPrefix}.ndSetup.options.1`, { price: formatAmount(ND_PRICES[1]) })}</SelectItem>
-                                <SelectItem value="2">{t(`${tPrefix}.ndSetup.options.2`, { price: formatAmount(ND_PRICES[2]) })}</SelectItem>
-                                <SelectItem value="3">{t(`${tPrefix}.ndSetup.options.3`, { price: formatAmount(ND_PRICES[3]) })}</SelectItem>
+                                <SelectItem value="0">{t(`${setupPrefix}.ndSetup.options.0`)}</SelectItem>
+                                <SelectItem value="1">{t(`${setupPrefix}.ndSetup.options.1`, { price: formatAmount(ND_PRICES[1]) })}</SelectItem>
+                                <SelectItem value="2">{t(`${setupPrefix}.ndSetup.options.2`, { price: formatAmount(ND_PRICES[2]) })}</SelectItem>
+                                <SelectItem value="3">{t(`${setupPrefix}.ndSetup.options.3`, { price: formatAmount(ND_PRICES[3]) })}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     {String(data.pa_ndSetup || "0") === "3" && (
                         <div className="space-y-1">
-                            <Label className="text-sm">{t(`${tPrefix}.ndSetup.reason.label`)}</Label>
+                            <Label className="text-sm">{t(`${setupPrefix}.ndSetup.reason.label`)}</Label>
                             <Textarea
                                 rows={3}
                                 value={String(data.pa_nd3ReasonSetup || "")}
                                 onChange={(e) => setField("pa_nd3ReasonSetup", e.target.value)}
                                 disabled={isLocked}
-                                placeholder={t(`${tPrefix}.ndSetup.reason.placeholder`, "")}
+                                placeholder={t(`${setupPrefix}.ndSetup.reason.placeholder`, "")}
                             />
                             <p className="text-[11px] text-muted-foreground">
-                                {t(`${tPrefix}.ndSetup.reason.hint`, "")}
+                                {t(`${setupPrefix}.ndSetup.reason.hint`, "")}
                             </p>
                         </div>
                     )}
@@ -322,7 +323,7 @@ export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={nsSetup} onCheckedChange={(v) => setField("pa_nsSetup", v === true)} disabled={isLocked} />
-                                <span>{t(`${tPrefix}.nsSetup.label`, { price: formatAmount(PRICE_NS) })}</span>
+                                <span>{t(`${setupPrefix}.nsSetup.label`, { price: formatAmount(PRICE_NS) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_NS)}</span>
                         </div>
@@ -330,7 +331,7 @@ export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={optEmi} onCheckedChange={(v) => setField("pa_optEmi", v === true)} disabled={isLocked} />
-                                <span>{t(`${tPrefix}.optional.emi`, { price: formatAmount(PRICE_EMI) })}</span>
+                                <span>{t(`${setupPrefix}.optional.emi`, { price: formatAmount(PRICE_EMI) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_EMI)}</span>
                         </div>
@@ -338,7 +339,7 @@ export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={optBank} onCheckedChange={(v) => setField("pa_optBank", v === true)} disabled={isLocked} />
-                                <span>{t(`${tPrefix}.optional.bank`, { price: formatAmount(PRICE_BANK) })}</span>
+                                <span>{t(`${setupPrefix}.optional.bank`, { price: formatAmount(PRICE_BANK) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_BANK)}</span>
                         </div>
@@ -346,7 +347,7 @@ export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={optCbi} onCheckedChange={(v) => setField("pa_optCbi", v === true)} disabled={isLocked} />
-                                <span>{t(`${tPrefix}.optional.cbi`, { price: formatAmount(PRICE_CBI) })}</span>
+                                <span>{t(`${setupPrefix}.optional.cbi`, { price: formatAmount(PRICE_CBI) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_CBI)}</span>
                         </div>
@@ -367,7 +368,7 @@ export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }
                             </div>
                         )}
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{t(`${tPrefix}.totals.setupY1`)}</span>
+                            <span className="text-sm font-medium">{t(`${setupPrefix}.totals.setupY1`)}</span>
                             <span className="text-sm font-bold">{toCurrency(toDisplayAmount(combinedTotalUsd), selectedCurrency)}</span>
                         </div>
                     </div>
