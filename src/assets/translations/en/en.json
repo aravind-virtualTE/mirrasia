@@ -1,4 +1,4 @@
-﻿{
+{
   "userProfile": {
     "title": "Profile Settings",
     "subtitle": "Manage your account information and security settings",
@@ -3337,15 +3337,16 @@
       "individualPreviewLabel": "Individual KYC",
       "corporatePreviewLabel": "Corporate KYC",
       "previewTotalLabel": "Preview Total",
-      "individualPreviewInfo": "{{count}} parties • {{packs}} packs • {{rate}} per pack",
-      "corporatePreviewInfo": "{{count}} parties • {{packs}} packs • {{rate}} per pack",
-      "previewHelp": "Preview is derived from the current party list. Individual and corporate parties are charged separately in packs of two.",
+      "individualPreviewInfo": "{{count}} billable parties • {{packs}} packs • {{rate}} per pack",
+      "corporatePreviewInfo": "{{count}} parties • {{rate}} per entity",
+      "previewHelp": "Preview is derived from the current party list. Individual parties are charged in packs of two (first 2 free). Corporate parties are charged per entity.",
       "previewEmpty": "No parties yet. Add parties first to preview the KYC charge.",
       "individualItemLabel": "Individual KYC / Due Diligence fee",
       "individualItemInfo": "Charged based on the number of individual parties in packs of two.",
       "corporateItemLabel": "Corporate KYC / Due Diligence fee",
-      "corporateItemInfo": "Charged based on the number of corporate parties in packs of two.",
-      "packUnit": "pack"
+      "corporateItemInfo": "Charged based on the number of corporate parties (per entity). An additional charge of USD 130 applies per corporate tier.",
+      "packUnit": "pack",
+      "entityUnit": "entity"
     }
   },
   "mcap": {

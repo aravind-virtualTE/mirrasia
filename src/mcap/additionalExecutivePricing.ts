@@ -15,11 +15,6 @@ export const ADDITIONAL_EXECUTIVE_ITEM_IDS = new Set([
 ]);
 
 const DEFAULT_RATES = {
-  individual: 100,
-  corporate: 150,
-};
-
-const HK_RATES = {
   individual: 65,
   corporate: 130,
 };
@@ -50,9 +45,8 @@ const isEnabledFlag = (value: any) => {
 export const isAdditionalExecutiveKycEnabled = (source: any) =>
   isEnabledFlag(source?.[ADDITIONAL_EXECUTIVE_KYC_FIELD]);
 
-export const getAdditionalExecutiveRates = (countryCode?: string) => {
-  const normalizedCountryCode = normalizeMcapCountryCode(countryCode);
-  return normalizedCountryCode === "HK" ? HK_RATES : DEFAULT_RATES;
+export const getAdditionalExecutiveRates = (_countryCode?: string) => {
+  return DEFAULT_RATES;
 };
 
 export const getAdditionalExecutiveUsdToBaseRate = (countryCode: string | undefined, source?: any) => {
@@ -72,18 +66,21 @@ export const getAdditionalExecutiveUsdToBaseRate = (countryCode: string | undefi
   return 0;
 };
 
-export const getAdditionalExecutiveCounts = (countryCode: string | undefined, parties: any[]) => {
+export const getAdditionalExecutiveCounts = (_countryCode: string | undefined, parties: any[]) => {
   const list = Array.isArray(parties) ? parties : [];
-  const isHK = normalizeMcapCountryCode(countryCode) === "HK";
-  const billableParties = isHK ? list.slice(2) : list;
-  
-  const corporateCount = billableParties.filter((party) => party?.type === "entity" || party?.isCorp === true).length;
-  const individualCount = Math.max(0, billableParties.length - corporateCount);
+
+  const corporates = list.filter((party) => party?.type === "entity" || party?.isCorp === true);
+  const individuals = list.filter((party) => party?.type !== "entity" && party?.isCorp !== true);
+
+  const corporateCount = corporates.length;
+  const totalIndividualCount = individuals.length;
+  const billableIndividualCount = Math.max(0, totalIndividualCount - 2);
+
   return {
-    individualCount,
+    individualCount: billableIndividualCount,
     corporateCount,
-    individualPacks: Math.ceil(individualCount / 2),
-    corporatePacks: Math.ceil(corporateCount / 2),
+    individualPacks: Math.ceil(billableIndividualCount / 2),
+    corporatePacks: corporateCount,
   };
 };
 
@@ -103,9 +100,11 @@ export const getAdditionalExecutivePreview = (
     ? 1
     : (Number.isFinite(usdToBaseRate) && usdToBaseRate > 0 ? usdToBaseRate : 1);
   const usdRates = getAdditionalExecutiveRates(countryCode);
+  const isHU = normalizeMcapCountryCode(countryCode) === "HU";
+
   const rates = {
     individual: round2(usdRates.individual * rateMultiplier),
-    corporate: round2(usdRates.corporate * rateMultiplier),
+    corporate: isHU ? 700 : round2(usdRates.corporate * rateMultiplier),
   };
   const individualSubtotal = counts.individualPacks * rates.individual;
   const corporateSubtotal = counts.corporatePacks * rates.corporate;
@@ -127,7 +126,8 @@ const buildManagedItem = (
   label: string,
   info: string,
   rate: number,
-  quantity: number
+  quantity: number,
+  unitLabel: string = "service.additionalExecutive.packUnit"
 ) => ({
   id,
   label,
@@ -136,7 +136,7 @@ const buildManagedItem = (
   info,
   mandatory: false,
   managedByPartyData: true,
-  unitLabel: "service.additionalExecutive.packUnit",
+  unitLabel,
   kind: "service" as const,
   quantity,
 });
@@ -173,7 +173,8 @@ export const buildAdditionalExecutiveServiceItems = (
         "service.additionalExecutive.corporateItemLabel",
         "service.additionalExecutive.corporateItemInfo",
         preview.rates.corporate,
-        preview.corporatePacks
+        preview.corporatePacks,
+        "service.quantity.entity"
       )
     );
   }

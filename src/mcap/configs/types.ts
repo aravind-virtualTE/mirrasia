@@ -89,6 +89,7 @@ export type McapField = {
   placeholder?: string;
   tooltip?: string;
   required?: boolean;
+  disabled?: boolean | ((data: Record<string, any>) => boolean);
   defaultValue?: any;
   colSpan?: 1 | 2;
   options?: McapFieldOption[];

@@ -1091,11 +1091,13 @@ export const UnifiedFormEngine = ({
         }
         if (field.type === "checkbox") {
             const checkboxId = fieldKey || field.name!;
+            const isDisabled = typeof field.disabled === "function" ? field.disabled(dataContext) : !!field.disabled;
             return (
-                <div key={key} className={cn("flex items-start gap-2", field.colSpan === 2 && "md:col-span-2")}>
+                <div key={key} className={cn("flex items-start gap-2", field.colSpan === 2 && "md:col-span-2", isDisabled && "opacity-60")}>
                     <Checkbox
                         id={checkboxId}
                         checked={!!value}
+                        disabled={isDisabled}
                         onCheckedChange={(v) => onChange(!!v)}
                     />
                     <div className="space-y-1">

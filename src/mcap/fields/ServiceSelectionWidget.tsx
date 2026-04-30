@@ -930,7 +930,7 @@ export function ServiceSelectionWidget({
                                         count: additionalExecutivePreview.individualCount,
                                         packs: additionalExecutivePreview.individualPacks,
                                         rate: formatPrice(previewIndividualRate, selectedCurrency),
-                                        defaultValue: "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+                                        defaultValue: "{{count}} billable parties • {{packs}} packs • {{rate}} per pack",
                                     })}
                                 </p>
                             </div>
@@ -945,9 +945,8 @@ export function ServiceSelectionWidget({
                                 <p className="mt-1 text-xs text-muted-foreground">
                                     {t("service.additionalExecutive.corporatePreviewInfo", {
                                         count: additionalExecutivePreview.corporateCount,
-                                        packs: additionalExecutivePreview.corporatePacks,
                                         rate: formatPrice(previewCorporateRate, selectedCurrency),
-                                        defaultValue: "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+                                        defaultValue: "{{count}} parties • {{rate}} per entity",
                                     })}
                                 </p>
                             </div>

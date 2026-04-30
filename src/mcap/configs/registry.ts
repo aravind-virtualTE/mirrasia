@@ -67,6 +67,7 @@ const buildAgreementStep = (): McapStep => ({
       name: "legalTermsAcknowledgment",
       label: "serviceAgreement.checkBox",
       required: true,
+      disabled: (data) => !!data.legalTermsAcknowledgment,
       colSpan: 2,
     },
     {
@@ -74,12 +75,14 @@ const buildAgreementStep = (): McapStep => ({
       name: "truthfulnessDeclaration",
       label: "newHk.review.declarations.truth",
       required: true,
+      disabled: (data) => !!data.truthfulnessDeclaration,
     },
     {
       type: "checkbox",
       name: "compliancePreconditionAcknowledgment",
       label: "newHk.review.declarations.compliance",
       required: true,
+      disabled: (data) => !!data.compliancePreconditionAcknowledgment,
     },
   ],
 });

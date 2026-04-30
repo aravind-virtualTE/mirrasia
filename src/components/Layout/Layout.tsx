@@ -36,7 +36,6 @@ import { useResetAllForms } from "@/lib/atom";
 import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
 import { paFormWithResetAtom1 } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
-import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
@@ -604,7 +603,6 @@ const Layout: React.FC = () => {
           </div>
         </main>
       </div>
-      <SocialMediaWidget />
       {["admin", "master"].includes(role) && <McapBotWidget />}
     </div>
   );

@@ -3233,15 +3233,16 @@
       "individualPreviewLabel": "個人 KYC",
       "corporatePreviewLabel": "法人 KYC",
       "previewTotalLabel": "預覽總計",
-      "individualPreviewInfo": "{{count}} 位關係方 • {{packs}} 組方案 • 每組 {{rate}}",
-      "corporatePreviewInfo": "{{count}} 個法人關係方 • {{packs}} 組方案 • 每組 {{rate}}",
-      "previewHelp": "預覽是根據目前的關係方列表產生的。個人與法人關係方將以每兩位/兩個為一組單位分別計費。",
+      "individualPreviewInfo": "{{count}} 個計費對象 • {{packs}} 包 • 每包 {{rate}}",
+      "corporatePreviewInfo": "{{count}} 個法人/團體 • 每實體 {{rate}}",
+      "previewHelp": "預覽結果是根據目前的參與方名單計算得出。個人對象以每兩位為一包的方式計費（前兩位免費）。法人對象則按實體計費。",
       "previewEmpty": "尚未新增關係方。請先新增關係方以預覽 KYC 費用。",
       "individualItemLabel": "個人 KYC / 盡職調查費用",
       "individualItemInfo": "根據個人關係方的數量，以每兩位為一組單位計費。",
       "corporateItemLabel": "法人 KYC / 盡職調查費用",
-      "corporateItemInfo": "根據法人關係方的數量，以每兩個為一組單位計費。",
-      "packUnit": "組"
+      "corporateItemInfo": "根據法人對象數量（按實體）計費。每個法人層級將加收 130 美元的額外費用。",
+      "packUnit": "包",
+      "entityUnit": "實體"
     }
   },
   "mcap": {
