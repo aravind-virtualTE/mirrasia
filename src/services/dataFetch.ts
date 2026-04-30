@@ -623,15 +623,7 @@ export const getMcapCompanies = async (params?: {
   limit?: number;
   sortBy?: "country" | "status" | "payment";
   sortOrder?: "asc" | "desc";
-  filter?:
-    | "all"
-    | "pending"
-    | "paid"
-    | "document_collection"
-    | "new_incorporation"
-    | "renewal_in_progress"
-    | "renewed"
-    | "rejected";
+  filter?: string;
   search?: string;
   withMeta?: boolean;
   includeCounts?: boolean;
