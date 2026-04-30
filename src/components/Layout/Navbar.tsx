@@ -18,6 +18,7 @@ import { allCompListAtom } from "@/services/state";
 import { useAtom } from "jotai";
 import { usaAppWithResetAtom } from "@/pages/Company/USA/UsState";
 import AdminNotification from "./AdminNotification";
+import ContactWidget from "./ContactWidget";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom1 } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
@@ -134,6 +135,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
                     {(decodedToken.role === 'admin' || decodedToken.role === 'master') && (
                         <AdminNotification />
                     )}
+                    <ContactWidget variant="capsule" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full flex-shrink-0">
@@ -204,6 +206,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
                 {(decodedToken.role === 'admin' || decodedToken.role === 'master') && (
                     <AdminNotification />
                 )}
+                <ContactWidget variant="popover" />
             </div>
         </header>
     )

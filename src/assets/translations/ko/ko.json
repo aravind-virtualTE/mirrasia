@@ -3232,15 +3232,16 @@
       "individualPreviewLabel": "개인 KYC",
       "corporatePreviewLabel": "법인 KYC",
       "previewTotalLabel": "미리보기 합계",
-      "individualPreviewInfo": "당사자 {{count}}명 • {{packs}}팩 • 팩당 {{rate}}",
-      "corporatePreviewInfo": "법인 {{count}}개 • {{packs}}팩 • 팩당 {{rate}}",
-      "previewHelp": "미리보기는 현재 당사자 목록을 기반으로 합니다. 개인 및 법인 당사자는 2인/2개 단위를 1팩으로 하여 각각 별도로 청구됩니다.",
+      "individualPreviewInfo": "{{count}}개 결제 대상 • {{packs}}팩 • 팩당 {{rate}}",
+      "corporatePreviewInfo": "{{count}}개 법인/단체 • 엔티티당 {{rate}}",
+      "previewHelp": "미리보기는 현재 당사자 목록을 기준으로 산출되었습니다. 개인 당사자는 2개 단위의 팩으로 비용이 청구됩니다 (최초 2개 무료). 법인 당사자는 엔티티당 비용이 청구됩니다.",
       "previewEmpty": "등록된 당사자가 없습니다. KYC 비용 미리보기를 위해 먼저 당사자를 추가해 주세요.",
       "individualItemLabel": "개인 KYC / 실사 비용",
       "individualItemInfo": "개인 당사자 수에 따라 2인당 1팩 단위로 청구됩니다.",
       "corporateItemLabel": "법인 KYC / 실사 비용",
-      "corporateItemInfo": "법인 당사자 수에 따라 2개당 1팩 단위로 청구됩니다.",
-      "packUnit": "팩"
+      "corporateItemInfo": "법인 당사자 수(엔티티당)를 기준으로 비용이 청구됩니다. 법인 등급(Tier)당 USD 130의 추가 요금이 부과됩니다.",
+      "packUnit": "팩",
+      "entityUnit": "엔티티"
     }
   },
   "mcap": {
