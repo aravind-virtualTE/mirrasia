@@ -46,79 +46,30 @@ import ReqForQuoteCard from "@/pages/dashboard/Admin/ReqForQuote/ReqForQuoteCard
 import ServiceCarousel from "@/pages/dashboard/ServiceCarousel";
 import { parseStoredUser } from "@/lib/kyc";
 import { useResizableColumns } from "@/hooks/useResizableColumns";
+import { STATUS_OPTIONS } from "@/pages/Company/Details/detailData";
 
 interface TokenData {
   userId: string;
   role: string;
 }
 
-type DashboardFilterKey =
-  | "all"
-  | "pending"
-  | "paid"
-  | "document_collection"
-  | "new_incorporation"
-  | "renewal_in_progress"
-  | "renewed"
-  | "rejected";
+type DashboardFilterKey = string;
 
 type DashboardFilter = {
   key: DashboardFilterKey;
   label: string;
-  match: (entry: any) => boolean;
 };
 
 type DashboardSortKey = "none" | "country" | "status" | "payment";
 
 const PAGE_SIZE_OPTIONS = [10, 20, 30, 50];
 const SEARCH_DEBOUNCE_MS = 1000;
+const ALL_FILTER_KEY = "all";
 const EMPTY_FILTER_COUNTS: Record<DashboardFilterKey, number> = {
-  all: 0,
-  pending: 0,
-  paid: 0,
-  document_collection: 0,
-  new_incorporation: 0,
-  renewal_in_progress: 0,
-  renewed: 0,
-  rejected: 0,
+  [ALL_FILTER_KEY]: 0,
 };
 
-const normalizeStatus = (value: any) => String(value ?? "").trim().toLowerCase();
-
-const isRejectedCompany = (entry: any) => {
-  const status = normalizeStatus(entry?.status);
-  const incorporationStatus = normalizeStatus(entry?.incorporationStatus);
-  const paymentStatus = normalizeStatus(entry?.paymentStatus);
-  return status.includes("reject") || incorporationStatus.includes("reject") || paymentStatus === "rejected";
-};
-
-const isRenewalInProgressCompany = (entry: any) => {
-  const renewalStatus = normalizeStatus(entry?.renewalStatus);
-  return renewalStatus === "pending_renewal" || renewalStatus === "pending renewal" || renewalStatus === "pending-renewal";
-};
-
-const isRenewedCompany = (entry: any) => {
-  const renewalStatus = normalizeStatus(entry?.renewalStatus);
-  return renewalStatus === "active" || !!entry?.lastRenewalDate;
-};
-
-const isPendingApplication = (entry: any) => {
-  if (isRejectedCompany(entry)) return false;
-  return normalizeStatus(entry?.incorporationStatus) !== "completed";
-};
-
-const isDocumentCollectionCompany = (entry: any) => {
-  if (isRejectedCompany(entry)) return false;
-  const kycStatus = normalizeStatus(entry?.kycStatus);
-  if (["pending", "in_progress", "in progress", "submitted"].includes(kycStatus)) return true;
-  return !!entry?.partyInvited && kycStatus !== "approved";
-};
-
-const isNewIncorporationCompany = (entry: any) => {
-  if (isRejectedCompany(entry)) return false;
-  if (isRenewalInProgressCompany(entry) || isRenewedCompany(entry)) return false;
-  return normalizeStatus(entry?.incorporationStatus) !== "completed";
-};
+const normalizeFilterCountKey = (value: any) => String(value ?? "").trim().toLowerCase();
 
 const resolveCompanyName = (entry: any, untitledLabel: string) => {
   const data = entry?.data || {};
@@ -333,7 +284,7 @@ export default function McapUserDashboard() {
   const [items, setItems] = useState<any[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [serverFilterCounts, setServerFilterCounts] = useState<Record<DashboardFilterKey, number>>(EMPTY_FILTER_COUNTS);
-  const [activeFilter, setActiveFilter] = useState<DashboardFilterKey>("all");
+  const [activeFilter, setActiveFilter] = useState<DashboardFilterKey>(ALL_FILTER_KEY);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [invites, setInvites] = useState<any[]>([]);
@@ -401,7 +352,7 @@ export default function McapUserDashboard() {
           withMeta: true,
           page: currentPage,
           limit: pageSize,
-          ...(activeFilter !== "all" ? { filter: activeFilter } : {}),
+          ...(activeFilter !== ALL_FILTER_KEY ? { filter: activeFilter } : {}),
           ...(debouncedSearch ? { search: debouncedSearch } : {}),
           ...sortParams,
         } as const;
@@ -433,10 +384,18 @@ export default function McapUserDashboard() {
         limit: 1,
       });
       const counts = res?.data?.filterCounts || {};
+      const normalizedCounts = Object.entries(counts).reduce<Record<DashboardFilterKey, number>>((acc, [key, value]) => {
+        const normalizedKey = normalizeFilterCountKey(key);
+        const numericValue = Number(value);
+        if (normalizedKey && Number.isFinite(numericValue)) {
+          acc[normalizedKey] = numericValue;
+        }
+        return acc;
+      }, {});
       if (active) {
         setServerFilterCounts({
           ...EMPTY_FILTER_COUNTS,
-          ...counts,
+          ...normalizedCounts,
         });
       }
     })();
@@ -481,45 +440,13 @@ export default function McapUserDashboard() {
   const filters = useMemo<DashboardFilter[]>(
     () => [
       {
-        key: "all",
+        key: ALL_FILTER_KEY,
         label: t("mcap.dashboard.filters.all", "All Applications"),
-        match: () => true,
       },
-      {
-        key: "pending",
-        label: t("mcap.dashboard.filters.pending", "Pending Applications"),
-        match: isPendingApplication,
-      },
-      {
-        key: "paid",
-        label: t("mcap.dashboard.filters.paid", "Paid Applications"),
-        match: (entry) => normalizeStatus(entry?.paymentStatus) === "paid",
-      },
-      {
-        key: "document_collection",
-        label: t("mcap.dashboard.filters.documentCollection", "Document Collection"),
-        match: isDocumentCollectionCompany,
-      },
-      {
-        key: "new_incorporation",
-        label: t("mcap.dashboard.filters.currentCorporateClient", "Current Corporate Client"),
-        match: isNewIncorporationCompany,
-      },
-      {
-        key: "renewal_in_progress",
-        label: t("mcap.dashboard.filters.renewalInProgress", "Renewal In Progress"),
-        match: isRenewalInProgressCompany,
-      },
-      {
-        key: "renewed",
-        label: t("mcap.dashboard.filters.renewed", "Renewed Companies"),
-        match: isRenewedCompany,
-      },
-      {
-        key: "rejected",
-        label: t("mcap.dashboard.filters.rejected", "Rejected Companies"),
-        match: isRejectedCompany,
-      },
+      ...STATUS_OPTIONS.map((status) => ({
+        key: status,
+        label: status,
+      })),
     ],
     [t]
   );
@@ -540,7 +467,7 @@ export default function McapUserDashboard() {
   }, [items]);
 
   const totalFiltered = totalItems;
-  const totalAll = serverFilterCounts.all || totalItems;
+  const totalAll = serverFilterCounts[ALL_FILTER_KEY] || totalItems;
   const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
   const pageStart = totalFiltered === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const pageEnd = totalFiltered === 0 ? 0 : Math.min(pageStart + items.length - 1, totalFiltered);
@@ -710,7 +637,7 @@ export default function McapUserDashboard() {
                           className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none font-semibold ${isActive ? "bg-white/20 text-white" : "bg-background text-foreground"
                             }`}
                         >
-                          {serverFilterCounts[filter.key] ?? 0}
+                          {serverFilterCounts[normalizeFilterCountKey(filter.key)] ?? 0}
                         </span>
                       </button>
                     );
@@ -854,8 +781,8 @@ export default function McapUserDashboard() {
                       {t("mcap.dashboard.search.clear", "Clear search")}
                     </Button>
                   )}
-                  {activeFilter !== "all" && (
-                    <Button variant="outline" size="sm" onClick={() => setActiveFilter("all")}>
+                  {activeFilter !== ALL_FILTER_KEY && (
+                    <Button variant="outline" size="sm" onClick={() => setActiveFilter(ALL_FILTER_KEY)}>
                       {t("mcap.dashboard.filters.reset", "Show all applications")}
                     </Button>
                   )}
@@ -899,7 +826,7 @@ export default function McapUserDashboard() {
 
                           <TableCell className="py-2">
                             <Badge variant="secondary">
-                              {entry?.status || draftLabel}
+                              {entry?.incorporationStatus || entry?.status || draftLabel}
                             </Badge>
                           </TableCell>
 
@@ -1042,7 +969,7 @@ export default function McapUserDashboard() {
                       <TableRow key={entry?._id} className="h-11">
                         <TableCell className="py-2 font-medium">{resolveCompanyName(entry, untitledLabel)}</TableCell>
                         <TableCell className="py-2">{entry?.countryName || entry?.countryCode}</TableCell>
-                        <TableCell className="py-2"><Badge variant="secondary">{entry?.status || draftLabel}</Badge></TableCell>
+                        <TableCell className="py-2"><Badge variant="secondary">{entry?.incorporationStatus || entry?.status || draftLabel}</Badge></TableCell>
                         <TableCell className="py-2"><Badge variant={entry?.paymentStatus === "paid" ? "default" : "outline"}>{entry?.paymentStatus || unpaidLabel}</Badge></TableCell>
                         <TableCell className="py-2 text-xs tabular-nums">{formatDateOnly(entry?.updatedAt, notAvailableLabel)}</TableCell>
                         <TableCell className="py-2 text-right">
