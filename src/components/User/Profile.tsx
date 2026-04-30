@@ -607,7 +607,7 @@ export default function Profile() {
       <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
         {/* Sticky Header */}
         <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="container max-w-7xl mx-auto px-4 md:px-8 py-4">
+          <div className="w-full px-2 md:px-3 py-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">{t("userProfile.title")}</h1>
@@ -673,7 +673,7 @@ export default function Profile() {
         </header>
 
         {/* Main Content Area */}
-        <main className="container max-w-7xl mx-auto px-4 md:px-8 pt-8">
+        <main className="w-full px-2 md:px-3 pt-8">
           <TabsContent value="overview" className="mt-0 space-y-6">
             <div className="grid gap-6">
               {/* Welcome Card */}

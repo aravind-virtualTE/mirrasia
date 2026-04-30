@@ -648,7 +648,7 @@ export default function McapUserDashboard() {
   }, [permanentDeleteTarget, refreshAll]);
 
   return (
-    <div className="max-w-[1400px] mx-auto p-3 md:p-4 space-y-4">
+    <div className="w-full px-2 md:px-3 py-3 md:py-4 space-y-4">
       {/* ─── Page header ──────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="flex items-center gap-3 min-w-0">
@@ -686,7 +686,7 @@ export default function McapUserDashboard() {
       {(!isMaster || activeTab === "active") && (
         <div className="rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden">
           <div className="h-1 w-full bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-red-500/10" />
-          <div className="p-4">
+          <div className="px-2 py-3">
             {!isLoading && totalAll > 0 && (
               <div className="mb-3 space-y-2">
                 <div className="flex flex-wrap gap-1.5">
